@@ -3,7 +3,7 @@ import random
 import requests
 import asyncio
 
-from dota import heroes, pools, teams
+from dota import heroes
 from mytoken import mytoken, maps_api
 
 client = discord.Client()
@@ -26,28 +26,33 @@ async def on_message(message):
         ### ONE LINERS ###
         if ctx.startswith("hello") or ctx.startswith("hey"):
             await message.channel.send(f"Hey {str(message.author)[:-5]}! How are ya?")
-        if ctx.startswith("go"):
+        elif ctx.startswith("go"):
             await message.channel.send("No")
-        if ctx.startswith("yo") or ctx.startswith("hola"):
+        elif ctx.startswith("yo") or ctx.startswith("hola"):
             await message.channel.send("sup")
-        if ctx.startswith("sup"):
+        elif ctx.startswith("sup"):
             await message.channel.send("chillin', u?")
 
         ### LIL ONES ###
-        if ctx.startswith('attend'):
+        elif ctx.startswith('attend'):
             await sb_attend(message)
-        if ctx.startswith("help"):
+        elif ctx.startswith("help"):
             await sb_help(message)
-        if ctx.strip() == ("dota"):
-            await dota_help(message)
-        if ctx.startswith("randomciv") or message.content[3:].startswith("aoe") or message.content[3:].startswith("civ"):
+        elif ctx.startswith("randomciv") or message.content[3:].startswith("aoe") or message.content[3:].startswith("civ"):
             await randomciv(message)
+        elif ctx.startswith("guess"):
+            await guessgame(message)
 
         ### BIG ONES ###
-        if ctx.startswith("dota") and len(ctx.split(" ")) > 1:
-            await dota(message, ctx[5:])
-
-        if ctx.startswith("weather"):
+        elif (ctx.startswith("dota") or ctx.startswith("doto") or ctx.startswith("dop")):
+            if len(ctx.split(" ")) > 1:
+                if ctx.startswith("dop"):
+                    await dota(message, ctx[4:])
+                else:
+                    await dota(message, ctx[5:])
+            elif len(ctx.split(" ")) == 1:
+                await dota_help(message)
+        elif ctx.startswith("weather"):
             if len(ctx.split(' ')) > 1:
                 await weather(message, ctx[8:])
             else:
@@ -61,22 +66,10 @@ async def on_message(message):
                     await message.channel.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
                 except Exception as e:
                     print(e)
-    
-    # if message.content.startswith(sb.game):
-    #     @client.command()
-    #     async def command(ctx):
-    #         computer = random.randint(1, 10)
-    #         await ctx.send('Guess my number')
 
-    #         def check(msg):
-    #             return msg.author == ctx.author and msg.channel == ctx.channel and int(msg.content) in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        else:
+            await message.channel.send("So sorry sir, could you try again?")
 
-    #         msg = await client.wait_for("message", check=check)
-
-    #         if int(msg.content) == computer:
-    #             await ctx.send("Correct")
-    #         else:
-    #             await ctx.send(f"Nope it was {computer}")
 
 ### LIL ONES ###
 async def sb_help(message):
@@ -101,10 +94,11 @@ async def sb_help(message):
     help = "`help` (Very wise, sir, figuring this one out already)."
     greet = "`(various greetings)` :wave:"
     attend = "`attend` What does my lord require?"
+    guess = "`guess` Game with your boi."
     weather = "`weather` :white_sun_cloud:"
     dota = f"`dota` {discord.utils.get(message.guild.emojis, name='omni')}"
     aoe = f"`randomciv`/`aoe`/`civ` {discord.utils.get(message.guild.emojis, name='hre')}"
-    await message.channel.send(f"{header}\n{hr}\n{help}\n{greet}\n{attend}\n{weather}\n{dota}\n{aoe}")
+    await message.channel.send(f"{header}\n{hr}\n{help}\n{greet}\n{attend}\n{guess}\n{weather}\n{dota}\n{aoe}")
     
 async def sb_attend(message):
     num = random.randint(1,7)
@@ -163,13 +157,24 @@ async def randomciv(message):
     if civ_id == 8:
         civ = "The Rus Civilization"
         emoji_name = "rus"
-
     flag = discord.utils.get(message.guild.emojis, name=emoji_name)
     await message.channel.send(f'{flag} {flag} {flag} {civ} {flag} {flag} {flag}')
+
+async def guessgame(message):
+    num = random.randint(1, 10)
+    await message.channel.send('Guess a number 1-10')
+    def check(msg):
+        return msg.author == message.author and msg.channel == message.channel and int(msg.content) in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    msg = await client.wait_for("message", check=check)
+    if int(msg.content) == num:
+        await message.channel.send("Correct")
+    else:
+        await message.channel.send(f"Nope it was {num}")
 
 ### BIG ONES ###
 async def dota(message, ctx):
     message.channel.send(f"Handling request: {ctx} from {message.author}")
+    print(ctx)
     if ctx.startswith("random"):
         if ctx == "random":
             num = random.randint(0,(len(heroes)-1))
@@ -310,7 +315,6 @@ async def weather(message, location):
         print("Weather success.")
     else:
         print("Some other error... check: https://openweathermap.org/faq#error401")
-
 
 def main(): 
     client.run(mytoken)
