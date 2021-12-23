@@ -1,12 +1,12 @@
 #########################################<br>
-################## squirebot ###############<br>
+################## **squirebot** ###############<br>
 #########################################<br>
---- Discord Bot for TheBoys. 
+*Discord Bot for TheBoys.*
 
 Born on Dec. 16, 2021, launched and living on the internet one week later,<br>
 Squirebot is here to attend to your every need before you go into battle.
 
-<hr><center>####USAGE</center><hr>
+<hr><h1>USAGE</h1><hr>
 
 Start any command message with sb.
 
@@ -45,7 +45,7 @@ Start any command message with sb.
                     team : Suggests a random team
                         // sb.dota random hero green // Suggests random hero that is green.
     
-<hr>####ROADMAP<hr>
+<hr><h1>ROADMAP</h1><hr>
 
     Build a database to store user info, preferences, user-created dota hero pools, stats, etc.
     Clean up main.py and separate functions - shouldn't all be under one @client.event.
