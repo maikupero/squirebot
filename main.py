@@ -1,9 +1,13 @@
+import os
 import discord
 import random
 import requests
 import asyncio
 
 from dota import heroes
+mytoken = os.environ.get('mytoken')
+maps_api = os.environ.get('maps_api')
+
 # from mytoken import mytoken, maps_api
 
 client = discord.Client()
