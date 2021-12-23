@@ -4,7 +4,7 @@ import requests
 import asyncio
 
 from dota import heroes
-from mytoken import mytoken, maps_api
+# from mytoken import mytoken, maps_api
 
 client = discord.Client()
 
