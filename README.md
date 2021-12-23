@@ -9,6 +9,7 @@ Squirebot is here to attend to your every need before you go into battle.
 <hr><center>####USAGE</center><hr>
 
 Start any command message with sb.
+
         sb.
             help : 
                 Essentially returns this list of commands to you on discord.
