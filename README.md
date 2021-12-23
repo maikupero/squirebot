@@ -10,6 +10,7 @@ Squirebot is here to attend to your every need before you go into battle.
 
 Start any command message with sb.
     sb.
+    >
         help : 
             Essentially returns this list of commands to you on discord.
         greet : 
@@ -43,7 +44,7 @@ Start any command message with sb.
                     attribute : Included as pools 
                 team : Suggests a random team
                     // sb.dota random hero green // Suggests random hero that is green.
-
+    >
 <hr>ROADMAP<hr>
 
     Build a database to store user info, preferences, user-created dota hero pools, stats, etc.
