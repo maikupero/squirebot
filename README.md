@@ -6,7 +6,7 @@
 Born on Dec. 16, 2021, launched and living on the internet one week later,<br>
 Squirebot is here to attend to your every need before you go into battle.
 
-<hr><h1>USAGE</h1><hr>
+<hr><h1>USAGE</h1>
 
 Start any command message with sb.
 
@@ -45,7 +45,7 @@ Start any command message with sb.
                     team : Suggests a random team
                         // sb.dota random hero green // Suggests random hero that is green.
     
-<hr><h1>ROADMAP</h1><hr>
+<hr><h1>ROADMAP</h1><
 
-    Build a database to store user info, preferences, user-created dota hero pools, stats, etc.
-    Clean up main.py and separate functions - shouldn't all be under one @client.event.
+    • Build a database to store user info, preferences, user-created dota hero pools, stats, etc.
+    • Clean up main.py and separate functions - shouldn't all be under one @client.event.
