@@ -39,14 +39,15 @@ Start any command message with sb.
                     team : Guidance to add a hero to an existing team or create a new one.
                         // sb.dota append team // Assists you in adding a new team of heroes to the database.
             -   random () : If unspecified suggests a random hero to play.
-                    hero: 
+                    hero : 
                         pool_name : Suggests a random hero from specified user's pool if pool exists in DB.
                         attribute : Included as pools 
                         // sb.dota random hero green // Suggests random hero that is green.
                     team : Suggests a random team
-                        //sb.dota random team // Suggests a random team.
+                        // sb.dota random team // Suggests a random team.
     
 <hr><h1>ROADMAP</h1>
 
     • Build a database to store user info, preferences, user-created dota hero pools, stats, etc.
     • Clean up main.py and separate functions - shouldn't all be under one @client.event.
+    • Work on dota functionality
