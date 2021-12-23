@@ -12,19 +12,19 @@ Start any command message with sb.
 
         sb.
             help : 
-                Essentially returns this list of commands to you on discord.
+                // sb.help // Essentially returns this list of commands to you on discord.
             greet : 
-                Accepts and returns various greetings.
+                // sb.hi // Accepts and returns various greetings.
             attend : 
-                Takes care of your every need.
+                // sb.attend // Takes care of your every need.
             guess : 
-                Simple guessing game to play with your bot.
+                // sb.guess // Simple guessing game to play with your bot.
             aoe /civ/randomciv :
-                Suggests a random civ to play in Age of Empires 4, complete with custom flag emoji.
+                // sb.randomciv // Suggests a random civ to play in Age of Empires 4, complete with custom flag emoji.
         
             weather () : If unspecified, prompts the user to send a location - city name, zip code, or coordinates.
                 location : 
-                    i.e. sb.weather Tokyo
+                    // sb.weather Tokyo // Gives you the current weather in Tokyo complete with emoji.
                     
             dota () :    If unspecified, sends a help menu for dota functionality.
             -   pool () :    If unspecified lists the hero pools saved into the bot's database.
@@ -42,8 +42,9 @@ Start any command message with sb.
                     hero: 
                         pool_name : Suggests a random hero from specified user's pool if pool exists in DB.
                         attribute : Included as pools 
-                    team : Suggests a random team
                         // sb.dota random hero green // Suggests random hero that is green.
+                    team : Suggests a random team
+                        //sb.dota random team // Suggests a random team.
     
 <hr><h1>ROADMAP</h1>
 
