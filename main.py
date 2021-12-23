@@ -1,25 +1,28 @@
 import os
+import psycopg2
 import discord
 import random
 import requests
 import asyncio
 
-from dota import heroes
+from data import heroes
+
 mytoken = os.environ.get('mytoken')
 maps_api = os.environ.get('maps_api')
+DATABASE_URL = os.environ['DATABASE_URL']
 
-# from mytoken import mytoken, maps_api
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
-client = discord.Client()
+bot = discord.Client()
 
 # Google python decorators
-@client.event
+@bot.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+    print('We have logged in as {0.user}'.format(bot))
 
-@client.event
+@bot.event
 async def on_message(message):
-    if message.author == client.user:
+    if message.author == bot.user:
         return
 
     # google coroutines you noob
@@ -28,6 +31,10 @@ async def on_message(message):
         print(f"Attempting to handle '{ctx}' command from {message.author}")
 
         ### ONE LINERS ###
+        if ctx.startswith("yes"):
+            await message.channel.send("no")
+        if ctx.startswith("no"):
+            await message.channel.send("yes")
         if ctx.startswith("hello") or ctx.startswith("hey"):
             await message.channel.send(f"Hey {str(message.author)[:-5]}! How are ya?")
         elif ctx.startswith("go"):
@@ -64,7 +71,7 @@ async def on_message(message):
                 def check(msg):
                     return msg.author == message.author and msg.channel == message.channel
                 try:
-                    location = await client.wait_for("message", check=check, timeout=30) # 30 seconds to reply
+                    location = await bot.wait_for("message", check=check, timeout=30) # 30 seconds to reply
                     await weather(message, location.content)
                 except asyncio.TimeoutError:
                     await message.channel.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
@@ -169,7 +176,7 @@ async def guessgame(message):
     await message.channel.send('Guess a number 1-10')
     def check(msg):
         return msg.author == message.author and msg.channel == message.channel and int(msg.content) in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    msg = await client.wait_for("message", check=check)
+    msg = await bot.wait_for("message", check=check)
     if int(msg.content) == num:
         await message.channel.send("Correct")
     else:
@@ -257,7 +264,7 @@ async def dota(message, ctx):
                 def check(msg):
                     return msg.author == message.author and msg.channel == message.channel
                 try:
-                    location = await client.wait_for("message", check=check, timeout=30) # 30 seconds to reply
+                    location = await bot.wait_for("message", check=check, timeout=30) # 30 seconds to reply
                     await weather(message, location.content)
                 except asyncio.TimeoutError:
                     await message.channel.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
@@ -321,7 +328,7 @@ async def weather(message, location):
         print("Some other error... check: https://openweathermap.org/faq#error401")
 
 def main(): 
-    client.run(mytoken)
+    bot.run(mytoken)
 
 if __name__ == '__main__':
     main()  
