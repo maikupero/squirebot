@@ -5,12 +5,13 @@ import random
 import requests
 import asyncio
 
-from data import heroes
+from lists import heroes
 
-mytoken = os.environ.get('mytoken')
-maps_api = os.environ.get('maps_api')
+# Env variables
+MYTOKEN = os.environ.get('mytoken')
+MAPS_API = os.environ.get('maps_api')
+# Network & Database connections through psycopg2, postgres, heroku. 
 DATABASE_URL = os.environ['DATABASE_URL']
-
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
 bot = discord.Client()
