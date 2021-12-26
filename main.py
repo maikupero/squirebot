@@ -1,10 +1,13 @@
 import os
 import psycopg2
-import discord
 import random
 import requests
 import asyncio
 
+import discord
+from discord.ext import commands
+
+import helpers
 from lists import heroes
 
 # Env variables
@@ -15,6 +18,7 @@ DATABASE_URL = os.environ['DATABASE_URL']
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
 bot = discord.Client()
+cmds = commands.Bot(command_prefix='sb.')
 
 # Google python decorators
 @bot.event
@@ -26,7 +30,6 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    # google coroutines you noob
     if message.content.lower().startswith('sb.'):
         ctx = (message.content)[3:]
         print(f"Attempting to handle '{ctx}' command from {message.author}")
@@ -34,9 +37,9 @@ async def on_message(message):
         ### ONE LINERS ###
         if ctx.startswith("yes"):
             await message.channel.send("no")
-        if ctx.startswith("no"):
+        elif ctx.startswith("no"):
             await message.channel.send("yes")
-        if ctx.startswith("hello") or ctx.startswith("hey"):
+        elif ctx.startswith("hello") or ctx.startswith("hey"):
             await message.channel.send(f"Hey {str(message.author)[:-5]}! How are ya?")
         elif ctx.startswith("go"):
             await message.channel.send("No")
@@ -48,8 +51,6 @@ async def on_message(message):
         ### LIL ONES ###
         elif ctx.startswith('attend'):
             await sb_attend(message)
-        elif ctx.startswith("help"):
-            await sb_help(message)
         elif ctx.startswith("randomciv") or message.content[3:].startswith("aoe") or message.content[3:].startswith("civ"):
             await randomciv(message)
         elif ctx.startswith("guess"):
@@ -82,25 +83,13 @@ async def on_message(message):
         else:
             await message.channel.send("So sorry sir, could you try again?")
 
-
-### LIL ONES ###
-async def sb_help(message):
-    tags = []
-    msg = message.content.split(' ')
-    if len(msg) > 1: 
-        for tag in range(1, len(msg)):
-            if msg[tag].startswith("<"):
-                tags.append(msg[tag])
-        to_send = ("Someone help ")
-        for user in range(len(tags)):
-            if user == 0:
-                to_send += tags[user]
-            else: 
-                to_send += (f" and {tags[user]}")
-        to_send += "!"
-        await message.channel.send(to_send)
+@cmds.command()
+async def help(ctx, arg):
+    # To test: tagging no one, tagging someone else. 
+    if arg:
+        await ctx.channel.send(f"I'm here to help, {arg}, sir, if it please you!\n")
     else:
-        await message.channel.send(f"I'm here to help, {message.author.name}, sir, if it please you!\n")
+        await ctx.channel.send(f"I'm here to help, {ctx.author.name}, sir, if it please you!\n")
     header = ":man_bowing::man_bowing::man_bowing: Command list: `sb.(commandgoeshere)` :man_bowing::man_bowing::man_bowing:"
     hr = "________________________________________"
     help = "`help` (Very wise, sir, figuring this one out already)."
@@ -108,31 +97,30 @@ async def sb_help(message):
     attend = "`attend` What does my lord require?"
     guess = "`guess` Game with your boi."
     weather = "`weather` :white_sun_cloud:"
-    dota = f"`dota` {discord.utils.get(message.guild.emojis, name='omni')}"
-    aoe = f"`randomciv`/`aoe`/`civ` {discord.utils.get(message.guild.emojis, name='hre')}"
-    await message.channel.send(f"{header}\n{hr}\n{help}\n{greet}\n{attend}\n{guess}\n{weather}\n{dota}\n{aoe}")
-    
-async def sb_attend(message):
-    num = random.randint(1,7)
-    response = str()
-    if num == 1:
-        response = "Ready, sir."
-    if num == 2:
-        response = "As you order, sir."
-    if num == 3:
-        response = "What can I do for you?"
-    if num == 4:
-        response = "Work work."
-    if num == 5:
-        response = "Something need doing?"
-    if num == 6:
-        response = "How can I help you, sir?"
-    if num == 7:
-        response = "How can I be of service, my lord?"
-    if num == 8:
-        response = "$peon"
-    await message.channel.send(response)
+    dota = f"`dota` {discord.utils.get(ctx.guild.emojis, name='omni')}"
+    aoe = f"`randomciv`/`aoe`/`civ` {discord.utils.get(ctx.guild.emojis, name='hre')}"
+    await ctx.channel.send(f"{header}\n{hr}\n{help}\n{greet}\n{attend}\n{guess}\n{weather}\n{dota}\n{aoe}")
 
+### LIL ONES ###
+@cmds.command()
+async def attend(ctx):
+    num = random.randint(1,7)
+    response = helpers.server.attend(num)
+    await ctx.channel.send(response)
+
+@cmds.command()
+async def aoe(ctx, *args):
+#To test: civ and flag are being sent correctly using external helper function.
+    if args[0] == 'randomciv' or args[0] == 'random':
+        civ_id = random.randint(1,8)
+        civflag = helpers.aoe4.randomciv(civ_id)
+        civ = civflag[0]
+        flag = discord.utils.get(ctx.guild.emojis, name=civflag[1])
+        await ctx.channel.send(f'{flag} {flag} {flag} {civ} {flag} {flag} {flag}')
+    else:
+        await ctx.channel.send(f'Other AOE commands not ready yet.')
+
+@cmds.command()
 async def dota_help(message):
     await message.channel.send("Dota sucks. Use `sb.dota (command)`.")
     hr = "________________________________________"
@@ -142,35 +130,6 @@ async def dota_help(message):
     append = "`append` For adding in heroes/roles/pools."
     await message.channel.send(f"{hr}\n{random}\n{pool}\n{append}")
 
-async def randomciv(message):
-    civ_id = random.randint(1,8)
-    civ = str()
-    if civ_id == 1:
-        civ = "The Abbasid Dynasty"
-        emoji_name = "abbasid"
-    if civ_id == 2:
-        civ = "The Chinese"
-        emoji_name = "chinese"
-    if civ_id == 3:
-        civ = "The Delhi Sultanate"
-        emoji_name = "delhi"
-    if civ_id == 4:
-        civ = "The French"
-        emoji_name = "french"
-    if civ_id == 5:
-        civ = "The English"
-        emoji_name = "english"
-    if civ_id == 6:
-        civ = "The Holy Roman Empire"
-        emoji_name = "hre"
-    if civ_id == 7:
-        civ = "The Mongols"
-        emoji_name = "mongols"
-    if civ_id == 8:
-        civ = "The Rus Civilization"
-        emoji_name = "rus"
-    flag = discord.utils.get(message.guild.emojis, name=emoji_name)
-    await message.channel.send(f'{flag} {flag} {flag} {civ} {flag} {flag} {flag}')
 
 async def guessgame(message):
     num = random.randint(1, 10)
@@ -275,7 +234,7 @@ async def dota(message, ctx):
                 await message.channel.send("Pool function not ready.")
 
 async def weather(message, location):
-    api_key = maps_api
+    api_key = MAPS_API
     base_url = "https://api.openweathermap.org/data/2.5/weather?"
     city_name = location
     measure = "&units=imperial"
@@ -329,7 +288,7 @@ async def weather(message, location):
         print("Some other error... check: https://openweathermap.org/faq#error401")
 
 def main(): 
-    bot.run(mytoken)
+    bot.run(MYTOKEN)
 
 if __name__ == '__main__':
     main()  
