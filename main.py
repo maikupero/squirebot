@@ -3,10 +3,11 @@ import sql_db
 import random
 import asyncio
 
+import discord
 from discord.ext import commands
 
 import helpers
-from lists import heroes, random_responses, conversation
+from lists import random_responses, conversation
 
 # Env variables
 MYTOKEN = os.environ.get('mytoken')
@@ -14,20 +15,19 @@ MAPS_API = os.environ.get('maps_api')
 # Network & Database connections through psycopg2, postgres, heroku. 
 DATABASE_URL = os.environ['DATABASE_URL']
 
-# bot = discord.Client()
+client = discord.Client()
 bot = commands.Bot(command_prefix='sb.')
-
 
 
 @bot.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(bot))
+    print('We have logged in as {0.user}'.format(client))
 
 async def on_message(ctx):
-    if ctx.author == bot.user:
+    if ctx.author == client.user:
         return
     # https://stackoverflow.com/questions/62076257/discord-py-bot-event
-    await bot.process_commands(ctx)
+    await client.process_commands(ctx)
     
     if ctx.content.startswith('sb.'):
         msg = ctx.content[3:]
@@ -92,7 +92,7 @@ async def weather(ctx, *, arg=None):
 
 
 def main(): 
-    bot.run(MYTOKEN)
+    client.run(MYTOKEN)
 
 if __name__ == '__main__':
     main()  
