@@ -51,3 +51,4 @@ Start any command message with sb.
     • Build a database to store user info, preferences, user-created dota hero pools, stats, etc.
     • Clean up main.py and separate functions - shouldn't all be under one @client.event.
     • Work on dota functionality
+    • Sb.callme Eric-san
