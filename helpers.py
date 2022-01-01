@@ -15,7 +15,7 @@ class service:
         "Something need doing?", "How can I help you, sir?", "How can I be of service, my lord?"]
         return random.choice(responses)
 
-    def halp(ctx, *args):
+    def help(ctx, *args):
         if args[0]:
             tag = f"I'm here to help, {args[0][:-5]}, sir, if it please you!\n"
         else:
