@@ -11,14 +11,13 @@ class checks:
 
 class service:
     def attend():
-        num = random.randint(0,6)
         responses = ["Ready, sir.", "As you order, sir.", "What can I do for you?", "Work work.", 
         "Something need doing?", "How can I help you, sir?", "How can I be of service, my lord?"]
-        return responses[num]
+        return random.choice(responses)
 
     def halp(ctx, *args):
         if args[0]:
-            tag = f"I'm here to help, {args[0]}, sir, if it please you!\n"
+            tag = f"I'm here to help, {args[0][:-5]}, sir, if it please you!\n"
         else:
             tag = f"I'm here to help, {ctx.author.name}, sir, if it please you!\n"
         header = ":man_bowing::man_bowing::man_bowing: Command list: `sb.(commandgoeshere)` :man_bowing::man_bowing::man_bowing:"
@@ -93,14 +92,12 @@ class aoe4:
         civs = ["The Abbasid Dynasty","The Chinese","The Delhi Sultanate","The French","The English","The Holy Roman Empire","The Mongols","The Rus Civilization"]
         flags = ["abbasid","chinese","delhi","french","english","hre","mongols","rus"]
         civ = civs[num]
-        flag = flags[num]
-        discord.utils.get(ctx.guild.emojis, name=flag)
+        flag = discord.utils.get(ctx.guild.emojis, name=flags[num])
         return f'{flag} {flag} {flag} {civ} {flag} {flag} {flag}'
 
 class dota:
     def dota_help():
         top = "Dota sucks. Use `sb.dota (command)`."
-        hr = "________________________________________"
         info = """```py\n
         dota () : If unspecified, sends this help menu for dota functionality.\n
         -   random () : If unspecified suggests a random hero to play.\n
@@ -122,7 +119,7 @@ class dota:
         -   append (): If unspecified sends a help menu for how to append more info to the database.\n
                 // `sb.dota append` // Begins dialogue towards adding a new pool, hero, or hero info to the DB.\n
         ```"""
-        return (f"{top}\n{hr}\n{info}")
+        return (f"{top}\n{info}")
 
     def randomdop(ctx, pool, conn):
         if len(pool.strip()) > 6:
