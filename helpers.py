@@ -16,7 +16,7 @@ class service:
         "Something need doing?", "How can I help you, sir?", "How can I be of service, my lord?"]
         return responses[num]
 
-    def help(ctx, *args):
+    def halp(ctx, *args):
         if args[0]:
             tag = f"I'm here to help, {args[0]}, sir, if it please you!\n"
         else:

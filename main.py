@@ -45,9 +45,9 @@ async def on_message(ctx):
 
 ### LIL ONES ###
 @bot.command()
-async def help(ctx, *args):
+async def halp(ctx, *args):
     # To test: tagging no one, tagging someone else. 
-    await ctx.send(helpers.service.help(ctx, *args))
+    await ctx.send(helpers.service.halp(ctx, *args))
 
 @bot.command()
 async def attend(ctx):
