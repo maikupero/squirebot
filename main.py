@@ -8,7 +8,7 @@ from discord.ext import commands
 from discord.ext.commands import Bot as DiscordBot
 
 import helpers
-from lists import random_responses, conversation
+from lists import cmds, random_responses, conversation
 
 # Env variables
 MYTOKEN = os.environ.get('mytoken')
@@ -20,6 +20,7 @@ DATABASE_URL = os.environ['DATABASE_URL']
 intents = discord.Intents.default()
 bot = DiscordBot(
     "sb.",
+    case_insensitive=True,
     intents=intents,
     help_command=None
 )
@@ -37,12 +38,14 @@ async def on_message(ctx):
     await bot.process_commands(ctx)
 
     if ctx.content.startswith('sb.'):
-        msg = ctx.content[3:]
-        print(f"Attempting to handle '{msg}' command from {ctx.author}")
-        if conversation[msg]:
-            await ctx.send(conversation[msg])
-        else:
-            await ctx.send(random.choice(random_responses))
+        msg = ctx.content.split(" ")
+        msg = msg[0][3:]
+        if msg not in cmds:
+            print(f"Attempting to handle '{msg}' command from {ctx.author}")
+            if conversation[msg]:
+                await ctx.send(conversation[msg])
+            else:
+                await ctx.send(random.choice(random_responses))
     
 
 ### LIL ONES ###

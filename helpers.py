@@ -136,11 +136,12 @@ class dota:
         support_count = random.randint(1,2)
         remaining_random = 5 - core_count - support_count
         for i in range(core_count):
-            new_team.append(random.choice(cores))
+            new_team.append(random.sample(cores))
         for i in range(remaining_random):
-            new_team.append(random.choice(heroes))
+            new_team.append(random.sample(heroes))
         for i in range(support_count):
-            new_team.append(random.choice(supps))
+            new_team.append(random.sample(supps))
+
         return " • ".join(new_team)
     
     async def dota_db(ctx, arg, conn):
