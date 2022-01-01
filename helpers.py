@@ -3,7 +3,7 @@ import discord
 import sql_db
 import requests
 
-from lists import heroes, stre, agil, inte, role1, role2, role3, supps, cores
+from lists import heroes, stre, agil, inte, role1, role2, role3, supps, cores, jungle
 #CAPITALIZE CLASS NAMES PEP STYLE GUIDES
 
 class checks:
@@ -101,10 +101,10 @@ class dota:
     def dota_help():
         top = "Dota sucks. Use `sb.dota (command)`."
         hr = "___________________Command List_____________________"
-        random = "random () : If unspecified suggests a random hero to play.\n  Otherwise, can specify team, attribute, role, pool, theme.\n    // `sb.dota random core` • `sb.dota random 3` • `sb.dota random team` //"
-        hero = "hero_name : Gives all stored info on provided hero\n    // `sb.dota hero earthshaker` //"
-        append = "append (): Begins dialogue towards adding a new pool, hero, or hero info to the DB.\n    // `sb.dota append` // ```"
-        return (f"{top}\n{hr}\n{random}\n{hero}\n{append}")
+        random = "random () : If unspecified suggests a random hero to play.\n Otherwise, can specify team, attribute, role, pool, theme.\n // `sb.dota random core` • `sb.dota random 3` • `sb.dota random team` //"
+        hero = "hero_name : Gives all stored info on provided hero\n // `sb.dota hero earthshaker` //"
+        append = "append (): Begins dialogue towards adding a new pool, hero, or hero info to the DB.\n // `sb.dota append` //"
+        return (f"{top}\n{hr}\n```{random}\n{hero}\n{append}```")
 
     def randomdop(ctx, pool, conn):
         if len(pool.strip()) > 6:
@@ -119,7 +119,7 @@ class dota:
             return random.choice(inte)
         elif pool == "core":
             return random.choice(cores)
-        elif pool == "1":
+        elif pool == "1" or pool == "carry":
             return random.choice(role1)
         elif pool == "2":
             return random.choice(role2)
@@ -127,20 +127,19 @@ class dota:
             return random.choice(role3)
         elif pool.startswith("sup") or pool == "4" or pool == "5":
             return random.choice(supps)
+        elif pool.stastswith("jung"):
+            return random.choice(jungle)
         elif pool == "team":
             return dota.generate_team()
         
     def generate_team():
         new_team = []
-        core_count = random.randint(1,3)
-        support_count = random.randint(1,2)
-        remaining_random = 5 - core_count - support_count
-        for i in range(core_count):
-            new_team.append(random.sample(cores))
-        for i in range(remaining_random):
-            new_team.append(random.sample(heroes))
-        for i in range(support_count):
-            new_team.append(random.sample(supps))
+        core_count = random.sample(cores, k=random.randint(1,3))
+        support_count = random.sample(supps, k=random.randint(1,2))
+        remaining_random = random.sample(heroes, k=(5 - len(core_count) - len(support_count)))
+        new_team.extend(core_count)
+        new_team.extend(remaining_random)
+        new_team.extend(support_count)
 
         return " • ".join(new_team)
     
