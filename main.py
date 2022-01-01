@@ -53,7 +53,7 @@ async def hny(ctx):
 @bot.command()
 async def help(ctx, *args):
     # To test: tagging no one, tagging someone else. 
-    await ctx.send(helpers.service.halp(ctx, *args))
+    await ctx.send(helpers.service.help(ctx, *args))
 
 @bot.command()
 async def attend(ctx):
@@ -93,7 +93,8 @@ async def weather(ctx, *, arg=None):
         await ctx.send("City, zip code, or coordinates to the thousandth-place precision if you're a nerd.")
         try:
             location = await bot.wait_for("message", check=helpers.checks.check_same_user, timeout=30) # 30 seconds to reply
-            await helpers.service.weather(ctx, location, MAPS_API)
+            print(location)
+            await helpers.service.weather(ctx, location.content, MAPS_API)
         except asyncio.TimeoutError:
             await ctx.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
     else:
