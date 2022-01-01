@@ -38,31 +38,22 @@ async def on_message(ctx):
     if ctx.content.startswith('sb.'):
         msg = ctx.content[3:]
         print(f"Attempting to handle '{msg}' command from {ctx.author}")
-        if msg in conversation:
+        if conversation[msg]:
             await ctx.send(conversation[msg])
         else:
-            response = random.randint(1,len(random_responses))
-            await ctx.send(random_responses[response])
+            await ctx.send(random.choice(random_responses))
 
 ### LIL ONES ###
 @bot.command()
-async def hny(ctx):
-    # To test: tagging no one, tagging someone else. 
-    await ctx.send("HAPPY NEW YEAR THEBOYS!!!!!!!!!!!!!!")
-
-@bot.command()
 async def help(ctx, *, arg=None):
-    # To test: tagging no one, tagging someone else. 
     await ctx.send(helpers.service.help(ctx, arg))
 
 @bot.command()
 async def attend(ctx):
-    #To Test: if this gets random response from all the responses in the list.
     await ctx.send(helpers.service.attend())
 
 @bot.command()
 async def aoe(ctx, *args):
-    #To test: civ and flag are being sent correctly using external helper function.
     if args:
         if args[0] == 'randomciv' or args[0] == 'random':
             await ctx.send(helpers.aoe4.randomciv(ctx))
@@ -73,7 +64,6 @@ async def aoe(ctx, *args):
 
 @bot.command()
 async def guess(ctx):
-    # To test: if this check works for user and for range.
     await helpers.games.guess(ctx, bot)
     
 ### BIG ONES ###
