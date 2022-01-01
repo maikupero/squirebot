@@ -21,8 +21,8 @@ intents = discord.Intents.default()
 bot = DiscordBot(
     "sb.",
     intents=intents,
+    help_command=None
 )
-bot.remove_command('help')
 
 @bot.event
 async def on_ready():
@@ -51,9 +51,9 @@ async def hny(ctx):
     await ctx.send("HAPPY NEW YEAR THEBOYS!!!!!!!!!!!!!!")
 
 @bot.command()
-async def help(ctx, *args):
+async def help(ctx, *, arg=None):
     # To test: tagging no one, tagging someone else. 
-    await ctx.send(helpers.service.help(ctx, *args))
+    await ctx.send(helpers.service.help(ctx, arg))
 
 @bot.command()
 async def attend(ctx):
@@ -91,10 +91,11 @@ async def dota(ctx, *, arg=None):
 async def weather(ctx, *, arg=None):
     if arg == None:
         await ctx.send("City, zip code, or coordinates to the thousandth-place precision if you're a nerd.")
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == ctx.channel and int(msg.content) in range(1, 11)
         try:
-            location = await bot.wait_for("message", check=helpers.checks.check_same_user, timeout=30) # 30 seconds to reply
-            print(location)
-            await helpers.service.weather(ctx, location.content, MAPS_API)
+            location = await bot.wait_for("message", check=check, timeout=30) # 30 seconds to reply
+            await weather(ctx, location.content, MAPS_API)
         except asyncio.TimeoutError:
             await ctx.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
     else:
