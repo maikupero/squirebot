@@ -3,6 +3,7 @@ import sql_db
 import random
 import asyncio
 
+import discord
 from discord.ext import commands
 from discord.ext.commands import Bot as DiscordBot
 
@@ -15,7 +16,12 @@ MAPS_API = os.environ.get('maps_api')
 # Network & Database connections through psycopg2, postgres, heroku. 
 DATABASE_URL = os.environ['DATABASE_URL']
 
-bot = DiscordBot('sb.')
+# Initialize bot, intents, and bot prefix.
+intents = discord.Intents.default()
+bot = DiscordBot(
+    "sb.",
+    intents=intents,
+)
 
 @bot.event
 async def on_ready():
@@ -87,10 +93,5 @@ async def weather(ctx, *, arg=None):
     else:
         await helpers.services.weather(ctx, arg, MAPS_API)
 
-
-
-def main(): 
+if __name__ == "__main__":
     bot.run(MYTOKEN)
-
-if __name__ == '__main__':
-    main()  
