@@ -4,7 +4,7 @@ import sql_db
 import requests
 
 from lists import heroes, stre, agil, inte, role1, role2, role3, supps, cores
-
+#CAPITALIZE CLASS NAMES PEP STYLE GUIDES
 class checks:
     def check_same_user(ctx,msg):
         return msg.author == ctx.author and msg.channel == ctx.channel
