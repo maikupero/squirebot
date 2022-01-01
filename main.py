@@ -98,7 +98,7 @@ async def weather(ctx, *, arg=None):
             return msg.author == ctx.author and msg.channel == ctx.channel
         try:
             location = await bot.wait_for("message", check=check, timeout=30) # 30 seconds to reply
-            await weather(ctx, location.content, MAPS_API)
+            await helpers.service.weather(ctx, location.content, MAPS_API)
         except asyncio.TimeoutError:
             await ctx.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
     else:
