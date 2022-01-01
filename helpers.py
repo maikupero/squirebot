@@ -127,7 +127,7 @@ class dota:
             return random.choice(role3)
         elif pool.startswith("sup") or pool == "4" or pool == "5":
             return random.choice(supps)
-        elif pool.stastswith("jung"):
+        elif pool.startswith("jung"):
             return random.choice(jungle)
         elif pool == "team":
             return dota.generate_team()
@@ -136,9 +136,13 @@ class dota:
         new_team = []
         core_count = random.sample(cores, k=random.randint(1,3))
         support_count = random.sample(supps, k=random.randint(1,2))
-        remaining_random = random.sample(heroes, k=(5 - len(core_count) - len(support_count)))
+        remaining_random = 5 - len(core_count) - len(support_count)
+
         new_team.extend(core_count)
-        new_team.extend(remaining_random)
+        for i in range(remaining_random):
+            pub = random.choice(heroes)
+            while pub in core_count or pub in support_count: pub = random.choice(heroes)
+            new_team.append(pub)
         new_team.extend(support_count)
 
         return " • ".join(new_team)
