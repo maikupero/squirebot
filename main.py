@@ -33,7 +33,6 @@ async def on_message(ctx):
     if ctx.author == bot.user:
         return
     # https://stackoverflow.com/questions/62076257/discord-py-bot-event
-    await bot.process_commands(ctx)
 
     if ctx.content.startswith('sb.'):
         msg = ctx.content[3:]
@@ -42,6 +41,7 @@ async def on_message(ctx):
             await ctx.send(conversation[msg])
         else:
             await ctx.send(random.choice(random_responses))
+    await bot.process_commands(ctx)
 
 ### LIL ONES ###
 @bot.command()

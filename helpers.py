@@ -36,11 +36,11 @@ class service:
         base_url = "https://api.openweathermap.org/data/2.5/weather?"
         city_name = location
         measure = "&units=imperial"
-        print(f"CITY NAME HERE: {city_name}")
 
         # Complete url address, converted for your convenience.
         if len(city_name.replace(" ", "").split(',')) == 2:
             coords = city_name.replace(" ", "").split(',')
+            print(f"CITY NAME HERE: {city_name}, {city_name[0]}, {city_name[1]}")
             complete_url = base_url + "lat=" + coords[0] + "&lon=" + coords[1] + "&appid=" + api + measure
         else:
             try:
@@ -101,7 +101,7 @@ class dota:
     def dota_help():
         top = "Dota sucks. Use `sb.dota (command)`."
         hr = "___________________Command List_____________________"
-        random = "random () : If unspecified suggests a random hero to play.\n  Otherwise, can specify team, attribute, role, pool, theme.\n    // `sb.dota random core` / `sb.dota random 3` / `sb.dota random team` //"
+        random = "random () : If unspecified suggests a random hero to play.\n  Otherwise, can specify team, attribute, role, pool, theme.\n    // `sb.dota random core` • `sb.dota random 3` • `sb.dota random team` //"
         hero = "hero_name : Gives all stored info on provided hero\n    // `sb.dota hero earthshaker` //"
         append = "append (): Begins dialogue towards adding a new pool, hero, or hero info to the DB.\n    // `sb.dota append` // ```"
         return (f"{top}\n{hr}\n{random}\n{hero}\n{append}")
