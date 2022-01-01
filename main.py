@@ -4,6 +4,7 @@ import random
 import asyncio
 
 from discord.ext import commands
+from discord.ext.commands import Bot as DiscordBot
 
 import helpers
 from lists import random_responses, conversation
@@ -14,13 +15,13 @@ MAPS_API = os.environ.get('maps_api')
 # Network & Database connections through psycopg2, postgres, heroku. 
 DATABASE_URL = os.environ['DATABASE_URL']
 
-bot = commands.Bot(command_prefix='sb.')
-
+bot = DiscordBot('sb.')
 
 @bot.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
 
+@bot.event
 async def on_message(ctx):
     if ctx.author == bot.user:
         return
