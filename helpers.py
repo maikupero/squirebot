@@ -5,6 +5,7 @@ import requests
 
 from lists import heroes, stre, agil, inte, role1, role2, role3, supps, cores
 #CAPITALIZE CLASS NAMES PEP STYLE GUIDES
+
 class checks:
     def check_same_user(ctx,msg):
         return msg.author == ctx.author and msg.channel == ctx.channel
@@ -17,7 +18,7 @@ class service:
 
     def help(ctx, *args):
         if args[0]:
-            tag = f"I'm here to help, {args[0][:-5]}, sir, if it please you!"
+            tag = f"I'm here to help, {args[0]}, sir, if it please you!"
         else:
             tag = f"I'm here to help, {ctx.author.name}, sir, if it please you!"
         header = ":man_bowing::man_bowing::man_bowing: Command list: `sb.(commandgoeshere)` :man_bowing::man_bowing::man_bowing:"
@@ -98,25 +99,24 @@ class aoe4:
 class dota:
     def dota_help():
         top = "Dota sucks. Use `sb.dota (command)`."
-        info = """```\n
+        info = """
 dota () : If unspecified, sends this help menu for dota functionality.\n
--   random () : If unspecified suggests a random hero to play.\n
-        attribute/role : Suggest a random hero of specified attribute or role.\n
-            // `sb.dota random core` / `sb.dota random 3` // Returns a random hero of requested type.\n     
-        pool_name : Suggests a random hero from specified pool if pool exists in DB.\n
-            // `sb.dota random fattie` // Random hero from fattie's pool.\n
-        theme : Suggests a random hero from specified theme if theme exists in DB.\n
-            // `sb.dota random green` // Suggests random hero that is green.\n
-        team : Suggests a random team brewed from a secret recipe.\n
-            // `sb.dota random team` // Suggests a random and (usually) reasonable team.\n
--   pool () : If unspecified lists the hero pools saved into the bot's database.\n
+- random () : If unspecified suggests a random hero to play.\n
+    attribute/role : Suggest a random hero of specified attribute or role.\n
+        // `sb.dota random core` / `sb.dota random 3` // Returns a random hero of requested type.\n     
+    pool_name : Suggests a random hero from specified pool if pool exists in DB.\n
+        // `sb.dota random fattie` // Random hero from fattie's pool.\n
+    theme : Suggests a random hero from specified theme if theme exists in DB.\n
+        // `sb.dota random green` // Suggests random hero that is green.\n
+    team : Suggests a random team brewed from a secret recipe.\n
+        // `sb.dota random team` // Suggests a random and (usually) reasonable team.\n
+- pool () : If unspecified lists the hero pools saved into the bot's database.\n
         // `sb.dota pool` // Lists all global pools and user-specific pools.\n
-        poolname : Can be specified to list the heroes within one pool.\n
-            // `sb.dota pool fattie` // Will list all the heroes in pool.
--   hero hero_name :\n
-        Gives all stored info on provided hero\n
+    poolname : Can be specified to list the heroes within one pool.\n
+        // `sb.dota pool fattie` // Will list all the heroes in pool.
+- hero hero_name : Gives all stored info on provided hero\n
         // `sb.dota hero earthshaker` // Lists all characteristics and stats stored on Earthshaker.\n
--   append (): If unspecified sends a help menu for how to append more info to the database.\n
+- append (): If unspecified sends a help menu for how to append more info to the database.\n
         // `sb.dota append` // Begins dialogue towards adding a new pool, hero, or hero info to the DB.```"""
         return (f"{top}\n{info}")
 
