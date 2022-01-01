@@ -17,9 +17,9 @@ class service:
 
     def help(ctx, *args):
         if args[0]:
-            tag = f"I'm here to help, {args[0][:-5]}, sir, if it please you!\n"
+            tag = f"I'm here to help, {args[0][:-5]}, sir, if it please you!"
         else:
-            tag = f"I'm here to help, {ctx.author.name}, sir, if it please you!\n"
+            tag = f"I'm here to help, {ctx.author.name}, sir, if it please you!"
         header = ":man_bowing::man_bowing::man_bowing: Command list: `sb.(commandgoeshere)` :man_bowing::man_bowing::man_bowing:"
         hr = "________________________________________"
         help = "`help` (Very wise, sir, figuring this one out already)."
@@ -98,7 +98,7 @@ class aoe4:
 class dota:
     def dota_help():
         top = "Dota sucks. Use `sb.dota (command)`."
-        info = """```py\n
+        info = """```\n
 dota () : If unspecified, sends this help menu for dota functionality.\n
 -   random () : If unspecified suggests a random hero to play.\n
         attribute/role : Suggest a random hero of specified attribute or role.\n
