@@ -63,10 +63,13 @@ async def attend(ctx):
 @bot.command()
 async def aoe(ctx, *args):
     #To test: civ and flag are being sent correctly using external helper function.
-    if args[0] == 'randomciv' or args[0] == 'random':
-        await ctx.send(helpers.aoe4.randomciv(ctx))
+    if args:
+        if args[0] == 'randomciv' or args[0] == 'random':
+            await ctx.send(helpers.aoe4.randomciv(ctx))
+        else:
+            await ctx.send(f'Other AOE commands not ready yet.')
     else:
-        await ctx.send(f'Other AOE commands not ready yet.')
+        await ctx.send(helpers.aoe4.randomciv(ctx))
 
 @bot.command()
 async def guess(ctx):
@@ -92,7 +95,7 @@ async def weather(ctx, *, arg=None):
     if arg == None:
         await ctx.send("City, zip code, or coordinates to the thousandth-place precision if you're a nerd.")
         def check(msg):
-            return msg.author == ctx.author and msg.channel == ctx.channel and int(msg.content) in range(1, 11)
+            return msg.author == ctx.author and msg.channel == ctx.channel
         try:
             location = await bot.wait_for("message", check=check, timeout=30) # 30 seconds to reply
             await weather(ctx, location.content, MAPS_API)

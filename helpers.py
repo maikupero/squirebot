@@ -18,7 +18,9 @@ class service:
 
     def help(ctx, *args):
         if args[0]:
-            tag = f"I'm here to help, {args[0]}, sir, if it please you!"
+            if args[0] == "me":
+                args[0] == "you"
+            tag = f"I'm here to help {args[0]}, sir, if it please you!"
         else:
             tag = f"I'm here to help, {ctx.author.name}, sir, if it please you!"
         header = ":man_bowing::man_bowing::man_bowing: Command list: `sb.(commandgoeshere)` :man_bowing::man_bowing::man_bowing:"
