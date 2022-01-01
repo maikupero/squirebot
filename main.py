@@ -22,6 +22,7 @@ bot = DiscordBot(
     "sb.",
     intents=intents,
 )
+bot.remove_command('help')
 
 @bot.event
 async def on_ready():
@@ -47,10 +48,10 @@ async def on_message(ctx):
 @bot.command()
 async def hny(ctx):
     # To test: tagging no one, tagging someone else. 
-    await ctx.send("HAPPY NEW YEAR BOYS!!!!!!!!!!!!!!")
-    
+    await ctx.send("HAPPY NEW YEAR THEBOYS!!!!!!!!!!!!!!")
+
 @bot.command()
-async def halp(ctx, *args):
+async def help(ctx, *args):
     # To test: tagging no one, tagging someone else. 
     await ctx.send(helpers.service.halp(ctx, *args))
 
@@ -76,7 +77,7 @@ async def guess(ctx):
 @bot.command()
 async def dota(ctx, *, arg=None):
     if arg == None:
-        await ctx.send(helpers.dota.dota_help)
+        await ctx.send(helpers.dota.dota_help())
     else:
         conn = sql_db.connect(DATABASE_URL)
         print(f"Handling request: {arg} from {ctx.author} on connection {conn}")
@@ -92,7 +93,7 @@ async def weather(ctx, *, arg=None):
         await ctx.send("City, zip code, or coordinates to the thousandth-place precision if you're a nerd.")
         try:
             location = await bot.wait_for("message", check=helpers.checks.check_same_user, timeout=30) # 30 seconds to reply
-            await helpers.service.weather(ctx, location.content, MAPS_API)
+            await helpers.service.weather(ctx, location, MAPS_API)
         except asyncio.TimeoutError:
             await ctx.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
     else:
