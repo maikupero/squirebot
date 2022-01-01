@@ -3,7 +3,6 @@ import sql_db
 import random
 import asyncio
 
-import discord
 from discord.ext import commands
 
 import helpers
@@ -15,20 +14,19 @@ MAPS_API = os.environ.get('maps_api')
 # Network & Database connections through psycopg2, postgres, heroku. 
 DATABASE_URL = os.environ['DATABASE_URL']
 
-client = discord.Client()
 bot = commands.Bot(command_prefix='sb.')
 
 
 @bot.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+    print('We have logged in as {0.user}'.format(bot))
 
 async def on_message(ctx):
-    if ctx.author == client.user:
+    if ctx.author == bot.user:
         return
     # https://stackoverflow.com/questions/62076257/discord-py-bot-event
-    await client.process_commands(ctx)
-    
+    await bot.process_commands(ctx)
+
     if ctx.content.startswith('sb.'):
         msg = ctx.content[3:]
         print(f"Attempting to handle '{msg}' command from {ctx.author}")
@@ -37,7 +35,6 @@ async def on_message(ctx):
         else:
             response = random.randint(1,len(random_responses))
             await ctx.send(random_responses[response])
-
 
 ### LIL ONES ###
 @bot.command()
@@ -92,7 +89,7 @@ async def weather(ctx, *, arg=None):
 
 
 def main(): 
-    client.run(MYTOKEN)
+    bot.run(MYTOKEN)
 
 if __name__ == '__main__':
     main()  
