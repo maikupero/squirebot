@@ -19,7 +19,7 @@ DATABASE_URL = os.environ['DATABASE_URL']
 # Initialize bot, intents, and bot prefix.
 intents = discord.Intents.default()
 bot = DiscordBot(
-    "sb.",
+    command_prefix="sb.",
     case_insensitive=True,
     intents=intents,
     help_command=None
