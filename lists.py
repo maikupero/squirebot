@@ -2,7 +2,6 @@ cmds = ["help","weather","aoe","dota","guess","attend"]
 
 random_responses = ["Read any good books lately?","Let's play some dota","Wha?","Not sure about that","You are like friend if mine who look for fight in early game and create space for the team, but sadly my friend play the carry role.","Say peacock and no one bats an eye... say poopcock and society goes wild","and in the end, after long time the match ended, u realized that she is a girl, a beautiful girl like u have been dreaming of all this time. what would u do? what do u say?"]
 
-greetings = ["hey", "hello", "yo", "sup", "whatup", "hi", "hola", "aloha", "whats up", "go", "no", "stop"]
 conversation = {
     "hey": "hi hi",
     "yo": "hola",
