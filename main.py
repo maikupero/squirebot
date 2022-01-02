@@ -21,7 +21,6 @@ bot = DiscordBot(
     case_insensitive=True,
     intents=intents,
     help_command=None,
-    hi_command=None
 )
 
 @bot.event
@@ -41,8 +40,8 @@ async def on_message(ctx):
 
 @bot.command(aliases=greetings)
 async def greet(ctx):
-    print(f"Responding to {ctx.content[3:]} with {conversation[ctx.content[3:]]}")
-    await ctx.send(conversation[ctx.content[3:]])
+    print(ctx)
+    # await ctx.send(conversation[ctx.content[3:]])
 
 ### LIL ONES ###
 @bot.command()
