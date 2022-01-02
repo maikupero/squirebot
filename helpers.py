@@ -3,7 +3,7 @@ import discord
 import sql_db
 import requests
 
-from lists import heroes, stre, agil, inte, role1, role2, role3, supps, cores, jungle
+from lists import heroes, stre, agil, inte, role1, role2, role3, role4, role5, supps, cores, jungle
 #CAPITALIZE CLASS NAMES PEP STYLE GUIDES
 
 class checks:
@@ -78,6 +78,8 @@ class service:
                 weather_emoji = ":thunder_cloud_rain:"
             elif "tornado" in weather_description:
                 weather_emoji = ":cloud_tornado:"
+            elif "mist" in weather_description:
+                weather_emoji = ":fog:"
             else:
                 weather_emoji = ":fire:"
             await ctx.send(f":man_bowing: Current temperature in {(x['name']).capitalize()} is {celsius}°C / {int(current_temperature)}°F. :man_bowing:")
@@ -134,17 +136,33 @@ class dota:
         
     def generate_team():
         new_team = []
-        core_count = random.sample(cores, k=random.randint(1,3))
-        support_count = random.sample(supps, k=random.randint(1,2))
-        remaining_random = 5 - len(core_count) - len(support_count)
+        seed = random.randint(1,2)
+        if seed == 1:
+            print(f"seed {seed}")
+            core_count = random.sample(cores, k=random.randint(1,3))
+            support_count = random.sample(supps, k=random.randint(1,2))
+            remaining_random = 5 - len(core_count) - len(support_count)
 
-        new_team.extend(core_count)
-        for i in range(remaining_random):
-            pub = random.choice(heroes)
-            while pub in core_count or pub in support_count: pub = random.choice(heroes)
+            new_team.extend(core_count)
+            for i in range(remaining_random):
+                pub = random.choice(heroes)
+                while pub in core_count or pub in support_count: pub = random.choice(heroes)
+                new_team.append(pub)
+            new_team.extend(support_count)
+        else:
+            print(f"seed {seed}")
+            pub = random.choice(role1)
+            while pub in new_team: pub = random.choice(role1)
             new_team.append(pub)
-        new_team.extend(support_count)
-
+            while pub in new_team: pub = random.choice(role2)
+            new_team.append(pub)
+            while pub in new_team: pub = random.choice(role3)
+            new_team.append(pub)
+            while pub in new_team: pub = random.choice(role4)
+            new_team.append(pub)
+            while pub in new_team: pub = random.choice(role5)
+            new_team.append(pub)
+        
         return " • ".join(new_team)
     
     async def dota_db(ctx, arg, conn):
