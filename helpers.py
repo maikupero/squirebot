@@ -137,7 +137,6 @@ class dota:
         new_team = []
         seed = random.randint(1,2)
         if seed == 1:
-            print(f"seed {seed}")
             core_count = random.sample(cores, k=random.randint(1,3))
             support_count = random.sample(supps, k=random.randint(1,2))
             remaining_random = 5 - len(core_count) - len(support_count)
