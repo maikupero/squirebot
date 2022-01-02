@@ -19,7 +19,7 @@ create_conversation_table_query = """
         conversation
     (greeting text unique, response text)
 """
-
+#Testing this
 populate_conversation_table_query = """
     INSERT INTO
         conversation
