@@ -1,14 +1,12 @@
 import os
 import sql_db
-import random
 import asyncio
 
 import discord
-from discord.ext import commands
 from discord.ext.commands import Bot as DiscordBot
 
 import helpers
-from lists import greetings, cmds, random_responses, conversation
+from lists import greetings, conversation
 
 # Env variables
 MYTOKEN = os.environ.get('mytoken')
@@ -40,16 +38,12 @@ async def on_message(ctx):
     if ctx.content.startswith('sb.'):
         print(f"Attempting to handle '{ctx.content[3:]}' command from {ctx.author}")
 
-@bot.command(name="hi", aliases=greetings)
-async def hi(ctx):
-    await ctx.send(conversation[ctx.content])
+@bot.command(name="hello", aliases=greetings)
+async def hello(ctx):
+    print(f"Responding to {ctx.content[3:]} with {conversation[ctx.content[3:]]}")
+    await ctx.send(conversation[ctx.content[3:]])
 
 ### LIL ONES ###
-@bot.command()
-async def hny(ctx):
-    # To test: tagging no one, tagging someone else. 
-    await ctx.send("HAPPY NEW YEAR THEBOYS!!!!!!!!!!!!!!")
-
 @bot.command()
 async def help(ctx, *, arg=None):
     await ctx.send(helpers.service.help(ctx, arg))
