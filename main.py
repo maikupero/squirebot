@@ -20,7 +20,8 @@ bot = DiscordBot(
     command_prefix=["sb.","Sb.","SB.","squirebot."],
     case_insensitive=True,
     intents=intents,
-    help_command=None
+    help_command=None,
+    hi_command=None
 )
 
 @bot.event
