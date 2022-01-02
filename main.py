@@ -10,7 +10,7 @@ from lists import greetings, conversation
 
 # Env variables
 MYTOKEN = os.environ.get('mytoken')
-MAPS_API = os.environ.get('maps_api')
+MAPS_TOKEN = os.environ.get('maps_api')
 # Network & Database connections through psycopg2, postgres, heroku. 
 DATABASE_URL = os.environ['DATABASE_URL']
 
@@ -40,7 +40,7 @@ async def on_message(ctx):
         print(f"Attempting to handle '{ctx.content[3:]}' command from {ctx.author}")
 
 @bot.command(aliases=greetings)
-async def greetings(ctx):
+async def greet(ctx):
     print(f"Responding to {ctx.content[3:]} with {conversation[ctx.content[3:]]}")
     await ctx.send(conversation[ctx.content[3:]])
 
@@ -89,11 +89,11 @@ async def weather(ctx, *, arg=None):
             return msg.author == ctx.author and msg.channel == ctx.channel
         try:
             location = await bot.wait_for("message", check=check, timeout=30) # 30 seconds to reply
-            await helpers.service.weather(ctx, location.content, MAPS_API)
+            await helpers.service.weather(ctx, location.content, MAPS_TOKEN)
         except asyncio.TimeoutError:
             await ctx.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
     else:
-        await helpers.service.weather(ctx, arg, MAPS_API)
+        await helpers.service.weather(ctx, arg, MAPS_TOKEN)
 
 if __name__ == "__main__":
     bot.run(MYTOKEN)

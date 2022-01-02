@@ -1,6 +1,5 @@
 import random
 import discord
-import sql_db
 import requests
 
 from lists import heroes, stre, agil, inte, role1, role2, role3, role4, role5, supps, cores, jungle
