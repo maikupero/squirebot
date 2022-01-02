@@ -38,12 +38,11 @@ async def on_message(ctx):
     if ctx.content.startswith('sb.'):
         print(f"Attempting to handle '{ctx.content[3:]}' command from {ctx.author}")
 
+### LIL ONES ###
 @bot.command(aliases=greetings)
 async def greet(ctx):
-    print(ctx)
-    # await ctx.send(conversation[ctx.content[3:]])
+    await ctx.send(conversation[ctx.message.content[3:]])
 
-### LIL ONES ###
 @bot.command()
 async def help(ctx, *, arg=None):
     await ctx.send(helpers.service.help(ctx, arg))
