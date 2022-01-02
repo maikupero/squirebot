@@ -5,6 +5,7 @@ def connect(DATABASE_URL):
 
 def create_conversation_table(conn):
     execute_query(conn, create_conversation_table_query)
+    execute_query(conn, populate_conversation_table_query)
 
 def execute_query(conn, query, args=()):
     cur = conn.cursor()
@@ -17,4 +18,12 @@ create_conversation_table_query = """
     CREATE TABLE IF NOT EXISTS
         conversation
     (greeting text unique, response text)
+"""
+
+populate_conversation_table_query = """
+    INSERT INTO
+        conversation
+    VALUES
+        ('hi', 'hey!')
+    ON CONFLICT DO NOTHING
 """
