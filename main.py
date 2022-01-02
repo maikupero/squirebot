@@ -6,7 +6,7 @@ import discord
 from discord.ext.commands import Bot as DiscordBot
 
 import helpers
-from lists import greetings, conversation
+from lists import conversation
 
 # Env variables
 MYTOKEN = os.environ.get('mytoken')
@@ -39,7 +39,7 @@ async def on_message(ctx):
         print(f"Attempting to handle '{ctx.content[3:]}' command from {ctx.author}")
 
 ### LIL ONES ###
-@bot.command(aliases=greetings)
+@bot.command(aliases=list(conversation))
 async def greet(ctx):
     await ctx.send(conversation[ctx.message.content[3:]])
 
@@ -94,4 +94,9 @@ async def weather(ctx, *, arg=None):
         await helpers.service.weather(ctx, arg, MAPS_TOKEN)
 
 if __name__ == "__main__":
+    # Initiate table for conversation if it doesn't exist.
+    conn = sql_db.connect(DATABASE_URL)
+    sql_db.create_conversation_table(conn)
+    conn.close()
+
     bot.run(MYTOKEN)
