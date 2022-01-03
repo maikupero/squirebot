@@ -51,13 +51,13 @@ def commands():
     return fetch_query(select_commands)
     
 def greetings():
-    print("INITIATING GREETINGS QUERY)")
+    print("INITIATING GREETINGS QUERY")
     greetings = fetch_query(select_greetings)
     print(greetings)
     result = list()
     for greeting in greetings:
         print(greeting)
-        result.append(greeting[0][0][:-1])
+        result.append(greeting[0])
     print(result)
     return result
 
