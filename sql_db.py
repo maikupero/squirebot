@@ -26,7 +26,6 @@ def fetch_query(query, args=()):
         cur = conn.cursor()
         cur.execute(query, args)
         results = [list(i) for i in cur.fetchall()]
-        print(f"From Query: {query}\nFound: {results}")
         close(conn, cur)
         print([i[0] for i in results])
         return [i[0] for i in results]
@@ -51,22 +50,30 @@ def append_command_table(command):
 def append_conversation_table(greeting, response):
     execute_query(append_conversation_table_query(greeting, response))
 
+# DELETING ROW OR ROWS
+def delete_row(table, rows=()):
+    for row in rows:
+        execute_query(delete_row_query(table, row))
+        
 # CHECKING AND RETURNING VALUES IN EXISTING TABLES
+def fetch_tables():
+    return fetch_query(select_tables)
+def fetch_all_columns(table):
+    return fetch_query(select_all_columns(table))
+def fetch_all_rows(table):
+    return fetch_query(select_all_rows(table))
+
 def commands():
     return fetch_query(select_commands)
-    
+
 def greetings():
-    print("INITIATING GREETINGS QUERY")
-    greetings = fetch_query(select_greetings)
-    print(greetings)
-    return greetings
+    return fetch_query(select_greetings) 
 
 def response(greeting):
     return fetch_query(select_response(greeting))
 
-# DELETE COMMANDS FOR ROWS AND TABLES
 
-# QUERIES FOR COMMAND TABLE
+# QUERIES FOR BUILDING COMMAND TABLE
 create_command_table_query = """
     CREATE TABLE IF NOT EXISTS
         recognized_commands
@@ -80,21 +87,9 @@ def default_command_table_query(command):
         ('{command}')
     ON CONFLICT DO NOTHING
 """
-def append_command_table_query(command):
-    return f"""
-    INSERT INTO
-        recognized_commands
-    VALUES
-        ('{command}')
-"""
-select_commands = """
-    SELECT
-        commands
-    FROM
-        recognized_commands
-"""
 
-# QUERIES FOR CONVERSATION TABLE
+
+# QUERIES FOR BUILDING CONVERSATION TABLE
 create_conversation_table_query = """
     CREATE TABLE IF NOT EXISTS
         conversation
@@ -107,12 +102,77 @@ default_conversation_table_query = """
         ('hi', 'hey!')
     ON CONFLICT DO NOTHING
 """
+
+### APPEND QUERIES
 def append_conversation_table_query(greeting, response):
     return f"""
     INSERT INTO
         conversation
     VALUES
         ('{greeting}', '{response}')
+"""
+def append_command_table_query(command):
+    return f"""
+    INSERT INTO
+        recognized_commands
+    VALUES
+        ('{command}')
+"""
+
+### DELETE QUERIES 
+### https://stackoverflow.com/questions/1054984/how-can-i-get-column-names-from-a-table-in-sql-server
+def delete_row_query(table, row):
+    return f"""
+    DELETE FROM
+        {table}
+    WHERE
+        (SELECT 
+            column_name
+        FROM 
+            information_schema.columns 
+        WHERE 
+            table_name= N'{table}'
+        LIMIT 1)={row}
+"""
+
+# OFFSET 1 ROWS   -- Skip this number of rows
+# FETCH NEXT 1 ROWS ONLY;  -- Return this number of rows
+
+
+
+
+### SELECT QUERIES ###
+def select_all_rows(table):
+    return f"""
+    SELECT
+        *
+    FROM
+        {table}
+"""
+def select_all_columns(table):
+    return f"""
+    SELECT 
+        column_name
+    FROM 
+        information_schema.columns 
+    WHERE 
+        table_name= N'{table}'
+"""
+
+select_tables = """
+    SELECT 
+        Table_name
+    FROM 
+        information_schema.tables 
+    WHERE 
+        table_schema='public'
+"""
+
+select_commands = """
+    SELECT
+        commands
+    FROM
+        recognized_commands
 """
 select_greetings = """
     SELECT
@@ -129,3 +189,5 @@ def select_response(greeting):
     WHERE
         greeting="{greeting}"
 """
+
+### DELETE QUERIES ###

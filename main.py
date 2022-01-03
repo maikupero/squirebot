@@ -49,6 +49,15 @@ async def on_message(message):
 async def greetings(ctx):
     await ctx.send(f"Current list of greetings: {str(sql_db.greetings())[1:-1]}")
 
+### LIL ONES ###
+@bot.command()
+async def deletefrom(ctx, *, arg=None):
+    print(ctx.author)
+    if ctx.author == 'fattie#9740':
+        await helpers.service.delete(bot, ctx, arg=None)
+    else:
+        await ctx.send("Need fattie's permission to delete, sorry.")
+
 @bot.command()
 async def help(ctx, *, arg=None):
     await ctx.send(helpers.service.help(ctx, arg))
