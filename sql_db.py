@@ -57,7 +57,7 @@ def greetings():
     result = list()
     for greeting in greetings:
         print(greeting)
-        result.append(greeting[1])
+        result.append(greeting[0][0][:-1])
     print(result)
     return result
 
