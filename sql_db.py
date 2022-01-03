@@ -35,9 +35,8 @@ def fetch_query(query, args=()):
 # INITIAL TABLE CREATION AND FILL WITH DEFAULT VALUES
 def create_command_table():
     execute_query(create_command_table_query)
-    default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe']
+    default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe','deletefrom']
     for command in default_commands:
-        print(f"Attempting to insert {command} into commands table.")
         execute_query(default_command_table_query(command))
 
 def create_conversation_table():
