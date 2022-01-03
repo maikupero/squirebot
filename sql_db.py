@@ -26,10 +26,12 @@ def fetch_query(query, args=()):
         cur = conn.cursor()
         cur.execute(query, args)
         results = cur.fetchall()
-        print(f"Found {results}, From Query: {query}")
-        listed_results = [i for i in results]
-        print(f"Became {listed_results}")
+        print(f"From Query: {query}")
+        listed_results = [list(i) for i in results]
+        print(f"Found: {listed_results}")
         close(conn, cur)
+        if len(listed_results) == 1:
+            return listed_results[0]
         return listed_results
     except Exception as e:
         print(f'***Error: {e} handling query: {query}')
