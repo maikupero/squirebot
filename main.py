@@ -27,16 +27,16 @@ async def on_ready():
 
 # Figure out how to get flexible commands for greetings
 @bot.event
-async def on_message(ctx):
-    if ctx.author == bot.user:
+async def on_message(message):
+    if message.author == bot.user:
         return
     # https://stackoverflow.com/questions/62076257/discord-py-bot-event
-    await bot.process_commands(ctx)
+    await bot.process_commands(message)
 
-    if ctx.content.startswith('sb.'):
-        print(f"Attempting to handle '{ctx.content[3:]}' command from {ctx.author}")
-        if ctx.content[3:] not in sql_db.commands():
-            await helpers.service.new_conversation(ctx, bot)
+    if message.content.startswith('sb.'):
+        print(f"Attempting to handle '{message.content[3:]}' command from {message.author}")
+        if message.content[3:] not in sql_db.commands():
+            await helpers.service.new_conversation(message, bot)
 
 ### LIL ONES ###
 @bot.command(aliases=(sql_db.greetings()))

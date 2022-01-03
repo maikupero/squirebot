@@ -12,18 +12,18 @@ class checks:
         return msg.author == ctx.author and msg.channel == ctx.channel
 
 class service:
-    async def new_conversation(ctx, bot):
-        greeting = ctx.content[3:]
-        await ctx.send(f"Oh! I don't know '{greeting}' yet. How should I respond?")
+    async def new_conversation(message, bot):
+        greeting = message.content[3:]
+        await message.channel.send(f"Oh! I don't know '{greeting}' yet. How should I respond?")
         def check(msg):
-            return msg.author == ctx.author and msg.channel == ctx.channel
+            return msg.author == message.author and msg.channel == message.channel
         try:
             msg = await bot.wait_for("message", check=check, timeout=30)
             response = str(msg.content)
             sql_db.append_command_table(greeting)
             sql_db.append_conversation_table(greeting, response)
         except asyncio.TimeoutError:
-            await ctx.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
+            await message.channel.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
 
     def attend():
         responses = ["Ready, sir.", "As you order, sir.", "What can I do for you?", "Work work.", 
