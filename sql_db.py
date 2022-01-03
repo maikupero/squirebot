@@ -35,7 +35,11 @@ def fetch_query(query, args=()):
 # INITIAL TABLE CREATION AND FILL WITH DEFAULT VALUES
 def create_command_table():
     execute_query(create_command_table_query)
-    execute_query(default_command_table_query)
+    default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe']
+    for command in default_commands:
+        print(f"Attempting to insert {command} into commands table.")
+        execute_query(default_command_table_query(command))
+
 def create_conversation_table():
     execute_query(create_conversation_table_query)
     execute_query(default_conversation_table_query)
@@ -72,20 +76,12 @@ create_command_table_query = """
         recognized_commands
     (commands text unique)
 """
-default_command_table_query = """
+def default_command_table_query(command):
+    return f"""
     INSERT INTO
         recognized_commands
     VALUES
-        ('hi',
-        'help',
-        'attend',
-        'weather',
-        'dota',
-        'dotes',
-        'dop',
-        'doto',
-        'guess',
-        'aoe')
+        ('{command}')
     ON CONFLICT DO NOTHING
 """
 def append_command_table_query(command):
