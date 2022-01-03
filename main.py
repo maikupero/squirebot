@@ -53,7 +53,8 @@ async def greetings(ctx):
 @bot.command()
 async def deletefrom(ctx, *, arg=None):
     print(ctx.author)
-    if ctx.author == 'fattie#9740':
+    if ctx.author == bot.get_user(int(ctx.guild.owner.id)):
+        await ctx.send("Hi fattie. Time to delete.")
         await helpers.service.delete(bot, ctx, arg=None)
     else:
         await ctx.send("Need fattie's permission to delete, sorry.")
