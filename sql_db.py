@@ -1,29 +1,130 @@
 import psycopg2
+from main import DB
 
-def connect(DATABASE_URL):
-    return psycopg2.connect(DATABASE_URL, sslmode='require')
+# BASE COMMANDS FOR CONNECTION AND QUERIES
+def connect(DB):
+    return psycopg2.connect(DB, sslmode='require')
 
-def create_conversation_table(conn):
-    execute_query(conn, create_conversation_table_query)
-    execute_query(conn, populate_conversation_table_query)
-
-def execute_query(conn, query, args=()):
-    cur = conn.cursor()
-    cur.execute(query, args)
+def close(conn, cur):
     conn.commit()
     cur.close()
+    conn.close()
 
-#List of query strings
+def execute_query(query, args=()):
+    try:
+        conn = connect(DB)
+        cur = conn.cursor()
+        cur.execute(query, args)
+        close(conn, cur)
+    except Exception as e:
+        print(f'***Error: {e} handling query: {query}')
+
+def fetch_query(query, args=()):
+    try:
+        conn = connect(DB)
+        cur = conn.cursor()
+        cur.execute(query, args)
+        results = cur.fetchall()
+        print(f"Found {results}\nFrom Query: {query}")
+        close(conn, cur)
+        return results
+    except Exception as e:
+        print(f'***Error: {e} handling query: {query}')
+
+# INITIAL TABLE CREATION AND FILL WITH DEFAULT VALUES
+def create_command_table():
+    execute_query(create_command_table_query)
+    execute_query(default_command_table_query)
+def create_conversation_table():
+    execute_query(create_conversation_table_query)
+    execute_query(default_conversation_table_query)
+
+# APPENDING TO EXISTING TABLES
+def append_command_table(command):
+    execute_query(append_command_table_query(command))
+def append_conversation_table(greeting, response):
+    execute_query(append_conversation_table_query(greeting, response))
+
+# CHECKING AND RETURNING VALUES IN EXISTING TABLES
+def commands():
+    return fetch_query(select_commands)
+    
+def greetings():
+    return fetch_query(select_greetings)
+
+def response(greeting):
+    return fetch_query(select_response(greeting))
+
+# DELETE COMMANDS FOR ROWS AND TABLES
+
+# QUERIES FOR COMMAND TABLE
+create_command_table_query = """
+    CREATE TABLE IF NOT EXISTS
+        recognized_commands
+    (commands text unique)
+"""
+default_command_table_query = """
+    INSERT INTO
+        recognized_commands
+    VALUES
+        ('hi')
+        ('help')
+        ('attend')
+        ('weather')
+        ('dota')
+        ('dotes')
+        ('dop')
+        ('doto')
+        ('guess')
+        ('aoe')
+    ON CONFLICT DO NOTHING
+"""
+def append_command_table_query(command):
+    return f"""
+    INSERT INTO
+        recognized_commands
+    VALUES
+        ('{command}')
+"""
+select_commands = """
+    SELECT
+        commands
+    FROM
+        recognized_commands
+"""
+
+# QUERIES FOR CONVERSATION TABLE
 create_conversation_table_query = """
     CREATE TABLE IF NOT EXISTS
         conversation
-    (greeting text unique, response text)
+    (greetings text unique, response text)
 """
-#Testing this
-populate_conversation_table_query = """
+default_conversation_table_query = """
     INSERT INTO
         conversation
     VALUES
         ('hi', 'hey!')
     ON CONFLICT DO NOTHING
+"""
+def append_conversation_table_query(greeting, response):
+    return f"""
+    INSERT INTO
+        conversation
+    VALUES
+        ('{greeting}', '{response}')
+"""
+select_greetings = """
+    SELECT
+        greeting
+    FROM
+        conversation
+"""
+def select_response(greeting):
+    return f"""
+    SELECT
+        response
+    FROM
+        conversation
+    WHERE
+        greeting="{greeting}"
 """

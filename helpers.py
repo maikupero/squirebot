@@ -1,6 +1,8 @@
 import random
 import discord
 import requests
+import sql_db
+import asyncio
 
 from lists import heroes, stre, agil, inte, role1, role2, role3, role4, role5, supps, cores, jungle
 #CAPITALIZE CLASS NAMES PEP STYLE GUIDES
@@ -10,6 +12,19 @@ class checks:
         return msg.author == ctx.author and msg.channel == ctx.channel
 
 class service:
+    async def new_conversation(ctx, bot):
+        greeting = ctx.content[3:]
+        await ctx.send(f"Oh! I don't know '{greeting}' yet. How should I respond?")
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == ctx.channel
+        try:
+            msg = await bot.wait_for("message", check=check, timeout=30)
+            response = str(msg.content)
+            sql_db.append_command_table(greeting)
+            sql_db.append_conversation_table(greeting, response)
+        except asyncio.TimeoutError:
+            await ctx.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
+
     def attend():
         responses = ["Ready, sir.", "As you order, sir.", "What can I do for you?", "Work work.", 
         "Something need doing?", "How can I help you, sir?", "How can I be of service, my lord?"]
