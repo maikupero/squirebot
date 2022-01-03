@@ -51,7 +51,15 @@ def commands():
     return fetch_query(select_commands)
     
 def greetings():
-    print(fetch_query(select_greetings))
+    print("INITIATING GREETINGS QUERY)")
+    greetings = fetch_query(select_greetings)
+    print(greetings)
+    result = list()
+    for greeting in greetings:
+        print(greeting)
+        result.append(greeting[1])
+    print(result)
+    return result
 
 def response(greeting):
     return fetch_query(select_response(greeting))
@@ -98,7 +106,7 @@ select_commands = """
 create_conversation_table_query = """
     CREATE TABLE IF NOT EXISTS
         conversation
-    (greetings text unique, response text)
+    (greeting text unique, response text)
 """
 default_conversation_table_query = """
     INSERT INTO
@@ -116,7 +124,7 @@ def append_conversation_table_query(greeting, response):
 """
 select_greetings = """
     SELECT
-        greetings
+        greeting
     FROM
         conversation
 """
@@ -127,5 +135,5 @@ def select_response(greeting):
     FROM
         conversation
     WHERE
-        greetings="{greeting}"
+        greeting="{greeting}"
 """
