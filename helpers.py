@@ -14,17 +14,32 @@ class checks:
 class service:
     async def new_conversation(message, bot):
         greeting = message.content[3:]
-        await message.channel.send(f"Oh! I don't know '{greeting}' yet. How should I respond?")
+        await message.channel.send(f"Oh! I don't know '{greeting}' yet. Is that a command? If not, How should I respond?")
         def check(msg):
             return msg.author == message.author and msg.channel == message.channel
         try:
             msg = await bot.wait_for("message", check=check, timeout=30)
             response = str(msg.content)
-            sql_db.append_command_table(greeting)
-            sql_db.append_conversation_table(greeting, response)
+            if "command" in response:
+                sql_db.append_command_table(greeting)
+            else:
+                sql_db.append_conversation_table(greeting, response)
         except asyncio.TimeoutError:
             await message.channel.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
 
+    async def delete(bot, ctx, arg):
+        def mastercheck(msg):
+            return msg.author == ctx.author and msg.channel == ctx.channel and msg.content and ctx.author == 'fattie#9740'
+        if arg and arg in sql_db.fetch_tables():
+            await ctx.send(f"Specify row in {arg}: {sql_db.fetch_all_rows(arg)}")
+            try:
+                msg = await bot.wait_for("message", check=mastercheck, timeout=30)
+                sql_db.delete_row(arg, msg.content)
+            except asyncio.TimeoutError:
+                await ctx.send("Sorry, try again from sb.deletefrom (table).")
+        else:
+            await ctx.send(f"Try again from one of these tables: {sql_db.fetch_tables()}")
+            
     def attend():
         responses = ["Ready, sir.", "As you order, sir.", "What can I do for you?", "Work work.", 
         "Something need doing?", "How can I help you, sir?", "How can I be of service, my lord?"]
