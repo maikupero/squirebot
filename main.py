@@ -36,7 +36,7 @@ async def on_message(ctx):
     if ctx.content.startswith('sb.'):
         print(f"Attempting to handle '{ctx.content[3:]}' command from {ctx.author}")
         if ctx.content[3:] not in sql_db.commands():
-            helpers.service.new_conversation(ctx, bot)
+            await helpers.service.new_conversation(ctx, bot)
 
 ### LIL ONES ###
 @bot.command(aliases=(sql_db.greetings()))
