@@ -76,16 +76,16 @@ default_command_table_query = """
     INSERT INTO
         recognized_commands
     VALUES
-        ('hi')
-        ('help')
-        ('attend')
-        ('weather')
-        ('dota')
-        ('dotes')
-        ('dop')
-        ('doto')
-        ('guess')
-        ('aoe')
+        ('hi',
+        'help',
+        'attend',
+        'weather',
+        'dota',
+        'dotes',
+        'dop',
+        'doto',
+        'guess',
+        'aoe')
     ON CONFLICT DO NOTHING
 """
 def append_command_table_query(command):
