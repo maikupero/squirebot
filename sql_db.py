@@ -25,7 +25,7 @@ def fetch_query(query, args=()):
         conn = connect(DB)
         cur = conn.cursor()
         cur.execute(query, args)
-        results = cur.fetchall()
+        results = list(cur.fetchall())
         print(f"Found {results}\nFrom Query: {query}")
         close(conn, cur)
         return results
@@ -58,12 +58,7 @@ def greetings():
     print("INITIATING GREETINGS QUERY")
     greetings = fetch_query(select_greetings)
     print(greetings)
-    result = list()
-    for greeting in greetings:
-        print(greeting)
-        result.append(greeting[0])
-    print(result)
-    return result
+    return greetings
 
 def response(greeting):
     return fetch_query(select_response(greeting))
