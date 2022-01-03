@@ -6,15 +6,13 @@ import discord
 from discord.ext.commands import Bot as DiscordBot
 
 import helpers
-from lists import conversation
 
-# Env variables
+# Env variables. # Network & Database connections through psycopg2, postgres, heroku. 
 MYTOKEN = os.environ.get('mytoken')
 MAPS_TOKEN = os.environ.get('maps_api')
-# Network & Database connections through psycopg2, postgres, heroku. 
-DATABASE_URL = os.environ['DATABASE_URL']
+DB = os.environ['DATABASE_URL']
 
-# Initialize bot, intents, and bot prefix.
+# Initialize bot, intents, and bot prefix, disable default help command.
 intents = discord.Intents.default()
 bot = DiscordBot(
     command_prefix=["sb.","Sb.","SB.","squirebot."],
@@ -37,11 +35,15 @@ async def on_message(ctx):
 
     if ctx.content.startswith('sb.'):
         print(f"Attempting to handle '{ctx.content[3:]}' command from {ctx.author}")
+        if ctx.content[3:] not in sql_db.commands():
+            helpers.service.new_conversation(ctx, bot)
 
 ### LIL ONES ###
-@bot.command(aliases=list(conversation))
+@bot.command(aliases=sql_db.greetings())
 async def greet(ctx):
-    await ctx.send(conversation[ctx.message.content[3:]])
+    greeting = ctx.content[3:]
+    print(f"Check the greeting: {greeting} to make sure we're getting the right string")
+    await ctx.send(sql_db.responses(greeting))
 
 @bot.command()
 async def help(ctx, *, arg=None):
@@ -51,27 +53,21 @@ async def help(ctx, *, arg=None):
 async def attend(ctx):
     await ctx.send(helpers.service.attend())
 
-@bot.command()
-async def aoe(ctx, *args):
-    if args:
-        if args[0] == 'randomciv' or args[0] == 'random':
-            await ctx.send(helpers.aoe4.randomciv(ctx))
-        else:
-            await ctx.send(f'Other AOE commands not ready yet.')
-    else:
-        await ctx.send(helpers.aoe4.randomciv(ctx))
+@bot.command(aliases=["randomciv"])
+async def aoe(ctx, *args):   
+    await ctx.send(helpers.aoe4.randomciv(ctx))
 
 @bot.command()
 async def guess(ctx):
     await helpers.games.guess(ctx, bot)
     
 ### BIG ONES ###
-@bot.command()
+@bot.command(aliases=["dop", "doto", "dotes"])
 async def dota(ctx, *, arg=None):
     if arg == None:
         await ctx.send(helpers.dota.dota_help())
     else:
-        conn = sql_db.connect(DATABASE_URL)
+        conn = sql_db.connect(DB)
         print(f"Handling request: {arg} from {ctx.author} on connection {conn}")
         if arg.startswith("random"):
             await ctx.send(helpers.dota.randomdop(ctx, arg, conn))
@@ -94,9 +90,6 @@ async def weather(ctx, *, arg=None):
         await helpers.service.weather(ctx, arg, MAPS_TOKEN)
 
 if __name__ == "__main__":
-    # Initiate table for conversation if it doesn't exist.
-    conn = sql_db.connect(DATABASE_URL)
-    sql_db.create_conversation_table(conn)
-    conn.close()
-
+    sql_db.create_conversation_table()
+    sql_db.create_command_table()
     bot.run(MYTOKEN)
