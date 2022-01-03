@@ -1,5 +1,6 @@
 import psycopg2
-from main import DB
+import os
+DB = os.environ['DATABASE_URL']
 
 # BASE COMMANDS FOR CONNECTION AND QUERIES
 def connect(DB):
