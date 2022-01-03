@@ -39,7 +39,7 @@ async def on_message(ctx):
             helpers.service.new_conversation(ctx, bot)
 
 ### LIL ONES ###
-@bot.command(aliases=sql_db.greetings())
+@bot.command(aliases=(sql_db.greetings()))
 async def greet(ctx):
     greeting = ctx.content[3:]
     print(f"Check the greeting: {greeting} to make sure we're getting the right string")
