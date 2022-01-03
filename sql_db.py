@@ -50,7 +50,7 @@ def commands():
     return fetch_query(select_commands)
     
 def greetings():
-    return fetch_query(select_greetings)
+    print(fetch_query(select_greetings))
 
 def response(greeting):
     return fetch_query(select_response(greeting))
@@ -115,7 +115,7 @@ def append_conversation_table_query(greeting, response):
 """
 select_greetings = """
     SELECT
-        greeting
+        greetings
     FROM
         conversation
 """
@@ -126,5 +126,5 @@ def select_response(greeting):
     FROM
         conversation
     WHERE
-        greeting="{greeting}"
+        greetings="{greeting}"
 """
