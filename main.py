@@ -35,8 +35,10 @@ async def on_message(message):
 
     if message.content.startswith('sb.'):
         print(f"Attempting to handle '{message.content[3:]}' command from {message.author}")
-        msg = message[3:].split(' ')
-        if msg[0] not in sql_db.commands():
+        msg = message.content[3:].split(' ')
+        if msg[0] in sql_db.commands():
+            return
+        else:
             if msg in sql_db.greetings():
                 await message.channel.send(sql_db.response(msg))
             else:
@@ -45,7 +47,7 @@ async def on_message(message):
 ### LIL ONES ###
 @bot.command()
 async def greetings(ctx):
-    await ctx.send(f"Current list of greetings: {sql_db.greetings()}")
+    await ctx.send(f"Current list of greetings: {str(sql_db.greetings())[1:-1]}")
 
 @bot.command()
 async def help(ctx, *, arg=None):
