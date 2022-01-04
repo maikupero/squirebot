@@ -39,9 +39,9 @@ async def on_message(message):
         if firstword[0] in sql_db.commands():
             return
         else:
-            print(message, message.content)
-            if message.content in sql_db.greetings():
-                await message.channel.send(sql_db.response(message.content))
+            print(message, message.content[3:])
+            if message.content[3:] in sql_db.greetings():
+                await message.channel.send(sql_db.response(message.content[3:]))
             else:
                 await helpers.service.new_conversation(message, bot)
 
@@ -52,6 +52,7 @@ async def greetings(ctx):
 @bot.command()
 async def cmds(ctx):
     await ctx.send(f"Current list of commands: {str(sql_db.commands())[1:-1]}")
+@bot.command()
 async def tables(ctx):
     await ctx.send(f"Tables in the database: {str(sql_db.fetch_tables())[1:-1]}")
 @bot.command()
