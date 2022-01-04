@@ -35,13 +35,13 @@ async def on_message(message):
 
     if message.content.startswith('sb.'):
         print(f"Attempting to handle '{message.content[3:]}' command from {message.author}")
-        msg = message.content[3:].split(' ')
-        if msg[0] in sql_db.commands():
+        firstword = message.content[3:].split(' ')
+        if firstword[0] in sql_db.commands():
             return
         else:
-            print(msg)
-            if msg in sql_db.greetings():
-                await message.channel.send(sql_db.response(msg))
+            print(message, message.content)
+            if message.content in sql_db.greetings():
+                await message.channel.send(sql_db.response(message.content))
             else:
                 await helpers.service.new_conversation(message, bot)
 
