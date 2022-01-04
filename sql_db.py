@@ -27,7 +27,6 @@ def fetch_query(query, args=()):
         cur.execute(query, args)
         results = [list(i) for i in cur.fetchall()]
         close(conn, cur)
-        print([i[0] for i in results])
         return [i[0] for i in results]
     except Exception as e:
         print(f'***Error: {e} handling query: {query}')
