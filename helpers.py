@@ -31,7 +31,7 @@ class service:
 
     async def delete(bot, ctx, arg):
         def mastercheck(msg):
-            return msg.author == ctx.author and msg.channel == ctx.channel and msg.content and ctx.author.id == 351169614119698435
+            return msg.author == ctx.author and msg.channel == ctx.channel and msg.author.id == 351169614119698435
         if arg and arg in sql_db.fetch_tables():
             await ctx.send(f"Specify row in {arg}: {sql_db.fetch_all_rows(arg)}")
             try:

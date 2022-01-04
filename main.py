@@ -41,7 +41,7 @@ async def on_message(message):
         else:
             print(message, message.content[3:])
             if message.content[3:] in sql_db.greetings():
-                await message.channel.send(sql_db.response(message.content[3:]))
+                await message.channel.send(str(sql_db.response(message.content[3:]))[1:-1])
             else:
                 await helpers.service.new_conversation(message, bot)
 
