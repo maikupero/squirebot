@@ -54,10 +54,9 @@ def get_column(table):
     print(f"Querying to get column from {table}")
     print(fetch_query(get_column_query(table)))
     return fetch_query(get_column_query(table))
-
 def delete_row(table, row):
     print(f"Attempting to delete {row} from {table}.")
-    execute_query(delete_row_query(table, get_column(table,row), row))
+    execute_query(delete_row_query(table, get_column(table), row))
         
 # CHECKING AND RETURNING VALUES IN EXISTING TABLES
 def fetch_tables():
