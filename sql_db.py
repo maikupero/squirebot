@@ -50,9 +50,14 @@ def append_conversation_table(greeting, response):
     execute_query(append_conversation_table_query(greeting, response))
 
 # DELETING ROW OR ROWS
+def get_column(table):
+    print(f"Querying to get column from {table}")
+    print(fetch_query(get_column_query(table)))
+    return fetch_query(get_column_query(table))
+
 def delete_row(table, row):
     print(f"Attempting to delete {row} from {table}.")
-    execute_query(delete_row_query(table, row))
+    execute_query(delete_row_query(table, get_column(table,row), row))
         
 # CHECKING AND RETURNING VALUES IN EXISTING TABLES
 def fetch_tables():
@@ -123,18 +128,22 @@ def append_command_table_query(command):
 
 ### DELETE QUERIES 
 ### https://stackoverflow.com/questions/1054984/how-can-i-get-column-names-from-a-table-in-sql-server
-def delete_row_query(table, row):
+def get_column_query(table):
+    return f"""
+    SELECT 
+        column_name
+    FROM 
+        information_schema.columns 
+    WHERE 
+        table_name=N'{table}'
+    LIMIT 1
+"""
+def delete_row_query(table, column, row):
     return f"""
     DELETE FROM
         {table}
     WHERE
-        '(SELECT 
-            column_name
-        FROM 
-            information_schema.columns 
-        WHERE 
-            table_name=N'{table}'
-        LIMIT 1)' = '{row}'
+        {column} = '{row}'
 """
 
 # OFFSET 1 ROWS   -- Skip this number of rows
