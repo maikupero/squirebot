@@ -60,6 +60,7 @@ def fetch_tables():
 def fetch_all_columns(table):
     return fetch_query(select_all_columns(table))
 def fetch_all_rows(table):
+    print(f"trying to fetch all rows from {table}.")
     return fetch_query(select_all_rows(table))
 
 def commands():
