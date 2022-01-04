@@ -22,8 +22,10 @@ class service:
             response = str(msg.content)
             if "command" in response:
                 sql_db.append_command_table(greeting)
+                await message.channel.send(f"Got it! Added {greeting} recognized commands.")
             else:
                 sql_db.append_conversation_table(greeting, response)
+                await message.channel.send(f"Got it! Stored greeting '{greeting}' with response '{response}'.")
         except asyncio.TimeoutError:
             await message.channel.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
 

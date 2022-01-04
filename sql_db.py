@@ -109,6 +109,7 @@ def append_conversation_table_query(greeting, response):
         conversation
     VALUES
         ('{greeting}', '{response}')
+    ON CONFLICT DO NOTHING
 """
 def append_command_table_query(command):
     return f"""
@@ -116,6 +117,7 @@ def append_command_table_query(command):
         recognized_commands
     VALUES
         ('{command}')
+    ON CONFLICT DO NOTHING
 """
 
 ### DELETE QUERIES 
@@ -188,5 +190,3 @@ def select_response(greeting):
     WHERE
         greeting="{greeting}"
 """
-
-### DELETE QUERIES ###
