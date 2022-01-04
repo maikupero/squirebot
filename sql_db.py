@@ -15,6 +15,7 @@ def execute_query(query, args=()):
     try:
         conn = connect(DB)
         cur = conn.cursor()
+        print(query)
         cur.execute(query, args)
         close(conn, cur)
     except Exception as e:
@@ -133,7 +134,7 @@ def delete_row_query(table, row):
             information_schema.columns 
         WHERE 
             table_name=N'{table}'
-        LIMIT 1) = '{row}';
+        LIMIT 1) = '{row}'
 """
 
 # OFFSET 1 ROWS   -- Skip this number of rows
