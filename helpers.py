@@ -36,7 +36,11 @@ class service:
             await ctx.send(f"Specify row in {arg}: {sql_db.fetch_all_rows(arg)}")
             try:
                 msg = await bot.wait_for("message", check=mastercheck, timeout=30)
-                sql_db.delete_row(arg, msg.content)
+                try:
+                    sql_db.delete_row(arg, msg.content)
+                    await ctx.send("Success!")
+                except:
+                    await ctx.send("Still some issue in the delete row function")
             except asyncio.TimeoutError:
                 await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
         else:
