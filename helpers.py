@@ -29,14 +29,14 @@ class service:
 
     async def delete(bot, ctx, arg):
         def mastercheck(msg):
-            return msg.author == ctx.author and msg.channel == ctx.channel and msg.content and ctx.author == 'fattie#9740'
+            return msg.author == ctx.author and msg.channel == ctx.channel and msg.content and ctx.author.id == 351169614119698435
         if arg and arg in sql_db.fetch_tables():
             await ctx.send(f"Specify row in {arg}: {sql_db.fetch_all_rows(arg)}")
             try:
                 msg = await bot.wait_for("message", check=mastercheck, timeout=30)
                 sql_db.delete_row(arg, msg.content)
             except asyncio.TimeoutError:
-                await ctx.send("Sorry, try again from sb.deletefrom (table).")
+                await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
         else:
             await ctx.send(f"Try again from one of these tables: {sql_db.fetch_tables()}")
             
