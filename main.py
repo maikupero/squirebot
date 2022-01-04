@@ -44,21 +44,23 @@ async def on_message(message):
             else:
                 await helpers.service.new_conversation(message, bot)
 
-### LIL ONES ###
+### Database Stuff ###
 @bot.command()
 async def greetings(ctx):
     await ctx.send(f"Current list of greetings: {str(sql_db.greetings())[1:-1]}")
-
-### LIL ONES ###
+@bot.command()
+async def cmds(ctx):
+    await ctx.send(f"Current list of commands: {str(sql_db.commands())[1:-1]}")
 @bot.command()
 async def deletefrom(ctx, *, arg=None):
     print(ctx.author.id)
-    if ctx.author.display_name == "fattie":
+    if ctx.author.id == 351169614119698435:
         await ctx.send("Hi fattie. Time to delete.")
         await helpers.service.delete(bot, ctx, arg=None)
     else:
         await ctx.send("Need fattie's permission to delete, sorry.")
 
+### LIL ONES ###
 @bot.command()
 async def help(ctx, *, arg=None):
     await ctx.send(helpers.service.help(ctx, arg))
