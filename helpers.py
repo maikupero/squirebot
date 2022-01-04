@@ -22,7 +22,7 @@ class service:
             response = str(msg.content)
             if "command" in response:
                 sql_db.append_command_table(greeting)
-                await message.channel.send(f"Got it! Added {greeting} recognized commands.")
+                await message.channel.send(f"Got it! Added {greeting} to our list of recognized commands.")
             else:
                 sql_db.append_conversation_table(greeting, response)
                 await message.channel.send(f"Got it! Stored greeting '{greeting}' with response '{response}'.")
