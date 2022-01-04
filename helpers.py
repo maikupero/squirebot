@@ -4,7 +4,7 @@ import requests
 import sql_db
 import asyncio
 
-from lists import heroes, stre, agil, inte, role1, role2, role3, role4, role5, supps, cores, jungle
+from lists import nvm, heroes, stre, agil, inte, role1, role2, role3, role4, role5, supps, cores, jungle
 #CAPITALIZE CLASS NAMES PEP STYLE GUIDES
 
 class checks:
@@ -14,12 +14,14 @@ class checks:
 class service:
     async def new_conversation(message, bot):
         greeting = message.content[3:]
-        await message.channel.send(f"Oh! I don't know '{greeting}' yet. Is that a command? If not, How should I respond?")
+        await message.channel.send(f"Oh! I don't know '{greeting}' yet. Is that a command? If not, how should I respond?")
         def check(msg):
             return msg.author == message.author and msg.channel == message.channel
         try:
             msg = await bot.wait_for("message", check=check, timeout=30)
             response = str(msg.content)
+            if response in nvm:
+                return
             if "command" in response:
                 sql_db.append_command_table(greeting)
                 await message.channel.send(f"Got it! Added {greeting} to our list of recognized commands.")
@@ -33,7 +35,7 @@ class service:
         def mastercheck(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and msg.author.id == 351169614119698435
         if arg and arg in sql_db.fetch_tables():
-            await ctx.send(f"Specify row (or comma separated list of rows) in {arg}: {sql_db.fetch_all_rows(arg)}")
+            await ctx.send(f"Specify item (or comma separated list of items) in {arg}: {sql_db.fetch_all_rows(arg)}")
             try:
                 msg = await bot.wait_for("message", check=mastercheck, timeout=30)
                 try:
