@@ -51,6 +51,8 @@ async def greetings(ctx):
 @bot.command()
 async def cmds(ctx):
     await ctx.send(f"Current list of commands: {str(sql_db.commands())[1:-1]}")
+async def tables(ctx):
+    await ctx.send(f"Tables in the database: {str(sql_db.fetch_tables())[1:-1]}")
 @bot.command()
 async def deletefrom(ctx, *, arg=None):
     print(ctx.author.id)
