@@ -57,7 +57,6 @@ async def tables(ctx):
 async def deletefrom(ctx, *, arg=None):
     print(ctx.author.id)
     if ctx.author.id == 351169614119698435:
-        await ctx.send("Hi fattie. Time to delete.")
         await helpers.service.delete(bot, ctx, arg)
     else:
         await ctx.send("Need fattie's permission to delete, sorry.")
