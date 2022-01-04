@@ -39,6 +39,7 @@ async def on_message(message):
         if msg[0] in sql_db.commands():
             return
         else:
+            print(msg)
             if msg in sql_db.greetings():
                 await message.channel.send(sql_db.response(msg))
             else:
