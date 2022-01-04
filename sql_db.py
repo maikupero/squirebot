@@ -51,11 +51,10 @@ def append_conversation_table(greeting, response):
 
 # DELETING ROW OR ROWS
 def get_column(table):
-    print(f"Querying to get column from {table}")
-    print(fetch_query(get_column_query(table)))
-    return fetch_query(get_column_query(table))
+    return str(fetch_query(get_column_query(table)))[2:-2]
 def delete_row(table, row):
     print(f"Attempting to delete {row} from {table}.")
+    print(f"Getting first column of {table}: {get_column(table)}")
     execute_query(delete_row_query(table, get_column(table), row))
         
 # CHECKING AND RETURNING VALUES IN EXISTING TABLES
