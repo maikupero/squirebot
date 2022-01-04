@@ -51,7 +51,7 @@ def append_conversation_table(greeting, response):
 
 # DELETING ROW OR ROWS
 def delete_row(table, row):
-    print(f"Attempting to Delete {row} from {table}.")
+    print(f"Attempting to delete {row} from {table}.")
     execute_query(delete_row_query(table, row))
         
 # CHECKING AND RETURNING VALUES IN EXISTING TABLES
@@ -128,13 +128,13 @@ def delete_row_query(table, row):
     DELETE FROM
         {table}
     WHERE
-        (SELECT 
+        '(SELECT 
             column_name
         FROM 
             information_schema.columns 
         WHERE 
             table_name=N'{table}'
-        LIMIT 1) = '{row}'
+        LIMIT 1)' = '{row}'
 """
 
 # OFFSET 1 ROWS   -- Skip this number of rows
