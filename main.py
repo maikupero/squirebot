@@ -57,7 +57,7 @@ async def tables(ctx):
 @bot.command()
 async def delete(ctx, *, arg=None):
     print(ctx.author.id)
-    await helpers.service.deletemaster(bot, ctx, arg)
+    await helpers.service.delete(bot, ctx, arg)
 
 ### LIL ONES ###
 @bot.command()
