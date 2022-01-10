@@ -55,9 +55,9 @@ async def cmds(ctx):
 async def tables(ctx):
     await ctx.send(f"Tables in the database: {str(sql_db.fetch_tables())[1:-1]}")
 @bot.command()
-async def delete(ctx, *, arg=None):
+async def deletefrom(ctx, *, arg=None):
     print(ctx.author.id)
-    await helpers.service.delete(bot, ctx, arg)
+    await helpers.service.deletefrom(bot, ctx, arg)
 
 ### LIL ONES ###
 @bot.command()
