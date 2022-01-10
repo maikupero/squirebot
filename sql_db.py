@@ -39,7 +39,7 @@ def create_command_table():
     execute_query(create_command_table_query)
     default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe','delete']
     for command in default_commands:
-        execute_query(default_command_table_query, args=(command))
+        execute_query(default_command_table_query, (command))
 
 def create_conversation_table():
     execute_query(create_conversation_table_query)
@@ -49,27 +49,27 @@ def create_conversation_table():
 
 # APPENDING TO EXISTING TABLES
 def append_command_table(command):
-    execute_query(append_command_table_query, args=(command))
+    execute_query(append_command_table_query, (command))
 def append_conversation_table(greeting, response):
-    execute_query(append_conversation_table_query, args=(greeting, response))
+    execute_query(append_conversation_table_query, (greeting, response))
 
 
 # DELETING ROW OR ROWS
 def get_column(table):
-    return str(fetch_query(get_column_query, args=(table)))[2:-2]
+    return str(fetch_query(get_column_query, (table)))[2:-2]
 def delete_row(table, row):
     print(f"Attempting to delete {row} from {table}.")
     print(f"Getting first column of {table}: {get_column(table)}")
-    execute_query(delete_row_query, args=(table, get_column(table), row))
+    execute_query(delete_row_query, (table, get_column(table), row))
         
 # CHECKING AND RETURNING VALUES IN EXISTING TABLES
 def fetch_tables():
     return fetch_query(select_tables)
 def fetch_all_columns(table):
-    return fetch_query(select_all_columns, args=(table))
+    return fetch_query(select_all_columns, (table))
 def fetch_all_rows(table):
     print(f"trying to fetch all rows from {table}.")
-    return fetch_query(select_all_rows, args=(table))
+    return fetch_query(select_all_rows, (table))
 
 # SELECT QUERIES
 def commands():
@@ -77,7 +77,7 @@ def commands():
 def greetings():
     return fetch_query(select_greetings) 
 def response(greeting):
-    return fetch_query(select_response, args=(greeting))
+    return fetch_query(select_response, (greeting))
 
 
 #GENERAL QUERIES
@@ -118,7 +118,7 @@ delete_row_query = """
     WHERE
         (%s) = (%s)
 """
-2
+
 
 # COMMAND TABLE QUERIES
 create_command_table_query = """

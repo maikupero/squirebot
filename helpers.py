@@ -31,7 +31,7 @@ class service:
         except asyncio.TimeoutError:
             await message.channel.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
 
-    async def delete(bot, ctx, arg):
+    async def deletefrom(bot, ctx, arg):
         def mastercheck(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and msg.author.id == 351169614119698435
         #TO DO: def usercheck (if they made the command)
