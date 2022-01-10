@@ -22,7 +22,7 @@ class service:
             response = str(msg.content)
             if response in nvm:
                 return
-            if "command" in response:
+            if "command" in response or "cmd" in response:
                 sql_db.append_command_table(greeting)
                 await message.channel.send(f"Got it! Added {greeting} to our list of recognized commands.")
             else:
@@ -34,6 +34,7 @@ class service:
     async def delete(bot, ctx, arg):
         def mastercheck(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and msg.author.id == 351169614119698435
+        #TO DO: def usercheck (if they made the command)
         if arg and arg in sql_db.fetch_tables():
             await ctx.send(f"Specify item (or comma separated list of items) in {arg}: {sql_db.fetch_all_rows(arg)}")
             try:
@@ -49,7 +50,7 @@ class service:
                 await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
         else:
             await ctx.send(f"Try again from one of these tables: {sql_db.fetch_tables()}")
-            
+    
     def attend():
         responses = ["Ready, sir.", "As you order, sir.", "What can I do for you?", "Work work.", 
         "Something need doing?", "How can I help you, sir?", "How can I be of service, my lord?"]
