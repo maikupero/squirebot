@@ -93,7 +93,7 @@ select_all_columns = """
     FROM 
         information_schema.columns 
     WHERE 
-        table_name=N(%s)
+        table_name=(%s)
 """
 select_tables = """
     SELECT 
@@ -109,7 +109,7 @@ get_column_query = """
     FROM 
         information_schema.columns 
     WHERE 
-        table_name=N(%s)
+        table_name=(%s)
     LIMIT 1
 """
 delete_row_query = """
