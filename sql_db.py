@@ -39,7 +39,7 @@ def create_command_table():
     execute_query(create_command_table_query)
     default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe','delete']
     for command in default_commands:
-        execute_query(default_command_table_query, args={'command':command})
+        execute_query(default_command_table_query, args=(command))
 
 def create_conversation_table():
     execute_query(create_conversation_table_query)
@@ -49,27 +49,27 @@ def create_conversation_table():
 
 # APPENDING TO EXISTING TABLES
 def append_command_table(command):
-    execute_query(append_command_table_query, args={'command':command})
+    execute_query(append_command_table_query, args=(command))
 def append_conversation_table(greeting, response):
-    execute_query(append_conversation_table_query, args={'greeting':greeting, 'response':response})
+    execute_query(append_conversation_table_query, args=(greeting, response))
 
 
 # DELETING ROW OR ROWS
 def get_column(table):
-    return str(fetch_query(get_column_query, args={'table':table}))[2:-2]
+    return str(fetch_query(get_column_query, args=(table)))[2:-2]
 def delete_row(table, row):
     print(f"Attempting to delete {row} from {table}.")
     print(f"Getting first column of {table}: {get_column(table)}")
-    execute_query(delete_row_query, args={'table':table, 'table':get_column(table), 'row':row})
+    execute_query(delete_row_query, args=(table, get_column(table), row))
         
 # CHECKING AND RETURNING VALUES IN EXISTING TABLES
 def fetch_tables():
     return fetch_query(select_tables)
 def fetch_all_columns(table):
-    return fetch_query(select_all_columns, args={'table':table})
+    return fetch_query(select_all_columns, args=(table))
 def fetch_all_rows(table):
     print(f"trying to fetch all rows from {table}.")
-    return fetch_query(select_all_rows, args={'table':table})
+    return fetch_query(select_all_rows, args=(table))
 
 # SELECT QUERIES
 def commands():
@@ -77,7 +77,7 @@ def commands():
 def greetings():
     return fetch_query(select_greetings) 
 def response(greeting):
-    return fetch_query(select_response, args={'greeting':greeting})
+    return fetch_query(select_response, args=(greeting))
 
 
 #GENERAL QUERIES
@@ -85,7 +85,7 @@ select_all_rows = """
     SELECT
         *
     FROM
-        %(table)s
+        (%s)
 """
 select_all_columns = """
     SELECT 
@@ -93,7 +93,7 @@ select_all_columns = """
     FROM 
         information_schema.columns 
     WHERE 
-        table_name= N'%(table)s'
+        table_name= N'(%s)'
 """
 select_tables = """
     SELECT 
@@ -109,14 +109,14 @@ get_column_query = """
     FROM 
         information_schema.columns 
     WHERE 
-        table_name=N'%(table)s'
+        table_name=N'(%s)'
     LIMIT 1
 """
 delete_row_query = """
     DELETE FROM
-        %(table)s
+        (%s)
     WHERE
-        %(column)s = '%(row)s'
+        (%s) = (%s)
 """
 2
 
@@ -130,14 +130,14 @@ default_command_table_query = """
     INSERT INTO
         recognized_commands
     VALUES
-        %(command)s
+        (%s)
     ON CONFLICT DO NOTHING
 """
 append_command_table_query = """
     INSERT INTO
         recognized_commands
     VALUES
-        %(command)s
+        (%s)
     ON CONFLICT DO NOTHING
 """
 select_commands = """
@@ -164,7 +164,7 @@ append_conversation_table_query = """
     INSERT INTO
         conversation
     VALUES
-        (%(greeting)s, %(response)s)
+        (%s, %s)
     ON CONFLICT DO NOTHING
 """
 select_greetings = """
@@ -179,5 +179,5 @@ select_response = """
     FROM
         conversation
     WHERE
-        greeting=%(greeting)s
+        greeting=(%s)
 """
