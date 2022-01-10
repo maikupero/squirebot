@@ -55,12 +55,9 @@ async def cmds(ctx):
 async def tables(ctx):
     await ctx.send(f"Tables in the database: {str(sql_db.fetch_tables())[1:-1]}")
 @bot.command()
-async def deletefrom(ctx, *, arg=None):
+async def delete(ctx, *, arg=None):
     print(ctx.author.id)
-    if ctx.author.id == 351169614119698435:
-        await helpers.service.delete(bot, ctx, arg)
-    else:
-        await ctx.send("Need fattie's permission to delete, sorry.")
+    await helpers.service.deletemaster(bot, ctx, arg)
 
 ### LIL ONES ###
 @bot.command()
