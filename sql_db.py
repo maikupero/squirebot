@@ -85,7 +85,7 @@ select_all_rows = """
     SELECT
         *
     FROM
-        (%s)
+        %s
 """
 select_all_columns = """
     SELECT 
@@ -93,7 +93,7 @@ select_all_columns = """
     FROM 
         information_schema.columns 
     WHERE 
-        table_name=(%s)
+        table_name='%s'
 """
 select_tables = """
     SELECT 
@@ -109,14 +109,14 @@ get_column_query = """
     FROM 
         information_schema.columns 
     WHERE 
-        table_name=(%s)
+        table_name='%s'
     LIMIT 1
 """
 delete_row_query = """
     DELETE FROM
-        (%s)
+        %s
     WHERE
-        (%s) = (%s)
+        %s = %s
 """
 
 
@@ -179,5 +179,5 @@ select_response = """
     FROM
         conversation
     WHERE
-        greeting=(%s)
+        greeting=%s
 """
