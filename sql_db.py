@@ -37,7 +37,7 @@ def fetch_query(query, args=()):
 # INITIAL TABLE CREATION AND FILL WITH DEFAULT VALUES
 def create_command_table():
     execute_query(create_command_table_query)
-    default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe','deletefrom']
+    default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe','delete']
     for command in default_commands:
         execute_query(default_command_table_query, args={'command':command})
 
@@ -85,7 +85,7 @@ select_all_rows = """
     SELECT
         *
     FROM
-        (%{table}s)
+        %(table)s
 """
 select_all_columns = """
     SELECT 
@@ -93,7 +93,7 @@ select_all_columns = """
     FROM 
         information_schema.columns 
     WHERE 
-        table_name= N'(%{table}s)'
+        table_name= N'%(table)s'
 """
 select_tables = """
     SELECT 
@@ -109,16 +109,16 @@ get_column_query = """
     FROM 
         information_schema.columns 
     WHERE 
-        table_name=N'(%{table}s)'
+        table_name=N'%(table)s'
     LIMIT 1
 """
 delete_row_query = """
     DELETE FROM
-        (%{table}s)
+        %(table)s
     WHERE
-        (%{column}s) = '(%{row}s)'
+        %(column)s = '%(row)s'
 """
-
+2
 
 # COMMAND TABLE QUERIES
 create_command_table_query = """
@@ -130,14 +130,14 @@ default_command_table_query = """
     INSERT INTO
         recognized_commands
     VALUES
-        (%{command}s)
+        %(command)s
     ON CONFLICT DO NOTHING
 """
 append_command_table_query = """
     INSERT INTO
         recognized_commands
     VALUES
-        (%{command}s)
+        %(command)s
     ON CONFLICT DO NOTHING
 """
 select_commands = """
@@ -179,5 +179,5 @@ select_response = """
     FROM
         conversation
     WHERE
-        greeting='(%{greeting}s)'
+        greeting=%(greeting)s
 """
