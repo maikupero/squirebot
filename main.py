@@ -34,7 +34,6 @@ async def on_message(message):
 
     if message.content.startswith('sb.'):
         firstword = message.content[3:].split(' ')
-        print(firstword)
         if firstword[0] in sql_db.fetch_all_commands():
             return
         else:

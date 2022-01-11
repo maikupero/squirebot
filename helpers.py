@@ -61,6 +61,9 @@ class dbstuff:
                     await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
             else:
                 await ctx.send("Only the server owner can delete commands.")
+                
+        else:
+            await ctx.send("Try `sb.deletefrom greetings` or `sb.deletefrom commands`")
     
 class service:
     def attend():
