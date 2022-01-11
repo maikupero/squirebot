@@ -144,8 +144,9 @@ class service:
 
 class aoe4:
     async def randomciv(ctx, arg):
-        if arg and int(arg) > 0 and int(arg) < 9:
-            civcount = arg
+        print(arg)
+        if arg[1] and int(arg[1]) > 0 and int(arg[1]) < 9:
+            civcount = int(arg[1])
         else: 
             civcount = 1
         for i in range(civcount):
