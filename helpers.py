@@ -38,7 +38,7 @@ class dbstuff:
         user_id = ctx.author.id
 
         if "greeting" in arg or "conversation" in arg:
-            await ctx.send(f"Specify item (or comma separated list of items) from:\n{sql_db.fetch_all_greetings()}")
+            await ctx.send(f"Specify item (or comma separated list of items) from:\n{str(sql_db.fetch_all_greetings())[1:-1]}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
                 for word in msg.content.split(","):
@@ -61,7 +61,7 @@ class dbstuff:
                     await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
             else:
                 await ctx.send("Only the server owner can delete commands.")
-                
+
         else:
             await ctx.send("Try `sb.deletefrom greetings` or `sb.deletefrom commands`")
     
