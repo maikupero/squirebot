@@ -51,6 +51,7 @@ select_tables = """
 #     field=sql.Identifier('my_name'),
 #     table=sql.Identifier('some_table'),
 #     pkey=sql.Identifier('id'))
+
 #     sql.SQL("INSERT INTO {} VALUES (%s, %s)").format(sql.Identifier('my_table')), [10, 20])
 
 
@@ -110,7 +111,7 @@ def response(greeting):
 def delete_greeting(greeting, user_id, master_id):
     check_id = fetch_query(get_creator_id, (greeting,))
     print(f"checking user_id: ({type(user_id)}){user_id} against stored id: ({type(check_id)}){check_id}.") 
-    if str(user_id) == check_id or user_id == master_id:
+    if str(user_id) == check_id[0] or user_id == master_id:
         print(f"Attempting to delete {greeting}")
         execute_query(delete_greeting_query, (greeting,))
         return 1
@@ -164,7 +165,7 @@ select_all_columns = """
 """
 
 get_column_query = """
-    SELECT 
+    SELECT
         column_name
     FROM 
         information_schema.columns 
