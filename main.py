@@ -35,6 +35,7 @@ async def on_message(message):
 
     if message.content.startswith('sb.'):
         firstword = message.content[3:].split(' ')
+        print(firstword)
         if firstword[0] in sql_db.fetch_all_commands():
             return
         else:
@@ -51,7 +52,7 @@ async def on_message(message):
 async def greetings(ctx):
     await ctx.send(f"Current list of greetings: {str(sql_db.fetch_all_greetings())[1:-1]}")
 @bot.command()
-async def cmds(ctx):
+async def commands(ctx):
     await ctx.send(f"Current list of commands: {str(sql_db.fetch_all_commands())[1:-1]}")
 @bot.command()
 async def tables(ctx):

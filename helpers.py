@@ -35,21 +35,32 @@ class dbstuff:
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel
         master_id = 351169614119698435
-        creator_id = ctx.author.id
+        user_id = ctx.author.id
 
         if "greeting" in arg or "conversation" in arg:
             await ctx.send(f"Specify item (or comma separated list of items) from:\n{sql_db.fetch_all_greetings()}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
                 for word in msg.content.split(","):
-                    if sql_db.delete_greeting(word.strip(), creator_id, master_id) == 1:
+                    if sql_db.delete_greeting(word.strip(), user_id, master_id) == 1:
                         await ctx.send(f"Deleted: {word.strip()}")
                     else:
-                        await ctx.send(f"Insufficient permissions to delete: {word.strip()}")
+                        await ctx.send(f"{word.strip()} is not yours to delete!")
             except asyncio.TimeoutError:
                 await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
-        else:
-            await ctx.send(f"Specify the table to delete from! i.e. `sb.deletefrom greetings`")
+
+        elif "command" in arg or "cmd" in arg:
+            if user_id == master_id:
+                await ctx.send(f"Specify item (or comma separated list of items) from:\n{sql_db.fetch_all_commands()}")
+                try:
+                    msg = await bot.wait_for("message", check=check, timeout=30)
+                    for word in msg.content.split(","):
+                        sql_db.delete_command(word.strip())
+                        await ctx.send(f"Deleted: {word.strip()}")
+                except asyncio.TimeoutError:
+                    await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
+            else:
+                await ctx.send("Only the server owner can delete commands.")
     
 class service:
     def attend():
