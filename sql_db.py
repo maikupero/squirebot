@@ -1,5 +1,7 @@
 import psycopg2
 import os
+from psycopg2 import sql
+
 DB = os.environ['DATABASE_URL']
 
 # BASE COMMANDS FOR CONNECTION AND QUERIES
@@ -33,68 +35,9 @@ def fetch_query(query, args=()):
         print(f'***Error: {e} handling query: {query}')
 
 
-
-# INITIAL TABLE CREATION AND FILL WITH DEFAULT VALUES
-def create_command_table():
-    execute_query(create_command_table_query)
-    default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe','delete']
-    for command in default_commands:
-        execute_query(default_command_table_query, (command,))
-
-def create_conversation_table():
-    execute_query(create_conversation_table_query)
-    execute_query(default_conversation_table_query)
-
-
-
-# APPENDING TO EXISTING TABLES
-def append_command_table(command):
-    execute_query(append_command_table_query, (command,))
-def append_conversation_table(greeting, response):
-    execute_query(append_conversation_table_query, (greeting, response))
-
-
-# DELETING ROW OR ROWS
-def get_column(table):
-    return str(fetch_query(get_column_query, (table,)))[2:-2]
-def delete_row(table, row):
-    print(f"Attempting to delete {row} from {table}.")
-    print(f"Getting first column of {table}: {get_column(table)}")
-    execute_query(delete_row_query, (table, get_column(table), row))
-        
-# CHECKING AND RETURNING VALUES IN EXISTING TABLES
+### GENERAL FUNCTIONS ###
 def fetch_tables():
     return fetch_query(select_tables)
-def fetch_all_columns(table):
-    return fetch_query(select_all_columns, (table,))
-def fetch_all_rows(table):
-    print(f"trying to fetch all rows from {table}.")
-    return fetch_query(select_all_rows, (table,))
-
-# SELECT QUERIES
-def commands():
-    return fetch_query(select_commands)
-def greetings():
-    return fetch_query(select_greetings) 
-def response(greeting):
-    return fetch_query(select_response, (greeting,))
-
-
-#GENERAL QUERIES
-select_all_rows = """
-    SELECT
-        *
-    FROM
-        %s
-"""
-select_all_columns = """
-    SELECT 
-        column_name
-    FROM 
-        information_schema.columns 
-    WHERE 
-        table_name='%s'
-"""
 select_tables = """
     SELECT 
         Table_name
@@ -103,81 +46,120 @@ select_tables = """
     WHERE 
         table_schema='public'
 """
-get_column_query = """
-    SELECT 
-        column_name
-    FROM 
-        information_schema.columns 
-    WHERE 
-        table_name='%s'
-    LIMIT 1
-"""
-delete_row_query = """
-    DELETE FROM
-        %s
-    WHERE
-        %s = %s
-"""
+# query = sql.SQL("SELECT {field} FROM {table} WHERE {pkey} = %s").format(
+#     field=sql.Identifier('my_name'),
+#     table=sql.Identifier('some_table'),
+#     pkey=sql.Identifier('id'))
+#     sql.SQL("INSERT INTO {} VALUES (%s, %s)").format(sql.Identifier('my_table')), [10, 20])
 
 
-# COMMAND TABLE QUERIES
+
+### COMMAND TABLE FUNCTIONS ###
+def create_command_table():
+    execute_query(create_command_table_query)
+    default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe','deletefrom, greetings, commands']
+    for command in default_commands:
+        execute_query(append_command_table_query, (command,))
+
+def append_command_table(command):
+    execute_query(append_command_table_query, (command,))
+
+def fetch_all_commands():
+    return fetch_query(select_commands)
+
+### COMMAND TABLE QUERIES ###
 create_command_table_query = """
     CREATE TABLE IF NOT EXISTS
         recognized_commands
-    (commands text unique)
-"""
-default_command_table_query = """
-    INSERT INTO
-        recognized_commands
-    VALUES
-        (%s)
-    ON CONFLICT DO NOTHING
-"""
+    (commands text unique)"""
 append_command_table_query = """
     INSERT INTO
         recognized_commands
     VALUES
         (%s)
-    ON CONFLICT DO NOTHING
-"""
+    ON CONFLICT DO NOTHING"""
 select_commands = """
     SELECT
         commands
     FROM
-        recognized_commands
-"""
+        recognized_commands"""
 
-# CONVERSATION TABLE QUERIES
+### CONVERSATION TABLE FUNCTIONS ###
+def create_conversation_table():
+    execute_query(create_conversation_table_query)
+    execute_query(append_conversation_table_query, ('hi','hey!','default'))
+
+def append_conversation_table(greeting, response, creator_id):
+    execute_query(append_conversation_table_query, (greeting, response, creator_id))
+
+def fetch_all_greetings():
+    return fetch_query(select_greetings) 
+
+def response(greeting):
+    return fetch_query(select_response, (greeting,))
+
+def delete_greeting(greeting, user_id, master_id):
+    check_id = fetch_query(get_creator_id, (greeting,))
+    print(f"checking user_id: {user_id} against stored id: {check_id}.") 
+    if user_id == check_id or user_id == master_id:
+        print(f"Attempting to delete {greeting}")
+        execute_query(delete_greeting_query, (greeting,))
+        return 1
+
+### CONVERSATION TABLE QUERIES ###
 create_conversation_table_query = """
     CREATE TABLE IF NOT EXISTS
         conversation
-    (greeting text unique, response text)
-"""
-default_conversation_table_query = """
-    INSERT INTO
-        conversation
-    VALUES
-        ('hi', 'hey!')
-    ON CONFLICT DO NOTHING
-"""
+    (greeting text unique, response text, creator_id text)"""
 append_conversation_table_query = """
     INSERT INTO
         conversation
     VALUES
-        (%s, %s)
-    ON CONFLICT DO NOTHING
-"""
+        (%s, %s, %s)
+    ON CONFLICT DO NOTHING"""
 select_greetings = """
     SELECT
         greeting
     FROM
-        conversation
-"""
+        conversation"""
 select_response = """
     SELECT
         response
     FROM
         conversation
     WHERE
+        greeting=%s"""
+get_creator_id = """
+    SELECT 
+        creator_id
+    FROM
+        conversation
+    WHERE
+        greeting=%s"""
+delete_greeting_query = """
+    DELETE FROM
+        conversation
+    WHERE
         greeting=%s
+"""
+
+
+#GENERAL QUERIES
+select_all_columns = """
+    SELECT 
+        column_name
+    FROM 
+        information_schema.columns 
+    WHERE 
+        table_name={}
+"""
+
+get_column_query = """
+    SELECT 
+        column_name
+    FROM 
+        information_schema.columns 
+    WHERE 
+        table_name={}
+    LIMIT 1
 """
