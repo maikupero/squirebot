@@ -73,7 +73,6 @@ async def attend(ctx):
 
 @bot.command(aliases=["randomciv"])
 async def aoe(ctx, *, arg=None):
-    print(f"ARG IS: {arg}")
     await helpers.aoe4.randomciv(ctx, arg)
 
 @bot.command()
