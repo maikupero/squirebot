@@ -35,11 +35,11 @@ async def on_message(message):
 
     if message.content.startswith('sb.'):
         firstword = message.content[3:].split(' ')
-        if firstword[0] in sql_db.commands():
+        if firstword[0] in sql_db.fetch_all_commands():
             return
         else:
             print(f"Attempting to handle '{message.content[3:]}' command from {message.author}")
-            if message.content[3:] in sql_db.greetings():
+            if message.content[3:] in sql_db.fetch_all_greetings():
                 await message.channel.send(str(sql_db.response(message.content[3:]))[2:-2])
             else:
                 await helpers.dbstuff.new_conversation(message, bot)
@@ -49,10 +49,10 @@ async def on_message(message):
 ### Database Stuff ###
 @bot.command()
 async def greetings(ctx):
-    await ctx.send(f"Current list of greetings: {str(sql_db.greetings())[1:-1]}")
+    await ctx.send(f"Current list of greetings: {str(sql_db.fetch_all_greetings())[1:-1]}")
 @bot.command()
 async def cmds(ctx):
-    await ctx.send(f"Current list of commands: {str(sql_db.commands())[1:-1]}")
+    await ctx.send(f"Current list of commands: {str(sql_db.fetch_all_commands())[1:-1]}")
 @bot.command()
 async def tables(ctx):
     await ctx.send(f"Tables in the database: {str(sql_db.fetch_tables())[1:-1]}")
