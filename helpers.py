@@ -11,46 +11,47 @@ class checks:
     def check_same_user(ctx,msg):
         return msg.author == ctx.author and msg.channel == ctx.channel
 
-class service:
+class dbstuff:
     async def new_conversation(message, bot):
         greeting = message.content[3:]
-        await message.channel.send(f"Oh! I don't know '{greeting}' yet. Is that a command? If not, how should I respond?")
+        creator_id = message.author.id
+        await message.channel.send(f"Oh, I don't know '{greeting}' yet. What should I say? (nvm, cancel, etc. to cancel)")
         def check(msg):
             return msg.author == message.author and msg.channel == message.channel
         try:
             msg = await bot.wait_for("message", check=check, timeout=30)
             response = str(msg.content)
-            if response in nvm:
+            if response.lower() in nvm:
                 return
             if "command" in response or "cmd" in response:
-                sql_db.append_command_table(greeting)
-                await message.channel.send(f"Got it! Added {greeting} to our list of recognized commands.")
+                await message.channel.send(f"Here are my stored commands. Or try sb.help!")
             else:
-                sql_db.append_conversation_table(greeting, response)
-                await message.channel.send(f"Got it! Stored greeting '{greeting}' with response '{response}'.")
+                sql_db.append_conversation_table(greeting, response, creator_id)
+                await message.channel.send(f"Got it! Storing greeting '{greeting}' with response '{response}'.")
         except asyncio.TimeoutError:
             await message.channel.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
 
     async def deletefrom(bot, ctx, arg):
-        def mastercheck(msg):
-            return msg.author == ctx.author and msg.channel == ctx.channel and msg.author.id == 351169614119698435
-        #TO DO: def usercheck (if they made the command)
-        if arg and arg in sql_db.fetch_tables():
-            await ctx.send(f"Specify item (or comma separated list of items) in {arg}: {sql_db.fetch_all_rows(arg)}")
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == ctx.channel
+        master_id = 351169614119698435
+        creator_id = ctx.author.id
+
+        if "greeting" in arg or "conversation" in arg:
+            await ctx.send(f"Specify item (or comma separated list of items) from:\n{sql_db.fetch_all_greetings()}")
             try:
-                msg = await bot.wait_for("message", check=mastercheck, timeout=30)
-                try:
-                    for word in msg.content.split(","):
-                        await ctx.send(f"Deleting: {word.strip()}")
-                        sql_db.delete_row(arg, word.strip())
-                    await ctx.send("Success!")
-                except:
-                    await ctx.send("Still some issue in the delete row function")
+                msg = await bot.wait_for("message", check=check, timeout=30)
+                for word in msg.content.split(","):
+                    if sql_db.delete_greeting(word.strip(), creator_id, master_id) == 1:
+                        await ctx.send(f"Deleted: {word.strip()}")
+                    else:
+                        await ctx.send(f"Insufficient permissions to delete: {word.strip()}")
             except asyncio.TimeoutError:
                 await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
         else:
-            await ctx.send(f"Try again from one of these tables: {sql_db.fetch_tables()}")
+            await ctx.send(f"Specify the table to delete from! i.e. `sb.deletefrom greetings`")
     
+class service:
     def attend():
         responses = ["Ready, sir.", "As you order, sir.", "What can I do for you?", "Work work.", 
         "Something need doing?", "How can I help you, sir?", "How can I be of service, my lord?"]
@@ -131,13 +132,18 @@ class service:
 
 
 class aoe4:
-    def randomciv(ctx):
-        num = random.randint(0,7)
-        civs = ["The Abbasid Dynasty","The Chinese","The Delhi Sultanate","The French","The English","The Holy Roman Empire","The Mongols","The Rus Civilization"]
-        flags = ["abbasid","chinese","delhi","french","english","hre","mongols","rus"]
-        civ = civs[num]
-        flag = discord.utils.get(ctx.guild.emojis, name=flags[num])
-        return f'{flag} {flag} {flag} {civ} {flag} {flag} {flag}'
+    async def randomciv(ctx, arg):
+        if arg and arg > 0 and arg < 9:
+            civcount = arg
+        else: 
+            civcount = 1
+        for i in range(civcount):
+            num = random.randint(0,7)
+            civs = ["The Abbasid Dynasty","The Chinese","The Delhi Sultanate","The French","The English","The Holy Roman Empire","The Mongols","The Rus Civilization"]
+            flags = ["abbasid","chinese","delhi","french","english","hre","mongols","rus"]
+            civ = civs[num]
+            flag = discord.utils.get(ctx.guild.emojis, name=flags[num])
+            await ctx.send(f'{flag} {flag} {flag} {civ} {flag} {flag} {flag}')
 
 class dota:
     def dota_help():

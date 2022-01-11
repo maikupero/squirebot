@@ -21,16 +21,16 @@ bot = DiscordBot(
     help_command=None,
 )
 
+
+
 @bot.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
 
-# Figure out how to get flexible commands for greetings
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
-    # https://stackoverflow.com/questions/62076257/discord-py-bot-event
     await bot.process_commands(message)
 
     if message.content.startswith('sb.'):
@@ -42,7 +42,9 @@ async def on_message(message):
             if message.content[3:] in sql_db.greetings():
                 await message.channel.send(str(sql_db.response(message.content[3:]))[2:-2])
             else:
-                await helpers.service.new_conversation(message, bot)
+                await helpers.dbstuff.new_conversation(message, bot)
+
+
 
 ### Database Stuff ###
 @bot.command()
@@ -56,8 +58,9 @@ async def tables(ctx):
     await ctx.send(f"Tables in the database: {str(sql_db.fetch_tables())[1:-1]}")
 @bot.command()
 async def deletefrom(ctx, *, arg=None):
-    print(ctx.author.id)
-    await helpers.service.deletefrom(bot, ctx, arg)
+    await helpers.dbstuff.deletefrom(bot, ctx, arg)
+
+
 
 ### LIL ONES ###
 @bot.command()
@@ -69,13 +72,15 @@ async def attend(ctx):
     await ctx.send(helpers.service.attend())
 
 @bot.command(aliases=["randomciv"])
-async def aoe(ctx, *args):   
-    await ctx.send(helpers.aoe4.randomciv(ctx))
+async def aoe(ctx, *, arg=None):   
+    await helpers.aoe4.randomciv(ctx, arg)
 
 @bot.command()
 async def guess(ctx):
     await helpers.games.guess(ctx, bot)
     
+
+
 ### BIG ONES ###
 @bot.command(aliases=["dop", "doto", "dotes"])
 async def dota(ctx, *, arg=None):
