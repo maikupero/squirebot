@@ -1,6 +1,7 @@
 import psycopg2
 import os
 from psycopg2 import sql
+from lists import default_commands, heroes
 
 DB = os.environ['DATABASE_URL']
 
@@ -52,7 +53,6 @@ select_tables = """
 ### COMMAND TABLE FUNCTIONS ###
 def create_command_table():
     execute_query(create_command_table_query)
-    default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe','randomciv','deletefrom','greetings','conversation','commands','tables']
     for command in default_commands:
         execute_query(append_command_table_query, (command,))
 
@@ -147,6 +147,35 @@ delete_greeting_query = """
     WHERE
         greeting=%s
 """
+
+
+
+### DOTA TABLE FUNCTIONS ###
+def create_hero_table():
+    execute_query(create_hero_table_query)
+    for i in range(len(heroes)):
+        execute_query(append_hero_table_query, (i+1, heroes[i]))
+
+def create_str_pool():
+    execute_query(create_pool_query)
+
+### DOTA TABLE QUERIES ###
+create_hero_table_query = """
+    CREATE TABLE IF NOT EXISTS
+        heroes
+    (id INT, hero_name TEXT"""
+append_hero_table_query = """
+    INSERT INTO
+        heroes
+    VALUES
+        (%s, %s)
+    ON CONFLICT DO NOTHING"""
+create_pool_query = """
+    CREATE TABLE IF NOT EXISTS
+        (%s)"""
+
+
+
 
 
 #GENERAL QUERIES
