@@ -4,7 +4,7 @@ import requests
 import sql_db
 import asyncio
 
-from lists import nvm, heroes, stre, agil, inte, role1, role2, role3, role4, role5, supps, cores, jungle
+from lists import nvm, heroes, hero_abbrevs, stre, agil, inte, role1, role2, role3, role4, role5, supps, cores, jungle
 
 class CHECKS:
     def check_same_user(ctx,msg):
@@ -147,9 +147,9 @@ class DOTA:
     def dota_help():
         top = "Dota sucks. Use `sb.dota (command)`."
         hr = "___________________Command List_____________________"
-        random = "random () : If unspecified suggests a random hero to play.\n Otherwise, can specify team, attribute, role, pool, theme.\n // `sb.dota random core` • `sb.dota random 3` • `sb.dota random team` //"
-        hero = "hero_name : Gives all stored info on provided hero\n // `sb.dota hero earthshaker` //"
-        append = "append (): Begins dialogue towards adding a new pool, hero, or hero info to the DB.\n // `sb.dota append` //"
+        random = "random () : If unspecified suggests a random hero to play. Otherwise, can specify team or pool.\n// `sb.dota random core` • `sb.dota random 3` • `sb.dota random team` //"
+        hero = "hero_name : Gives all stored info on provided hero. If two words, use abbreviation.\n// `sb.dota hero earthshaker` //"
+        append = "append () : Begins dialogue towards adding a new pool to the DB.\n// `sb.dota append` //"
         return (f"{top}\n{hr}\n```{random}\n{hero}\n{append}```")
 
     def randomdop(ctx, pool):
@@ -208,26 +208,23 @@ class DOTA:
         
         return " • ".join(new_team)
     
-    async def dota_db(ctx, arg, conn):
-        cur = conn.cursor()
-        if arg.startswith('pool'):
-            cmd = arg[5:]
-            cur.execute("SELECT * FROM test;")
-        elif arg.startswith("team"):
-            cmd = arg[5:]
-            cur.execute("SELECT * FROM test;")
-        elif arg.startswith("append"):
-            if arg == "append":
-                await ctx.send("Specify what you'd like to add/edit! Try `sb.dota pool (name)` to see lists.")
-            else:
-                db_command = arg[7:]
-                if db_command == "pool":
-                    # If table doesn't exist, create it. send a success message.
-                    cur.execute("CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);")
-                    # if table does exist, send a failure message.
-        cur.close()
+    async def dota_db(ctx, arg):
+        print(arg)
+        if arg.capitalize() in heroes or arg in hero_abbrevs.keys():
+            if arg in hero_abbrevs.keys():
+                hero = hero_abbrevs[arg]
+            else: 
+                hero = arg.capitalize()
+            await ctx.send(f"Got hero from arg: {hero}")
+        elif arg.startswith("random"):
+            await ctx.send(DOTA.randomdop(ctx, arg))
+        elif arg.startswith('pool'):
+            return
+        elif arg == 'append':
+            await ctx.send("Specify what you'd like to add/edit! Try `sb.dota pool (name)` to see lists.")
+        else:
+            await ctx.send("Sorry, try again with some new dota request.")
        
-
 class GAMES:
     async def guess(ctx, bot):
         num = random.randint(1, 10)

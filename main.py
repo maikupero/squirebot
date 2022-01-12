@@ -36,7 +36,7 @@ async def on_message(message):
     if message.content.startswith('sb.'):
         checkingfirst = message.content[3:].split(' ')
         firstword = checkingfirst[0]
-        if firstword in sql_db.fetch_all_commands() or message.content[3:].capitalize() in heroes:
+        if firstword in sql_db.fetch_all_commands():
             return
         else:
             greeting = message.content[3:53].replace(",", "")
@@ -89,16 +89,7 @@ async def dota(ctx, *, arg=None):
     if arg == None:
         await ctx.send(helpers.DOTA.dota_help())
     else:
-        conn = sql_db.connect(DB)
-        print(f"Handling request: {arg} from {ctx.author} on connection {conn}")
-        if arg.startswith("random"):
-            await ctx.send(helpers.DOTA.randomdop(ctx, arg))
-        else:
-            await helpers.DOTA.dota_db(ctx, arg, conn)
-        conn.close()
-@bot.command(aliases=heroes)
-async def heroinfo(ctx):
-    await ctx.send(f"Looking up {ctx.message.content[3:].capitalize()}...")
+        await helpers.DOTA.dota_db(ctx, arg)
 
 @bot.command()     
 async def weather(ctx, *, arg=None):
