@@ -91,7 +91,7 @@ async def dota(ctx, *, arg=None):
         conn = sql_db.connect(DB)
         print(f"Handling request: {arg} from {ctx.author} on connection {conn}")
         if arg.startswith("random"):
-            await ctx.send(helpers.DOTA.randomdop(ctx, arg, conn))
+            await ctx.send(helpers.DOTA.randomdop(ctx, arg))
         else:
             await helpers.DOTA.dota_db(ctx, arg, conn)
         conn.close()
