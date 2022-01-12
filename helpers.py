@@ -30,9 +30,9 @@ class DBSTUFF:
     async def deletefrom(bot, ctx, arg):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel
-        master_id = ctx.guild.owner.id
-        print(f"Master id is {master_id}, and ctx is:")
-        print(i for i in ctx)
+        master_id = ctx.Guild.owner
+        print(f"Master id is {master_id}")
+        print(f"Or is it: {ctx.guild.ownerID}?")
         user_id = ctx.author.id
 
         if arg in ["greeting", "greetings", "conversation", "response"]:
