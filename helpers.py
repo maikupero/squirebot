@@ -32,11 +32,9 @@ class DBSTUFF:
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel
         master_id = ctx.guild.owner_id
-        print(f"Master id is {master_id}")
         user_id = ctx.author.id
-        print(f"User id is {user_id}")
 
-        if arg == ["greetings","conversation"]:
+        if arg in ["greetings","conversation"]:
             await ctx.send(f"Specify item (or comma separated list of items) from:\n{str(sql_db.fetch_all_greetings())[1:-1]}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
