@@ -31,7 +31,7 @@ class DBSTUFF:
     async def deletefrom(bot, ctx, arg):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel
-        master_id = bot.guild.owner_id
+        master_id = ctx.guild.owner_id
         print(f"Master id is {master_id}")
         user_id = ctx.author.id
         print(f"User id is {user_id}")
