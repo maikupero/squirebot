@@ -20,6 +20,7 @@ class DBSTUFF:
             msg = await bot.wait_for("message", check=check, timeout=30)
             response = str(msg.content)
             if response.lower() in nvm:
+                await message.channel.send("No problemo.")
                 return
             else:
                 sql_db.append_conversation_table(greeting, response, creator_id)
@@ -30,10 +31,8 @@ class DBSTUFF:
     async def deletefrom(bot, ctx, arg):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel
-        master_id = ctx.Guild.owner
-        master_id_b = ctx.guild.ownerID
+        master_id = ctx.guild.ownerID
         print(f"Master id is {master_id}")
-        print(f"Or is it: {master_id_b}?")
         user_id = ctx.author.id
         print(f"User id is {user_id}")
 
