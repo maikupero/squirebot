@@ -152,7 +152,7 @@ delete_greeting_query = """
 
 ### DOTA TABLE FUNCTIONS ###    
 def create_dota_tables():
-    execute_query(delete_hero_table_query)
+    # execute_query(delete_hero_table_query)
     execute_query(create_hero_table_query)
     for hero in heroes:
         execute_query(append_hero_table_query, (hero,))
