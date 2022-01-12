@@ -46,12 +46,6 @@ select_tables = """
     WHERE 
         table_schema='public'
 """
-# query = sql.SQL("SELECT {field} FROM {table} WHERE {pkey} = %s").format(
-#     field=sql.Identifier('my_name'),
-#     table=sql.Identifier('some_table'),
-#     pkey=sql.Identifier('id'))
-
-#     sql.SQL("INSERT INTO {} VALUES (%s, %s)").format(sql.Identifier('my_table')), [10, 20])
 
 
 
@@ -93,6 +87,9 @@ delete_command_query = """
         recognized_commands
     WHERE
         commands=%s"""
+
+
+
 ### CONVERSATION TABLE FUNCTIONS ###
 def create_conversation_table():
     execute_query(create_conversation_table_query)
@@ -108,7 +105,6 @@ def response(greeting):
     return fetch_query(select_response, (greeting,))
 
 def delete_greeting(greeting, user_id, master_id):
-    # Change fetch query to have a fetch one optional arg, build the check into the delete query.
     check_id = fetch_query(get_creator_id, (greeting,))
     if str(user_id) in [check_id[0], str(master_id)]:
         print(f"Attempting to delete {greeting}")

@@ -152,7 +152,7 @@ class DOTA:
         append = "append (): Begins dialogue towards adding a new pool, hero, or hero info to the DB.\n // `sb.dota append` //"
         return (f"{top}\n{hr}\n```{random}\n{hero}\n{append}```")
 
-    def randomdop(ctx, pool, conn):
+    def randomdop(ctx, pool):
         if len(pool.strip()) > 6:
             pool = pool[7:]
         if pool == "random":
@@ -182,8 +182,8 @@ class DOTA:
         new_team = []
         seed = random.randint(1,2)
         if seed == 1:
-            core_count = random.sample(cores, k=random.randint(1,3))
-            support_count = random.sample(supps, k=random.randint(1,2))
+            core_count = random.sample(cores, k=random.randint(1,2))
+            support_count = random.sample(supps, k=random.randint(1,3))
             remaining_random = 5 - len(core_count) - len(support_count)
 
             new_team.extend(core_count)
