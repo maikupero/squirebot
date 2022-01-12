@@ -113,5 +113,5 @@ async def weather(ctx, *, arg=None):
 if __name__ == "__main__":
     sql_db.create_conversation_table()
     sql_db.create_command_table()
-    sql_db.create_hero_table()
+    sql_db.create_dota_tables()
     bot.run(MYTOKEN)
