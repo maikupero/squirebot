@@ -59,7 +59,7 @@ select_tables = """
 ### COMMAND TABLE FUNCTIONS ###
 def create_command_table():
     execute_query(create_command_table_query)
-    default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe',',randomciv','deletefrom', 'greetings', 'commands', 'tables']
+    default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe','randomciv','deletefrom', 'greetings', 'commands', 'tables']
     for command in default_commands:
         execute_query(append_command_table_query, (command,))
 
@@ -109,9 +109,9 @@ def response(greeting):
     return fetch_query(select_response, (greeting,))
 
 def delete_greeting(greeting, user_id, master_id):
+    # Change fetch query to have a fetch one optional arg, build the check into the delete query.
     check_id = fetch_query(get_creator_id, (greeting,))
-    print(f"checking user_id: ({type(user_id)}){user_id} against stored id: ({type(check_id)}){check_id}.") 
-    if str(user_id) == check_id[0] or user_id == master_id:
+    if str(user_id) in [check_id[0], str(master_id)]:
         print(f"Attempting to delete {greeting}")
         execute_query(delete_greeting_query, (greeting,))
         return 1
