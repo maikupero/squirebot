@@ -1,4 +1,3 @@
-from discord.ext.commands.core import check
 import psycopg2
 import os
 from psycopg2 import sql
