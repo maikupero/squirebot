@@ -36,7 +36,7 @@ class DBSTUFF:
         user_id = ctx.author.id
         print(f"User id is {user_id}")
 
-        if arg in ["greeting", "greetings", "conversation", "response"]:
+        if arg == ["greetings","conversation"]:
             await ctx.send(f"Specify item (or comma separated list of items) from:\n{str(sql_db.fetch_all_greetings())[1:-1]}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
