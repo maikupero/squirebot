@@ -31,7 +31,8 @@ class DBSTUFF:
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel
         master_id = ctx.guild.owner.id
-        print(f"Master id is {master_id}")
+        print(f"Master id is {master_id}, and ctx is:")
+        print(i for i in ctx)
         user_id = ctx.author.id
 
         if arg in ["greeting", "greetings", "conversation", "response"]:
@@ -45,7 +46,7 @@ class DBSTUFF:
                         await ctx.send(f"{word.strip()} is not yours to delete!")
             except asyncio.TimeoutError:
                 await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
-        else:
+        else:   
             await ctx.send("Try `sb.deletefrom greetings` or `sb.deletefrom commands`")
     
 class SERVICE:

@@ -33,7 +33,8 @@ async def on_message(message):
     await bot.process_commands(message)
 
     if message.content.startswith('sb.'):
-        greeting = message.content[3:].split(' ')
+        firstword = message.content[3:].split(' ')
+        greeting = firstword[0]
         if greeting in sql_db.fetch_all_commands():
             return
         else:
