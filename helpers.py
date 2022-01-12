@@ -13,7 +13,7 @@ class CHECKS:
 class DBSTUFF:
     async def new_conversation(message, bot, greeting):
         creator_id = message.author.id
-        await message.channel.send(f"Oh, I don't know '{greeting}' yet. What should I say? (nvm, cancel, etc. to cancel)")
+        await message.channel.send(f"Oh, '{greeting}'. What should I say? No comma's please! (nvm, cancel, etc. to cancel)")
         def check(msg):
             return msg.author == message.author and msg.channel == message.channel
         try:

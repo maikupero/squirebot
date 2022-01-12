@@ -33,11 +33,12 @@ async def on_message(message):
     await bot.process_commands(message)
 
     if message.content.startswith('sb.'):
-        firstword = message.content[3:].split(' ')
-        greeting = firstword[0]
-        if greeting in sql_db.fetch_all_commands():
+        checkingfirst = message.content[3:].split(' ')
+        firstword = checkingfirst[0]
+        if firstword in sql_db.fetch_all_commands():
             return
         else:
+            greeting = message.content[3:].replace(",", "")
             print(f"Attempting to handle '{greeting}' command from {message.author}")
             if greeting in sql_db.fetch_all_greetings():
                 await message.channel.send(str(sql_db.response(greeting))[2:-2])
