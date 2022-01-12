@@ -1,7 +1,7 @@
 import psycopg2
 import os
 from psycopg2 import sql
-from lists import default_commands, heroes
+from lists import default_commands, heroes, stre, agil, inte
 
 DB = os.environ['DATABASE_URL']
 
@@ -154,26 +154,27 @@ delete_greeting_query = """
 def create_dota_tables():
     execute_query(delete_hero_table_query)
     execute_query(create_hero_table_query)
-    for i in range(len(heroes)):
-        execute_query(append_hero_table_query, (i+1, heroes[i]))
-
-def create_str_pool():
-    execute_query(create_pool_query)
-
+    for hero in heroes:
+        execute_query(append_hero_table_query, (hero,))
 ### DOTA TABLE QUERIES ###
 delete_hero_table_query = """
-    DELETE FROM
+    DROP TABLE
         heroes"""
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
         heroes
-    (id INT, hero_name TEXT, PRIMARY KEY (id))"""
+    (hero_name TEXT, attribute TEXT, role1 BOOL, core BOOL, support BOOL, role2 BOOL, role3 BOOL, role4 BOOL, role5 BOOL, PRIMARY KEY (hero_name))"""
 append_hero_table_query = """
     INSERT INTO
         heroes
     VALUES
-        (%s, %s)
+        (%s)
     ON CONFLICT DO NOTHING"""
+append_str_table_query = """
+    INSERT INTO
+        strength_heroes
+    VALUES
+        ("""
 create_pool_query = """
     CREATE TABLE IF NOT EXISTS
         (%s)"""
