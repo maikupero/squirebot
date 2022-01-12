@@ -5,15 +5,13 @@ import sql_db
 import asyncio
 
 from lists import nvm, heroes, stre, agil, inte, role1, role2, role3, role4, role5, supps, cores, jungle
-#CAPITALIZE CLASS NAMES PEP STYLE GUIDES
 
-class checks:
+class CHECKS:
     def check_same_user(ctx,msg):
         return msg.author == ctx.author and msg.channel == ctx.channel
 
-class dbstuff:
-    async def new_conversation(message, bot):
-        greeting = message.content[3:]
+class DBSTUFF:
+    async def new_conversation(message, bot, greeting):
         creator_id = message.author.id
         await message.channel.send(f"Oh, I don't know '{greeting}' yet. What should I say? (nvm, cancel, etc. to cancel)")
         def check(msg):
@@ -23,8 +21,6 @@ class dbstuff:
             response = str(msg.content)
             if response.lower() in nvm:
                 return
-            if "command" in response or "cmd" in response:
-                await message.channel.send(f"Here are my stored commands. Or try sb.help!")
             else:
                 sql_db.append_conversation_table(greeting, response, creator_id)
                 await message.channel.send(f"Got it! Storing greeting '{greeting}' with response '{response}'.")
@@ -34,10 +30,11 @@ class dbstuff:
     async def deletefrom(bot, ctx, arg):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel
-        master_id = 351169614119698435
+        master_id = ctx.guild.owner.id
+        print(f"Master id is {master_id}")
         user_id = ctx.author.id
 
-        if "greeting" in arg or "conversation" in arg:
+        if arg in ["greeting", "greetings", "conversation", "response"]:
             await ctx.send(f"Specify item (or comma separated list of items) from:\n{str(sql_db.fetch_all_greetings())[1:-1]}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
@@ -48,24 +45,10 @@ class dbstuff:
                         await ctx.send(f"{word.strip()} is not yours to delete!")
             except asyncio.TimeoutError:
                 await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
-
-        elif "command" in arg or "cmd" in arg:
-            if user_id == master_id:
-                await ctx.send(f"Specify item (or comma separated list of items) from:\n{sql_db.fetch_all_commands()}")
-                try:
-                    msg = await bot.wait_for("message", check=check, timeout=30)
-                    for word in msg.content.split(","):
-                        sql_db.delete_command(word.strip())
-                        await ctx.send(f"Deleted: {word.strip()}")
-                except asyncio.TimeoutError:
-                    await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
-            else:
-                await ctx.send("Only the server owner can delete commands.")
-
         else:
             await ctx.send("Try `sb.deletefrom greetings` or `sb.deletefrom commands`")
     
-class service:
+class SERVICE:
     def attend():
         responses = ["Ready, sir.", "As you order, sir.", "What can I do for you?", "Work work.", 
         "Something need doing?", "How can I help you, sir?", "How can I be of service, my lord?"]
@@ -145,7 +128,7 @@ class service:
             
 
 
-class aoe4:
+class AOE4:
     async def randomciv(ctx, arg):
         if arg:
             if int(arg) > 0 and int(arg) < 9:
@@ -160,7 +143,7 @@ class aoe4:
             flag = discord.utils.get(ctx.guild.emojis, name=flags[num])
             await ctx.send(f'{flag} {flag} {flag} {civ} {flag} {flag} {flag}')
 
-class dota:
+class DOTA:
     def dota_help():
         top = "Dota sucks. Use `sb.dota (command)`."
         hr = "___________________Command List_____________________"
@@ -193,7 +176,7 @@ class dota:
         elif pool.startswith("jung"):
             return random.choice(jungle)
         elif pool == "team":
-            return dota.generate_team()
+            return DOTA.generate_team()
         
     def generate_team():
         new_team = []
@@ -245,13 +228,13 @@ class dota:
         cur.close()
        
 
-class games:
+class GAMES:
     async def guess(ctx, bot):
         num = random.randint(1, 10)
         await ctx.send('Guess a number 1-10')
         
         def guess_check(msg):
-            return checks.check_same_user(ctx, msg) and int(msg.content) in range(1, 11)
+            return CHECKS.check_same_user(ctx, msg) and int(msg.content) in range(1, 11)
         msg = await bot.wait_for("message", check=guess_check)
     
         if int(msg.content) == num:

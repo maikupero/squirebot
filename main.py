@@ -33,15 +33,15 @@ async def on_message(message):
     await bot.process_commands(message)
 
     if message.content.startswith('sb.'):
-        firstword = message.content[3:].split(' ')
-        if firstword[0] in sql_db.fetch_all_commands():
+        greeting = message.content[3:].split(' ')
+        if greeting in sql_db.fetch_all_commands():
             return
         else:
-            print(f"Attempting to handle '{message.content[3:]}' command from {message.author}")
-            if message.content[3:] in sql_db.fetch_all_greetings():
-                await message.channel.send(str(sql_db.response(message.content[3:]))[2:-2])
+            print(f"Attempting to handle '{greeting}' command from {message.author}")
+            if greeting in sql_db.fetch_all_greetings():
+                await message.channel.send(str(sql_db.response(greeting))[2:-2])
             else:
-                await helpers.dbstuff.new_conversation(message, bot)
+                await helpers.DBSTUFF.new_conversation(message, bot, greeting)
 
 
 
@@ -57,26 +57,26 @@ async def tables(ctx):
     await ctx.send(f"Tables in the database: {str(sql_db.fetch_tables())[1:-1]}")
 @bot.command()
 async def deletefrom(ctx, *, arg=None):
-    await helpers.dbstuff.deletefrom(bot, ctx, arg)
+    await helpers.DBSTUFF.deletefrom(bot, ctx, arg)
 
 
 
 ### LIL ONES ###
 @bot.command()
 async def help(ctx, *, arg=None):
-    await ctx.send(helpers.service.help(ctx, arg))
+    await ctx.send(helpers.SERVICE.help(ctx, arg))
 
 @bot.command()
 async def attend(ctx):
-    await ctx.send(helpers.service.attend())
+    await ctx.send(helpers.SERVICE.attend())
 
 @bot.command(aliases=["randomciv"])
 async def aoe(ctx, *, arg=None):
-    await helpers.aoe4.randomciv(ctx, arg)
+    await helpers.AOE4.randomciv(ctx, arg)
 
 @bot.command()
 async def guess(ctx):
-    await helpers.games.guess(ctx, bot)
+    await helpers.GAMES.guess(ctx, bot)
     
 
 
@@ -84,14 +84,14 @@ async def guess(ctx):
 @bot.command(aliases=["dop", "doto", "dotes"])
 async def dota(ctx, *, arg=None):
     if arg == None:
-        await ctx.send(helpers.dota.dota_help())
+        await ctx.send(helpers.DOTA.dota_help())
     else:
         conn = sql_db.connect(DB)
         print(f"Handling request: {arg} from {ctx.author} on connection {conn}")
         if arg.startswith("random"):
-            await ctx.send(helpers.dota.randomdop(ctx, arg, conn))
+            await ctx.send(helpers.DOTA.randomdop(ctx, arg, conn))
         else:
-            await helpers.dota.dota_db(ctx, arg, conn)
+            await helpers.DOTA.dota_db(ctx, arg, conn)
         conn.close()
 
 @bot.command()     
@@ -102,11 +102,11 @@ async def weather(ctx, *, arg=None):
             return msg.author == ctx.author and msg.channel == ctx.channel
         try:
             location = await bot.wait_for("message", check=check, timeout=30) # 30 seconds to reply
-            await helpers.service.weather(ctx, location.content, MAPS_TOKEN)
+            await helpers.SERVICE.weather(ctx, location.content, MAPS_TOKEN)
         except asyncio.TimeoutError:
             await ctx.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
     else:
-        await helpers.service.weather(ctx, arg, MAPS_TOKEN)
+        await helpers.SERVICE.weather(ctx, arg, MAPS_TOKEN)
 
 if __name__ == "__main__":
     sql_db.create_conversation_table()
