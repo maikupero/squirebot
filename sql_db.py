@@ -170,14 +170,6 @@ append_hero_table_query = """
     VALUES
         (%s)
     ON CONFLICT DO NOTHING"""
-append_str_table_query = """
-    INSERT INTO
-        strength_heroes
-    VALUES
-        ("""
-create_pool_query = """
-    CREATE TABLE IF NOT EXISTS
-        (%s)"""
 
 
 
