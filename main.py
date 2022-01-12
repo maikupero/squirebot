@@ -5,7 +5,7 @@ import asyncio
 import discord
 from discord.ext.commands import Bot as DiscordBot
 
-from lists import heroes
+from lists import hero_commands
 import helpers
 
 # Env variables. # Network & Database connections through psycopg2, postgres, heroku. 
@@ -36,7 +36,7 @@ async def on_message(message):
     if message.content.startswith('sb.'):
         checkingfirst = message.content[3:].split(' ')
         firstword = checkingfirst[0]
-        if firstword in sql_db.fetch_all_commands():
+        if firstword in sql_db.fetch_all_commands() or message.content[3:] in hero_commands:
             return
         else:
             greeting = message.content[3:53].replace(",", "")
@@ -96,9 +96,10 @@ async def dota(ctx, *, arg=None):
         else:
             await helpers.DOTA.dota_db(ctx, arg, conn)
         conn.close()
-@bot.command(aliases=heroes)
+@bot.command(aliases=hero_commands)
 async def heroinfo(ctx):
-    await ctx.send(f"Looking up {ctx.content[3:]}...")
+    await ctx.send(f"Looking up {ctx.message.content[3:]}...")
+
 @bot.command()     
 async def weather(ctx, *, arg=None):
     if arg == None:
