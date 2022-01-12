@@ -58,7 +58,7 @@ select_tables = """
 ### COMMAND TABLE FUNCTIONS ###
 def create_command_table():
     execute_query(create_command_table_query)
-    default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe','randomciv','deletefrom', 'greetings', 'commands', 'tables']
+    default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe','randomciv','deletefrom','greetings','conversation','commands','tables']
     for command in default_commands:
         execute_query(append_command_table_query, (command,))
 
