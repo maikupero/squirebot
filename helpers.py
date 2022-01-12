@@ -31,9 +31,11 @@ class DBSTUFF:
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel
         master_id = ctx.Guild.owner
+        master_id_b = ctx.guild.ownerID
         print(f"Master id is {master_id}")
-        print(f"Or is it: {ctx.guild.ownerID}?")
+        print(f"Or is it: {master_id_b}?")
         user_id = ctx.author.id
+        print(f"User id is {user_id}")
 
         if arg in ["greeting", "greetings", "conversation", "response"]:
             await ctx.send(f"Specify item (or comma separated list of items) from:\n{str(sql_db.fetch_all_greetings())[1:-1]}")
