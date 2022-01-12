@@ -62,13 +62,13 @@ class SERVICE:
         header = ":man_bowing::man_bowing::man_bowing: Command list: `sb.(commandgoeshere)` :man_bowing::man_bowing::man_bowing:"
         hr = "________________________________________"
         help = "`help` (Very wise, sir, figuring this one out already)."
-        dbstuff = "`sb.greetings` Lists all stored phrases. sb.deletefrom greetings to remove ones you made."
+        greet = "`(various greetings)` :wave:"
         attend = "`attend` What does my lord require?"
         guess = "`guess` Game with your boi."
         weather = "`weather` :white_sun_cloud:"
         dota = f"`dota` {discord.utils.get(ctx.guild.emojis, name='omni')}"
         aoe = f"`randomciv`/`aoe`/`civ` {discord.utils.get(ctx.guild.emojis, name='hre')}"
-        return f"{tag}\n{header}\n{hr}\n{help}\n{dbstuff}\n{attend}\n{guess}\n{weather}\n{dota}\n{aoe}"
+        return f"{tag}\n{header}\n{hr}\n{help}\n{greet}\n{attend}\n{guess}\n{weather}\n{dota}\n{aoe}"
 
     async def weather(ctx, location, api):
         base_url = "https://api.openweathermap.org/data/2.5/weather?"
