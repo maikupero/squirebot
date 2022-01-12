@@ -150,8 +150,9 @@ delete_greeting_query = """
 
 
 
-### DOTA TABLE FUNCTIONS ###
+### DOTA TABLE FUNCTIONS ###    
 def create_dota_tables():
+    execute_query(delete_hero_table_query)
     execute_query(create_hero_table_query)
     for i in range(len(heroes)):
         execute_query(append_hero_table_query, (i+1, heroes[i]))
@@ -160,6 +161,9 @@ def create_str_pool():
     execute_query(create_pool_query)
 
 ### DOTA TABLE QUERIES ###
+delete_hero_table_query = """
+    DELETE FROM
+        heroes"""
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
         heroes
