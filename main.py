@@ -5,7 +5,7 @@ import asyncio
 import discord
 from discord.ext.commands import Bot as DiscordBot
 
-from lists import hero_commands
+from lists import heroes
 import helpers
 
 # Env variables. # Network & Database connections through psycopg2, postgres, heroku. 
@@ -96,7 +96,7 @@ async def dota(ctx, *, arg=None):
         else:
             await helpers.DOTA.dota_db(ctx, arg, conn)
         conn.close()
-@bot.command(aliases=hero_commands)
+@bot.command(aliases=heroes)
 async def heroinfo(ctx):
     await ctx.send(f"Looking up {ctx.message.content[3:]}...")
 
