@@ -175,13 +175,13 @@ def create_dota_tables():
     print("Creating hero-pool pairs table.")
     execute_query(create_hero_pools_query)
     for hero in strength:
-        execute_query(append_hero_pools_query(get_pool_id('strength'), get_hero_id(hero)))
+        execute_query(append_hero_pools_query(1, get_hero_id(hero)))
         print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'strength' of id: {get_pool_id('strength')}")
     for hero in agility:
-        execute_query(append_hero_pools_query(get_pool_id('agility'), get_hero_id(hero)))
+        execute_query(append_hero_pools_query(2, get_hero_id(hero)))
         print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'agility' of id: {get_pool_id('agility')}")
     for hero in intelligence:
-        execute_query(append_hero_pools_query(get_pool_id('intelligence'), get_hero_id(hero)))
+        execute_query(append_hero_pools_query(3, get_hero_id(hero)))
         print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'intelligence' of id: {get_pool_id('intelligence')}")
     
     print("Success...?!")
@@ -194,7 +194,7 @@ def get_hero_id(hero):
         hero = hero_abbrevs[hero]
     if hero.capitalize() in heroes:
         hero = hero.capitalize()
-        return fetch_query(get_hero_id(hero,))
+        return fetch_query(get_hero_id_query(hero,))
     else:
         return "Error"
 def get_hero_score(hero):
@@ -207,8 +207,7 @@ def get_hero_score(hero):
 #DELETING TO WIPE CLEAN WHILE BUILDING
 delete_heroes_query = """
     DROP TABLE
-        heroes
-    IF CONFLICT DO NOTHING"""
+        heroes"""
 delete_hero_table_query = """
     DROP TABLE
         dota_heroes
@@ -226,11 +225,11 @@ delete_pools_table_query = """
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
         dota_heroes
-    (hero_id AUTO_INCREMENT, hero_name TEXT, score INT, PRIMARY KEY (hero_id))"""
+    (hero_id INT NOT NULL AUTO_INCREMENT, hero_name TEXT, score INT, PRIMARY KEY (hero_id))"""
 create_user_pools_query = """
     CREATE TABLE IF NOT EXISTS
         dota_user_pools
-    (user_id TEXT, pool_id TEXT AUTO_INCREMENT, pool_name TEXT, PRIMARY KEY (pool_id))"""
+    (user_id TEXT, pool_id INT AUTO_INCREMENT, pool_name TEXT, PRIMARY KEY (pool_id))"""
 create_hero_pools_query = """
     CREATE TABLE IF NOT EXISTS
         hero_pools
@@ -263,22 +262,21 @@ get_pool_id_query = """
     FROM 
         dota_user_pools
     WHERE
-        pool_name=(%s)"""
+        pool_name=%s"""
 get_hero_id_query = """
     SELECT 
         hero_id
     FROM
         dota_heroes
     WHERE
-        hero_name=(%s)
-"""
+        hero_name=%s"""
 get_hero_score_query = """
     SELECT
         score
     FROM
         dota_heroes
     WHERE
-        hero_id=(%s)"""
+        hero_id=%s"""
 
 
 
