@@ -160,9 +160,9 @@ def create_dota_tables():
     #Create Hero table and fill with hero names
     print("Creating hero table.")
     execute_query(create_hero_table_query)
-    for hero in heroes:
+    for index, hero in enumerate(heroes, 1):
         print(f"Adding {hero} to the dota_heroes table.")
-        execute_query(append_hero_table_query, (hero, 0))
+        execute_query(append_hero_table_query, (index, hero, 0))
     
     # Create pools table and fill with the default 3 attribute pools
     print("Creating user pools table.")
@@ -174,18 +174,15 @@ def create_dota_tables():
     # Create user table
     print("Creating hero-pool pairs table.")
     execute_query(create_hero_pools_query)
-    id_count = 1
+
     for hero in strength:
-        execute_query(append_hero_pools_query, (id_count, get_hero_id(hero)))
-        id_count += 1
+        execute_query(append_hero_pools_query, (get_pool_id('strength'), get_hero_id(hero)))
         print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'strength' of id: {get_pool_id('strength')}")
     for hero in agility:
-        execute_query(append_hero_pools_query, (id_count, get_hero_id(hero)))
-        id_count += 1
+        execute_query(append_hero_pools_query, (get_pool_id('agility'), get_hero_id(hero)))
         print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'agility' of id: {get_pool_id('agility')}")
     for hero in intelligence:
-        execute_query(append_hero_pools_query, (id_count, get_hero_id(hero)))
-        id_count += 1
+        execute_query(append_hero_pools_query, (get_pool_id('intelligence'), get_hero_id(hero)))
         print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'intelligence' of id: {get_pool_id('intelligence')}")
     
     print("Success...?!")
@@ -240,16 +237,16 @@ create_hero_pools_query = """
 # FILL HERO TABLE QUERIES
 append_hero_table_query = """
     INSERT INTO
-        dota_heroes(hero_name,score)
+        dota_heroes
     VALUES
-        (%s, %s)
+        (%s, %s, %s)
     ON CONFLICT DO NOTHING"""
 # FILL HERO POOL DEFAULTS
 append_user_pools_query = """
     INSERT INTO
-        dota_user_pools(pool_name,user_id)
+        dota_user_pools
     VALUES
-        (%s, %s)
+        (%s, %s, %s)
     ON CONFLICT DO NOTHING"""
 append_hero_pools_query = """
     INSERT INTO
