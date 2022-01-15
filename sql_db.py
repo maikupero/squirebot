@@ -188,19 +188,19 @@ def create_dota_tables():
 
 
 def get_pool_id(pool_name):
-    return fetch_query(get_pool_id_query(pool_name,))
+    return fetch_query(get_pool_id_query, (pool_name,))
 def get_hero_id(hero):
     if hero in hero_abbrevs:
         hero = hero_abbrevs[hero]
     if hero.capitalize() in heroes:
         hero = hero.capitalize()
-        (f"While looking up hero it is {hero}, then becomes {fetch_query(get_hero_id_query(hero,))} of type {type(fetch_query(get_hero_id_query(hero,)))}")
-        return int(fetch_query(get_hero_id_query(hero,)))
+        (f"While looking up hero it is {hero}, then becomes {fetch_query(get_hero_id_query, (hero,))} of type {type(fetch_query(get_hero_id_query, (hero,)))}")
+        return int(fetch_query(get_hero_id_query, (hero,)))
     else:
         return "Error"
 def get_hero_score(hero):
     hero_id = get_hero_id(hero)
-    return fetch_query(get_hero_score_query(hero_id,))
+    return fetch_query(get_hero_score_query, (hero_id,))
     
     
 
