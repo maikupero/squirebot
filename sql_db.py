@@ -208,13 +208,13 @@ def get_hero_score(hero):
 ### DOTA TABLE QUERIES ###
 #DELETING TO WIPE CLEAN WHILE BUILDING
 delete_hero_table_query = """
-    DELETE FROM
+    DROP TABLE
         dota_heroes"""
 delete_user_table_query = """
-    DELETE FROM
+    DROP TABLE
         dota_user_pools"""
 delete_pools_table_query = """
-    DELETE FROM
+    DROP TABLE
         hero_pools"""
 
 #INITIAL CREATION
