@@ -153,9 +153,9 @@ delete_greeting_query = """
 def create_dota_tables():
     #Start fresh
     print("Wiping all dota tables.")
-    # execute_query(delete_hero_table_query)
-    # execute_query(delete_user_table_query)
-    # execute_query(delete_pools_table_query)
+    execute_query(delete_hero_table_query)
+    execute_query(delete_user_table_query)
+    execute_query(delete_pools_table_query)
 
     #Create Hero table and fill with hero names
     print("Creating hero table.")
@@ -167,21 +167,21 @@ def create_dota_tables():
     # Create pools table and fill with the default 3 attribute pools
     print("Creating user pools table.")
     execute_query(create_user_pools_query)
-    execute_query(append_user_pools_query('strength','default'))
-    execute_query(append_user_pools_query('agility','default'))
-    execute_query(append_user_pools_query('intelligence','default'))
+    execute_query(append_user_pools_query, ('strength','default'))
+    execute_query(append_user_pools_query, ('agility','default'))
+    execute_query(append_user_pools_query, ('intelligence','default'))
 
     # Create user table
     print("Creating hero-pool pairs table.")
     execute_query(create_hero_pools_query)
     for hero in strength:
-        execute_query(append_hero_pools_query(1, get_hero_id(hero)))
+        execute_query(append_hero_pools_query, (1, get_hero_id(hero)))
         print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'strength' of id: {get_pool_id('strength')}")
     for hero in agility:
-        execute_query(append_hero_pools_query(2, get_hero_id(hero)))
+        execute_query(append_hero_pools_query, (2, get_hero_id(hero)))
         print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'agility' of id: {get_pool_id('agility')}")
     for hero in intelligence:
-        execute_query(append_hero_pools_query(3, get_hero_id(hero)))
+        execute_query(append_hero_pools_query, (3, get_hero_id(hero)))
         print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'intelligence' of id: {get_pool_id('intelligence')}")
     
     print("Success...?!")
@@ -219,11 +219,11 @@ delete_pools_table_query = """
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
         dota_heroes
-    (hero_id SERIAL PRIMARY KEY, hero_name text, score int)"""
+    (hero_id SERIAL PRIMARY KEY, hero_name text unique, score int)"""
 create_user_pools_query = """
     CREATE TABLE IF NOT EXISTS
         dota_user_pools
-    (pool_id SERIAL PRIMARY KEY, pool_name text, user_id text)"""
+    (pool_id SERIAL PRIMARY KEY, pool_name text unique, user_id text)"""
 create_hero_pools_query = """
     CREATE TABLE IF NOT EXISTS
         hero_pools
@@ -244,7 +244,7 @@ append_user_pools_query = """
         dota_user_pools(pool_name,user_id)
     VALUES
         (%s, %s)
-    """
+    ON CONFLICT DO NOTHING"""
 append_hero_pools_query = """
     INSERT INTO
         hero_pools
