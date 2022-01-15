@@ -195,8 +195,7 @@ def get_hero_id(hero):
     if hero in hero_abbrevs:
         hero = hero_abbrevs[hero]
     if hero.capitalize() in heroes:
-        hero = hero.capitalize()
-        id = fetch_query(get_hero_id_query, (hero,))
+        id = fetch_query(get_hero_id_query, (hero.capitalize(),))
         return id[0]
     else:
         return "Error"
