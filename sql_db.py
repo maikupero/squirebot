@@ -234,14 +234,14 @@ create_hero_pools_query = """
 # FILL HERO TABLE QUERIES
 append_hero_table_query = """
     INSERT INTO
-        dota_heroes
+        dota_heroes(hero_name,score)
     VALUES
         (%s, %s)
     ON CONFLICT DO NOTHING"""
 # FILL HERO POOL DEFAULTS
 append_user_pools_query = """
     INSERT INTO
-        dota_user_pools
+        dota_user_pools(pool_name,user_id)
     VALUES
         (%s, %s)
     """
