@@ -194,6 +194,7 @@ def get_hero_id(hero):
         hero = hero_abbrevs[hero]
     if hero.capitalize() in heroes:
         hero = hero.capitalize()
+        (f"While looking up hero it is {hero}, then becomes {fetch_query(get_hero_id_query(hero,))} of type {type(fetch_query(get_hero_id_query(hero,)))}")
         return int(fetch_query(get_hero_id_query(hero,)))
     else:
         return "Error"
@@ -249,7 +250,8 @@ append_hero_pools_query = """
     INSERT INTO
         hero_pools
     VALUES
-        (%s, %s)"""
+        (%s, %s)
+    ON CONFLICT DO NOTHING"""
 
 
 get_pool_id_query = """
