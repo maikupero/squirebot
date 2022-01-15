@@ -227,7 +227,7 @@ create_user_pools_query = """
 create_hero_pools_query = """
     CREATE TABLE IF NOT EXISTS
         hero_pools
-    (pool_id text, hero_id text, 
+    (pool_id int, hero_id int, 
     FOREIGN KEY (pool_id) REFERENCES dota_user_pools(pool_id), 
     FOREIGN KEY (hero_id) REFERENCES dota_heroes(hero_id))"""
 
