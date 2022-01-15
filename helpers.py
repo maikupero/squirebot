@@ -17,7 +17,7 @@ class DBSTUFF:
         def check(msg):
             return msg.author == message.author and msg.channel == message.channel
         try:
-            msg = await bot.wait_for("message", check=check, timeout=30)
+            msg = await bot.wait_for("message", check=CHECKS.check_same_user, timeout=30)
             response = str(msg.content)
             if response.lower() in nvm:
                 await message.channel.send("No problemo.")
@@ -208,20 +208,37 @@ class DOTA:
         
         return " • ".join(new_team)
     
-    async def dota_db(ctx, arg):
-        print(arg)
-        if arg.capitalize() in heroes or arg in hero_abbrevs.keys():
+    async def dota_db(ctx, bot, arg):
+
+        if arg.startswith("random"):
+            await ctx.send(DOTA.randomdop(ctx, arg))
+
+        elif arg.startswith('pool'):
+            if arg[3]:
+                await ctx.send(f"Pulling up pool {arg[3]}")
+            else:
+                await ctx.send(f"Here are all the pools we have stored, sir.\n{sql_db.fetch_all_pools(ctx)}\nLet me know which pool you want to look at, or `nvm` etc. to cancel.")
+                def check(msg):
+                    return CHECKS.check_same_user(ctx, msg)
+                try:
+                    msg = await bot.wait_for("message", check=check, timeout=30)
+                    response = str(msg.content)
+                    if response.lower() in nvm:
+                        await ctx.send("No problemo.")
+                    else:
+                        await ctx.send("Working on this part")
+                except asyncio.TimeoutError:
+                    await ctx.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
+
+        elif arg == 'append':
+            await ctx.send("(Not yet implemented.)Specify what you'd like to add/edit! Try `sb.dota pool (name)` to see lists.")
+        elif arg.capitalize() in heroes or arg in hero_abbrevs.keys():
             if arg in hero_abbrevs.keys():
                 hero = hero_abbrevs[arg]
             else: 
                 hero = arg.capitalize()
-            await ctx.send(f"Got hero from arg: {hero}")
-        elif arg.startswith("random"):
-            await ctx.send(DOTA.randomdop(ctx, arg))
-        elif arg.startswith('pool'):
-            return
-        elif arg == 'append':
-            await ctx.send("Specify what you'd like to add/edit! Try `sb.dota pool (name)` to see lists.")
+            await ctx.send(f"Looking up {hero}...")
+        
         else:
             await ctx.send("Sorry, try again with some new dota request.")
        

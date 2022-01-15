@@ -89,7 +89,7 @@ async def dota(ctx, *, arg=None):
     if arg == None:
         await ctx.send(helpers.DOTA.dota_help())
     else:
-        await helpers.DOTA.dota_db(ctx, arg)
+        await helpers.DOTA.dota_db(ctx, bot, arg)
 
 @bot.command()     
 async def weather(ctx, *, arg=None):
