@@ -194,8 +194,8 @@ def get_pool_id(pool_name):
 def get_hero_id(hero):
     if hero in hero_abbrevs:
         hero = hero_abbrevs[hero]
-    if hero.capitalize() in heroes:
-        id = fetch_query(get_hero_id_query, (hero.capitalize(),))
+    if hero.title() in heroes:
+        id = fetch_query(get_hero_id_query, (hero.title(),))
         return id[0]
     else:
         return "Error"
