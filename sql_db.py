@@ -1,7 +1,7 @@
 import psycopg2
 import os
 from psycopg2 import sql
-from lists import default_commands, heroes, stre, agil, inte
+from lists import default_commands, heroes, hero_abbrevs, strength, agility, intelligence, stre, agil, inte
 
 DB = os.environ['DATABASE_URL']
 
@@ -18,7 +18,6 @@ def execute_query(query, args=()):
     try:
         conn = connect(DB)
         cur = conn.cursor()
-        print(query)
         cur.execute(query, args)
         close(conn, cur)
     except Exception as e:
@@ -152,26 +151,126 @@ delete_greeting_query = """
 
 ### DOTA TABLE FUNCTIONS ###    
 def create_dota_tables():
-    # execute_query(delete_hero_table_query)
+    #Start fresh
+    print("Wiping all dota tables.")
+    execute_query(delete_hero_table_query)
+    execute_query(delete_user_table_query)
+    execute_query(delete_pools_table_query)
+
+    #Create Hero table and fill with hero names
+    print("Creating hero table.")
     execute_query(create_hero_table_query)
     for hero in heroes:
-        execute_query(append_hero_table_query, (hero,))
+        execute_query(append_hero_table_query, (hero, 0))
+    
+    # Create pools table and fill with the default 3 attribute pools
+    print("Creating user pools table.")
+    execute_query(create_user_pools_query)
+    execute_query(append_user_pools_query('default', 'strength'))
+    execute_query(append_user_pools_query('default', 'agility'))
+    execute_query(append_user_pools_query('default', 'intelligence'))
+
+    # Create user table
+    print("Creating hero-pool pairs table.")
+    execute_query(create_hero_pools_query)
+    for hero in strength:
+        execute_query(append_hero_pools_query(get_pool_id('strength'), get_hero_id(hero)))
+        print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'strength' of id: {get_pool_id('strength')}")
+    for hero in agility:
+        execute_query(append_hero_pools_query(get_pool_id('agility'), get_hero_id(hero)))
+        print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'agility' of id: {get_pool_id('agility')}")
+    for hero in intelligence:
+        execute_query(append_hero_pools_query(get_pool_id('intelligence'), get_hero_id(hero)))
+        print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'intelligence' of id: {get_pool_id('intelligence')}")
+    
+    print("Success...?!")
+
+
+def get_pool_id(pool_name):
+    return fetch_query(get_pool_id_query(pool_name))
+def get_hero_id(hero):
+    if hero in hero_abbrevs:
+        hero = hero_abbrevs[hero]
+    if hero.capitalize() in heroes:
+        hero = hero.capitalize()
+        return fetch_query(get_hero_id(hero,))
+    else:
+        return "Error"
+def get_hero_score(hero):
+    hero_id = get_hero_id(hero)
+    return fetch_query(get_hero_score_query(hero_id,))
+    
+    
+
 ### DOTA TABLE QUERIES ###
+#DELETING TO WIPE CLEAN WHILE BUILDING
 delete_hero_table_query = """
     DROP TABLE
-        heroes"""
+        dota_heroes"""
+delete_user_table_query = """
+    DROP TABLE
+        dota_user_pools"""
+delete_pools_table_query = """
+    DROP TABLE
+        hero_pools"""
+
+#INITIAL CREATION
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
-        heroes
-    (hero_name TEXT, attribute TEXT, role1 BOOL, core BOOL, support BOOL, role2 BOOL, role3 BOOL, role4 BOOL, role5 BOOL, PRIMARY KEY (hero_name))"""
+        dota_heroes
+    (hero_id AUTO_INCREMENT, hero_name TEXT, score INT, PRIMARY KEY (hero_id))"""
+create_user_pools_query = """
+    CREATE TABLE IF NOT EXISTS
+        dota_user_pools
+    (user_id TEXT, pool_id TEXT AUTO_INCREMENT, pool_name TEXT, PRIMARY KEY (pool_id))"""
+create_hero_pools_query = """
+    CREATE TABLE IF NOT EXISTS
+        hero_pools
+    (pool_id TEXT, hero_id TEXT, FOREIGN KEY (pool_id), FOREIGN KEY (pool_id))"""
+
+# FILL HERO TABLE QUERIES
 append_hero_table_query = """
     INSERT INTO
-        heroes
+        dota_heroes
     VALUES
-        (%s)
+        (%s, %s)
     ON CONFLICT DO NOTHING"""
+# FILL HERO POOL DEFAULTS
+append_user_pools_query = """
+    INSERT INTO
+        dota_user_pools
+    VALUES
+        (%s, %s)
+    """
+append_hero_pools_query = """
+    INSERT INTO
+        hero_pools
+    VALUES
+        (%s, %s)"""
 
 
+get_pool_id_query = """
+    SELECT
+        pool_id
+    FROM 
+        dota_user_pools
+    WHERE
+        pool_name=(%s)"""
+get_hero_id_query = """
+    SELECT 
+        hero_id
+    FROM
+        dota_heroes
+    WHERE
+        hero_name=(%s)
+"""
+get_hero_score_query = """
+    SELECT
+        score
+    FROM
+        dota_heroes
+    WHERE
+        hero_id=(%s)"""
 
 
 
