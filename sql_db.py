@@ -167,9 +167,9 @@ def create_dota_tables():
     # Create pools table and fill with the default 3 attribute pools
     print("Creating user pools table.")
     execute_query(create_user_pools_query)
-    execute_query(append_user_pools_query('default','strength'))
-    execute_query(append_user_pools_query('default','agility'))
-    execute_query(append_user_pools_query('default','intelligence'))
+    execute_query(append_user_pools_query('strength','default'))
+    execute_query(append_user_pools_query('agility','default'))
+    execute_query(append_user_pools_query('intelligence','default'))
 
     # Create user table
     print("Creating hero-pool pairs table.")
@@ -219,15 +219,19 @@ delete_pools_table_query = """
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
         dota_heroes
-    (hero_id int NOT NULL AUTO_INCREMENT, hero_name text, score int, PRIMARY KEY (hero_id))"""
+    (hero_id int unique NOT NULL AUTO_INCREMENT, hero_name text, score int, 
+    PRIMARY KEY (hero_id))"""
 create_user_pools_query = """
     CREATE TABLE IF NOT EXISTS
         dota_user_pools
-    (user_id text, pool_id int NOT NULL AUTO_INCREMENT, pool_name text, PRIMARY KEY (pool_id))"""
+    (pool_id int unique NOT NULL AUTO_INCREMENT, pool_name text, user_id text, 
+    PRIMARY KEY (pool_id))"""
 create_hero_pools_query = """
     CREATE TABLE IF NOT EXISTS
         hero_pools
-    (pool_id text, hero_id text, FOREIGN KEY (pool_id), FOREIGN KEY (pool_id))"""
+    (pool_id text, hero_id text, 
+    FOREIGN KEY (pool_id) REFERENCES dota_user_pools(pool_id), 
+    FOREIGN KEY (hero_id) REFERENCES dota_heroes(hero_id))"""
 
 # FILL HERO TABLE QUERIES
 append_hero_table_query = """
