@@ -219,11 +219,11 @@ delete_pools_table_query = """
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
         dota_heroes
-    (hero_id int SERIAL NOT NULL PRIMARY KEY, hero_name text, score int)"""
+    (hero_id SERIAL PRIMARY KEY, hero_name text, score int)"""
 create_user_pools_query = """
     CREATE TABLE IF NOT EXISTS
         dota_user_pools
-    (pool_id int SERIAL NOT NULL PRIMARY KEY, pool_name text, user_id text)"""
+    (pool_id SERIAL PRIMARY KEY, pool_name text, user_id text)"""
 create_hero_pools_query = """
     CREATE TABLE IF NOT EXISTS
         hero_pools
