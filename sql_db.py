@@ -153,7 +153,6 @@ delete_greeting_query = """
 def create_dota_tables():
     #Start fresh
     print("Wiping all dota tables.")
-    execute_query(delete_heroes_query)
     execute_query(delete_hero_table_query)
     execute_query(delete_user_table_query)
     execute_query(delete_pools_table_query)
@@ -205,21 +204,18 @@ def get_hero_score(hero):
 
 ### DOTA TABLE QUERIES ###
 #DELETING TO WIPE CLEAN WHILE BUILDING
-delete_heroes_query = """
-    DROP TABLE
-        heroes"""
 delete_hero_table_query = """
     DROP TABLE
         dota_heroes
-    IF CONFLICT DO NOTHING"""
+    ON CONFLICT DO NOTHING"""
 delete_user_table_query = """
     DROP TABLE
         dota_user_pools
-    IF CONFLICT DO NOTHING"""
+    ON CONFLICT DO NOTHING"""
 delete_pools_table_query = """
     DROP TABLE
         hero_pools
-    IF CONFLICT DO NOTHING"""
+    ON CONFLICT DO NOTHING"""
 
 #INITIAL CREATION
 create_hero_table_query = """
