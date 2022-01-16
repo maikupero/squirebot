@@ -157,6 +157,10 @@ def create_dota_tables():
     execute_query(delete_user_table_query)
     execute_query(delete_pools_table_query)
 
+    #Reset Auto-incremented IDs
+    execute_query(reset_increments_hero_table_query)
+    execute_query(reset_increments_user_table_query)
+    
     #Create Hero table and fill with hero names
     print("Creating hero table.")
     execute_query(create_hero_table_query)
@@ -217,15 +221,24 @@ delete_pools_table_query = """
     DELETE FROM
         hero_pools"""
 
+#RESETTING AUTO INCREMENT IDS
+reset_increments_hero_table_query = """
+    ALTER SEQUENCE 
+        dota_heroes_hero_id_seq 
+    RESTART WITH 1"""
+reset_increments_user_table_query = """
+    ALTER SEQUENCE 
+        dota_user_pools_pool_id_seq 
+    RESTART WITH 1"""
 #INITIAL CREATION
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
         dota_heroes
-    (hero_id int unique PRIMARY KEY, hero_name text unique, score int)"""
+    (hero_id int unique SERIAL PRIMARY KEY, hero_name text unique, score int)"""
 create_user_pools_query = """
     CREATE TABLE IF NOT EXISTS
         dota_user_pools
-    (pool_id int unique PRIMARY KEY, pool_name text unique, user_id text)"""
+    (pool_id int unique SERIAL PRIMARY KEY, pool_name text unique, user_id text)"""
 create_hero_pools_query = """
     CREATE TABLE IF NOT EXISTS
         hero_pools
