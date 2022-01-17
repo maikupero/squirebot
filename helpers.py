@@ -248,7 +248,9 @@ class DOTA:
                         msg = await bot.wait_for("message", check=check)
                         poolname = msg.content
                         print(f"Got {poolname} as poolname")
-                        if poolname.capitalize() not in sql_db.get_all_pools():
+                        if poolname.capitalize() in sql_db.get_all_pools():
+                            return
+                        else:
                             await ctx.send(f"Adding pool {poolname} to the database")
                             sql_db.append_user_pools_query(poolname, str(ctx.author.id))
                             pool_id = sql_db.get_pool_id(poolname)
