@@ -214,24 +214,31 @@ class DOTA:
             await ctx.send(DOTA.randomdop(ctx, arg))
 
         elif arg.startswith('pool'):
-            if arg[3]:
-                await ctx.send(f"Pulling up pool {arg[3]}")
+            if len(arg) > 5:
+                arg = arg[5:].strip()
+                if arg == 'list':
+                    await ctx.send(f"Here are all the pools we have stored, sir.\n{str(sql_db.get_all_pools())[1:-1]}")
+                elif arg in sql_db.get_users() or arg == "me":
+                    if arg == "me":
+                        await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(ctx.author.id))[1:-1]}")
+                else:
+                    await ctx.send(f"Heroes in pool {arg}: {sql_db.select_heroes_from_pool(arg)}")
             else:
-                await ctx.send(f"Here are all the pools we have stored, sir.\n{sql_db.fetch_all_pools(ctx)}\nLet me know which pool you want to look at, or `nvm` etc. to cancel.")
-                def check(msg):
-                    return CHECKS.check_same_user(ctx, msg)
-                try:
-                    msg = await bot.wait_for("message", check=check, timeout=30)
-                    response = str(msg.content)
-                    if response.lower() in nvm:
-                        await ctx.send("No problemo.")
-                    else:
-                        await ctx.send("Working on this part")
-                except asyncio.TimeoutError:
-                    await ctx.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
+                await ctx.send(f"`sb.dota pool list/poolname/username` for all the pools, or `sb.dota pool (poolname)` to look it up.")
 
-        elif arg == 'append':
-            await ctx.send("(Not yet implemented.)Specify what you'd like to add/edit! Try `sb.dota pool (name)` to see lists.")
+        elif arg == 'new': 
+            if len(arg) > 4:
+                arg = arg[4:].strip()
+                if arg == 'pool':
+                    await ctx.send(f"Here are all the pools we have stored, sir.\n{sql_db.fetch_all_pools(ctx)}")
+                elif arg in sql_db.get_users():
+                    await ctx.send(f"Pools for {arg}: {sql_db.get_users_pools(arg)}")
+                else:
+                    await ctx.send(f"Heroes in pool {arg}: {sql_db.get_users_pools(arg)}")
+            else:
+                await ctx.send(f"`sb.dota pool list/poolname/username` for all the pools, or `sb.dota pool (poolname)` to look it up.")
+                
+            await ctx.send("Specify what you'd like to add/edit! Try `sb.dota new (pool/hero)` to see lists.")
         elif arg.capitalize() in heroes or arg in hero_abbrevs.keys():
             if arg in hero_abbrevs.keys():
                 hero = hero_abbrevs[arg]
