@@ -233,7 +233,6 @@ class DOTA:
 
             if len(arg) > 4:
                 arg = arg[4:].strip()
-
                 if arg in sql_db.get_all_pools() and arg not in ['strength','agility','intelligence']:
                     hero = ''
                     while hero not in nvm:
@@ -244,7 +243,24 @@ class DOTA:
 
                 elif arg == 'pool':
                     await ctx.send(f"What shall we call your pool?")
-
+                    try:
+                        poolname = await bot.wait_for("message", check=check)
+                        if poolname.lower() not in sql_db.get_all_pools():
+                            sql_db.append_user_pools_query(poolname, str(ctx.author.id))
+                            pool_id = sql_db.get_pool_id(poolname)
+                            try:
+                                while msg not in nvm:
+                                    await ctx.send(f"Give me a hero to add to the pool, or a comma separated list of heroes.")
+                                    msg = await bot.wait_for("message", check=check)
+                                    heroes_to_add = msg.replace(" ", "").split(',')
+                                    for hero in heroes_to_add:
+                                        await ctx.send(f"Adding {hero} to {poolname}.")
+                                        sql_db.execute_query(sql_db.append_hero_table_query, (pool_id, (sql_db.get_hero_id(hero),)))
+                            except:
+                                await ctx.send("Some issue with hero names..")
+                    except:
+                        await ctx.send("Some issue with the pool name.")
+                        
                 elif arg == 'hero':
                     await ctx.send("No need to add new heroes as there are no new heroes yet. Message gaben.")
                     

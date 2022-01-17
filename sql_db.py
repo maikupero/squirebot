@@ -220,7 +220,7 @@ def get_hero_name(hero_id):
 def select_heroes_from_pool(pool_name):
     pool_id = get_pool_id(pool_name)
     hero_ids = fetch_query(select_heroes_from_pool_query, (pool_id,))
-    heroes_in_pool = [get_hero_name(hero_id) for hero_id in hero_ids]
+    heroes_in_pool = [*get_hero_name(hero_id) for hero_id in hero_ids]
     return str(heroes_in_pool)[1:-1].replace("'","")
 
 def add_hero_to_pool(hero_name, pool_name):
