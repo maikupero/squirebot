@@ -236,7 +236,7 @@ def get_users():
     return fetch_query(get_users_query)
 def get_users_pools(user_id):
     pools = fetch_query(get_user_pools_query, (user_id,))
-    if pools != None:
+    if pools != 'None':
         pools = (str(pools)[1:-1]).replace("'","").title()
     return pools
 
@@ -263,8 +263,8 @@ get_user_pools_query = """
     WHERE
         user_id=%s"""
 select_heroes_from_pool_query = """
-    SELECT DISTINCT
-        *
+    SELECT
+        hero_id
     FROM
         hero_pools
     WHERE
