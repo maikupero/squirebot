@@ -195,7 +195,10 @@ def create_dota_tables():
 # POOL QUERIES
 def get_all_pools():
     print(fetch_query(get_pools_query))
-    return fetch_query(get_pools_query)
+    pools = fetch_query(get_pools_query)
+    if pools != None:
+        pools = (str(pools)[1:-1]).replace("'", "").title()
+    return pools
 
 def get_pool_id(pool_name):
     id = fetch_query(get_pool_id_query, (pool_name,))
@@ -217,8 +220,8 @@ def get_hero_name(hero_id):
 def select_heroes_from_pool(pool_name):
     pool_id = get_pool_id(pool_name)
     hero_ids = fetch_query(select_heroes_from_pool_query, (pool_id,))
-    heroes_in_pool = []
     print(hero_ids)
+    heroes_in_pool = []
     for hero in hero_ids:
         heroes_in_pool.append(get_hero_name(hero))
     return heroes_in_pool
@@ -232,7 +235,10 @@ def add_hero_to_pool(hero_name, pool_name):
 def get_users():
     return fetch_query(get_users_query)
 def get_users_pools(user_id):
-    return fetch_query(get_user_pools_query, (user_id,))
+    pools = fetch_query(get_user_pools_query, (user_id,))
+    if pools != None:
+        pools = (str(pools)[1:-1]).replace("'","").title()
+    return pools
 
 def get_hero_score(hero):
     hero_id = get_hero_id(hero)
@@ -257,7 +263,7 @@ get_user_pools_query = """
     WHERE
         user_id=%s"""
 select_heroes_from_pool_query = """
-    SELECT
+    SELECT DISTINCT
         *
     FROM
         hero_pools

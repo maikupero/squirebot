@@ -217,7 +217,7 @@ class DOTA:
             if len(arg) > 5:
                 arg = arg[5:].strip()
                 if arg == 'list':
-                    await ctx.send(f"Here are all the pools we have stored, sir:\n{str(sql_db.get_all_pools())[1:-1]}")
+                    await ctx.send(f"Here are all the pools we have stored, sir:\n{sql_db.get_all_pools()}")
                 elif arg in sql_db.get_users() or arg == "me":
                     if arg == "me":
                         await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(ctx.author.id))[1:-1]}")
