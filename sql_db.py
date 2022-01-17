@@ -219,7 +219,9 @@ def get_hero_name(hero_id):
 def select_heroes_from_pool(pool_name):
     pool_id = get_pool_id(pool_name)
     hero_ids = fetch_query(select_heroes_from_pool_query, (pool_id,))
+    print(hero_ids)
     heroes_in_pool = [get_hero_name(hero_id) for hero_id in hero_ids]
+    sorted(heroes_in_pool)
     return str(heroes_in_pool)[1:-1].replace("'","").replace("[","").replace("]","")
 
 def add_hero_to_pool(hero_name, pool_name):
@@ -298,11 +300,11 @@ reset_increments_user_table_query = """
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
         dota_heroes
-    (hero_id unique SERIAL PRIMARY KEY, hero_name text unique, score int)"""
+    (hero_id SERIAL PRIMARY KEY, hero_name text unique, score int)"""
 create_user_pools_query = """
     CREATE TABLE IF NOT EXISTS
         dota_user_pools
-    (pool_id unique SERIAL PRIMARY KEY, pool_name text unique, user_id text)"""
+    (pool_id SERIAL PRIMARY KEY, pool_name text unique, user_id text)"""
 create_hero_pools_query = """
     CREATE TABLE IF NOT EXISTS
         hero_pools
