@@ -209,7 +209,7 @@ class DOTA:
         return " • ".join(new_team)
     
     async def dota_db(ctx, bot, arg):
-
+        user_id = str(ctx.author.id)
         if arg.startswith("random"):
             await ctx.send(DOTA.randomdop(ctx, arg))
 
@@ -220,7 +220,7 @@ class DOTA:
                     await ctx.send(f"Here are all the pools we have stored, sir:\n{sql_db.get_all_pools()}")
                 elif arg in sql_db.get_users() or arg == "me":
                     if arg == "me":
-                        await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(ctx.author.id))[1:-1]}")
+                        await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(user_id))[1:-1]}")
                 else:
                     await ctx.send(f"Heroes in pool {arg}: {sql_db.select_heroes_from_pool(arg)}")
             else:
