@@ -299,11 +299,11 @@ reset_increments_user_table_query = """
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
         dota_heroes
-    (hero_id int unique SERIAL PRIMARY KEY, hero_name text unique, score int)"""
+    (hero_id int SERIAL PRIMARY KEY, hero_name text unique, score int)"""
 create_user_pools_query = """
     CREATE TABLE IF NOT EXISTS
         dota_user_pools
-    (pool_id int unique SERIAL PRIMARY KEY, pool_name text unique, user_id text)"""
+    (pool_id int SERIAL PRIMARY KEY, pool_name text unique, user_id text)"""
 create_hero_pools_query = """
     CREATE TABLE IF NOT EXISTS
         hero_pools
