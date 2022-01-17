@@ -255,14 +255,15 @@ class DOTA:
                             sql_db.execute_query(sql_db.append_user_pools_query, (poolname, str(ctx.author.id)))
                             pool_id = sql_db.get_pool_id(poolname)
                             print(f"Got pool id {pool_id} for poolname {poolname}")
+                            await ctx.send(f"Give me a hero to add to the pool, or a comma separated list of heroes (abbreviations like kotl are ok).")
                             try:
                                 while msg.content not in nvm:
-                                    await ctx.send(f"Give me a hero to add to the pool, or a comma separated list of heroes.")
                                     msg = await bot.wait_for("message", check=check)
-                                    heroes_to_add = msg.content.replace(" ", "").split(',')
+                                    heroes_to_add = msg.content.split(',')
+                                    heroes_to_add = [hero.strip() for hero in heroes_to_add]
                                     for hero in heroes_to_add:
                                         await ctx.send(f"Adding {hero} to {poolname}.")
-                                        sql_db.execute_query(sql_db.append_hero_table_query, (pool_id, (sql_db.get_hero_id(hero),)))
+                                        sql_db.execute_query(sql_db.append_hero_table_query, (pool_id, (sql_db.get_hero_id(hero))))
                             except:
                                 await ctx.send("Some issue with hero names..")
                     except:
