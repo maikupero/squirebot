@@ -154,9 +154,9 @@ delete_greeting_query = """
 def create_dota_tables():
     #Start fresh
     print("Wiping all dota tables.")
-    execute_query(delete_hero_table_query)
-    execute_query(delete_user_table_query)
     execute_query(delete_pools_table_query)
+    execute_query(delete_user_table_query)
+    execute_query(delete_hero_table_query)
 
     #Reset Auto-incremented IDs
     execute_query(reset_increments_hero_table_query)
@@ -220,11 +220,8 @@ def get_hero_name(hero_id):
 def select_heroes_from_pool(pool_name):
     pool_id = get_pool_id(pool_name)
     hero_ids = fetch_query(select_heroes_from_pool_query, (pool_id,))
-    print(hero_ids)
-    heroes_in_pool = []
-    for hero in hero_ids:
-        heroes_in_pool.append(get_hero_name(hero))
-    return heroes_in_pool
+    heroes_in_pool = [get_hero_name(hero_id) for hero_id in hero_ids]
+    return str(heroes_in_pool)[1:-1].replace("'","")
 
 def add_hero_to_pool(hero_name, pool_name):
     hero_id = get_hero_id(hero_name)

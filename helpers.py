@@ -226,7 +226,7 @@ class DOTA:
             else:
                 await ctx.send(f"`sb.dota pool list/poolname/username` for all the pools, or `sb.dota pool (poolname)` to look it up.")
 
-        elif arg == 'new': 
+        elif arg.startswith('new'):
             print(arg)
             def check(msg):
                 return msg.author == ctx.author and msg.channel == ctx.channel
