@@ -1,3 +1,4 @@
+from distutils.util import execute
 import psycopg2
 import os
 from psycopg2 import sql
@@ -194,6 +195,8 @@ def create_dota_tables():
 # POOL QUERIES
 def get_all_pools():
     print(fetch_query(get_pools_query))
+    return fetch_query(get_pools_query)
+
 def get_pool_id(pool_name):
     id = fetch_query(get_pool_id_query, (pool_name,))
     return id[0]
@@ -213,8 +216,13 @@ def get_hero_name(hero_id):
 
 def select_heroes_from_pool(pool_name):
     pool_id = get_pool_id(pool_name)
-    hero_ids = str(fetch_query(select_heroes_from_pool_query, (pool_id,))[1:-1])
+    hero_ids = fetch_query(select_heroes_from_pool_query, (pool_id,))
     return [get_hero_name(hero_id) for hero_id in hero_ids]
+
+def add_hero_to_pool(hero_name, pool_name):
+    hero_id = get_hero_id(hero_name)
+    pool_id = get_pool_id(pool_name)
+    execute_query(append_hero_pools_query, (pool_id, hero_id))
 
 # USER QUERIES
 def get_users():
@@ -222,12 +230,11 @@ def get_users():
 def get_users_pools(user_id):
     return fetch_query(get_user_pools_query, (user_id,))
 
-
-
-
 def get_hero_score(hero):
     hero_id = get_hero_id(hero)
     return fetch_query(get_hero_score_query, (hero_id,))
+
+    
 get_pools_query = """
     SELECT DISTINCT
         pool_name
