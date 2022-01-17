@@ -194,7 +194,6 @@ def create_dota_tables():
 
 # POOL QUERIES
 def get_all_pools():
-    print(fetch_query(get_pools_query))
     pools = fetch_query(get_pools_query)
     if pools != None:
         pools = (str(pools)[1:-1]).replace("'", "").title()
@@ -221,7 +220,7 @@ def select_heroes_from_pool(pool_name):
     pool_id = get_pool_id(pool_name)
     hero_ids = fetch_query(select_heroes_from_pool_query, (pool_id,))
     heroes_in_pool = [get_hero_name(hero_id) for hero_id in hero_ids]
-    return str(heroes_in_pool)[1:-1].replace("'","")
+    return str(heroes_in_pool)[1:-1].replace("'","").replace("[","").replace("]","")
 
 def add_hero_to_pool(hero_name, pool_name):
     hero_id = get_hero_id(hero_name)
@@ -299,11 +298,11 @@ reset_increments_user_table_query = """
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
         dota_heroes
-    (hero_id int SERIAL PRIMARY KEY, hero_name text unique, score int)"""
+    (hero_id unique SERIAL PRIMARY KEY, hero_name text unique, score int)"""
 create_user_pools_query = """
     CREATE TABLE IF NOT EXISTS
         dota_user_pools
-    (pool_id int SERIAL PRIMARY KEY, pool_name text unique, user_id text)"""
+    (pool_id unique SERIAL PRIMARY KEY, pool_name text unique, user_id text)"""
 create_hero_pools_query = """
     CREATE TABLE IF NOT EXISTS
         hero_pools
