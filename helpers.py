@@ -222,7 +222,7 @@ class DOTA:
                     if arg == "me":
                         await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(user_id))[1:-1]}")
                 else:
-                    await ctx.send(f"Heroes in pool {arg}: {sql_db.select_heroes_from_pool(arg)}")
+                    await ctx.send(f"{arg} heroes: {sorted(sql_db.select_heroes_from_pool(arg))}.")
             else:
                 await ctx.send(f"`sb.dota pool list/poolname/username` for all the pools, or `sb.dota pool (poolname)` to look it up.")
 
@@ -246,9 +246,12 @@ class DOTA:
                     await ctx.send(f"What shall we call your pool?")
                     try:
                         poolname = await bot.wait_for("message", check=check)
-                        if poolname.lower() not in sql_db.get_all_pools():
+                        print(f"Got {poolname} as poolname")
+                        if poolname.capitalize() not in sql_db.get_all_pools():
+                            await ctx.send(f"Adding pool {poolname} to the database")
                             sql_db.append_user_pools_query(poolname, str(ctx.author.id))
                             pool_id = sql_db.get_pool_id(poolname)
+                            print(f"Got pool id {pool_id} for poolname {poolname}")
                             try:
                                 while msg not in nvm:
                                     await ctx.send(f"Give me a hero to add to the pool, or a comma separated list of heroes.")
