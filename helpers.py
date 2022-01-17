@@ -220,7 +220,7 @@ class DOTA:
                     await ctx.send(f"Here are all the pools we have stored, sir:\n{sql_db.get_all_pools()}")
                 elif arg in sql_db.get_users() or arg == "me":
                     if arg == "me":
-                        await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(user_id))[1:-1]}")
+                        await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(user_id))}")
                 else:
                     await ctx.send(f"{arg} heroes: {sql_db.select_heroes_from_pool(arg)}.")
             else:
@@ -234,27 +234,32 @@ class DOTA:
             if len(arg) > 4:
                 arg = arg[4:].strip()
                 print(f"Trying to handle dota new {arg}")
-                if arg in sql_db.get_all_pools() and arg not in ['strength','agility','intelligence']:
+                if arg not in ['strength','agility','intelligence']:
                     hero = ''
                     while hero not in nvm:
                         await ctx.send(f"Give me a hero to add to {arg}.")
                         hero = await bot.wait_for("message", check=check)
-                        ctx.send(f"Attempting to add {hero} to {arg} pool...")  
-                        sql_db.add_hero_to_pool(hero, arg)
+                        if hero.content in nvm:
+                            return
+                        hero = sql_db.findhero(hero.content)
+                        if hero == "Error":
+                            await ctx.send(f"Try again, couldn't find that hero. Any multi-word hero can be references by abbreviation.")
+                        else:
+                            ctx.send(f"Attempting to add {hero} to {arg} pool...")  
+                        sql_db.execute_query(sql_db.append_hero_pools_query, (sql_db.get_pool_id(arg), (sql_db.get_hero_id(hero))))
+
 
                 elif arg == 'pool':
                     await ctx.send(f"What shall we call your pool?")
                     try:
                         msg = await bot.wait_for("message", check=check)
                         poolname = msg.content
-                        print(f"Got {poolname} as poolname")
                         if poolname.capitalize() in sql_db.get_all_pools():
                             return
                         else:
                             await ctx.send(f"Adding pool {poolname} to the database")
                             sql_db.execute_query(sql_db.append_user_pools_query, (poolname, str(ctx.author.id)))
                             pool_id = sql_db.get_pool_id(poolname)
-                            print(f"Got pool id {pool_id} for poolname {poolname}")
                             await ctx.send(f"Give me a hero to add to the pool, or a comma separated list of heroes (abbreviations like kotl are ok).")
                             try:
                                 while msg.content not in nvm:
