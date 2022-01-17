@@ -233,6 +233,7 @@ class DOTA:
 
             if len(arg) > 4:
                 arg = arg[4:].strip()
+                print(f"Trying to handle dota new {arg}")
                 if arg in sql_db.get_all_pools() and arg not in ['strength','agility','intelligence']:
                     hero = ''
                     while hero not in nvm:
@@ -260,7 +261,7 @@ class DOTA:
                                 await ctx.send("Some issue with hero names..")
                     except:
                         await ctx.send("Some issue with the pool name.")
-                        
+
                 elif arg == 'hero':
                     await ctx.send("No need to add new heroes as there are no new heroes yet. Message gaben.")
                     
