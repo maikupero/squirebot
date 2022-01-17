@@ -263,7 +263,7 @@ class DOTA:
                                     heroes_to_add = [hero.strip() for hero in heroes_to_add]
                                     for hero in heroes_to_add:
                                         await ctx.send(f"Adding {hero} to {poolname}.")
-                                        sql_db.execute_query(sql_db.append_hero_table_query, (pool_id, (sql_db.get_hero_id(hero))))
+                                        sql_db.execute_query(sql_db.append_hero_pools_query, (pool_id, (sql_db.get_hero_id(hero))))
                             except:
                                 await ctx.send("Some issue with hero names..")
                     except:
