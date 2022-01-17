@@ -172,9 +172,9 @@ def create_dota_tables():
     # Create pools table and fill with the default 3 attribute pools
     print("Creating user pools table.")
     execute_query(create_user_pools_query)
-    execute_query(append_user_pools_query, (1,'strength','default'))
-    execute_query(append_user_pools_query, (2,'agility','default'))
-    execute_query(append_user_pools_query, (3,'intelligence','default'))
+    execute_query(append_user_pools_query, ('strength','default'))
+    execute_query(append_user_pools_query, ('agility','default'))
+    execute_query(append_user_pools_query, ('intelligence','default'))
 
     # Create user table
     print("Creating hero-pool pairs table.")
@@ -322,9 +322,9 @@ append_hero_table_query = """
 # FILL HERO POOL DEFAULTS
 append_user_pools_query = """
     INSERT INTO
-        dota_user_pools
+        dota_user_pools(pool_name, user_id)
     VALUES
-        (%s, %s, %s)
+        (%s, %s)
     ON CONFLICT DO NOTHING"""
 append_hero_pools_query = """
     INSERT INTO
