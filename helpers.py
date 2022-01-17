@@ -258,7 +258,11 @@ class DOTA:
                             await ctx.send(f"Give me a hero to add to the pool, or a comma separated list of heroes (abbreviations like kotl are ok).")
                             try:
                                 while msg.content not in nvm:
+                                    await ctx.send("Any more to add?")
                                     msg = await bot.wait_for("message", check=check)
+                                    if msg.content in nvm:
+                                        await ctx.send("Gotcha. All done!")
+                                        return
                                     heroes_to_add = msg.content.split(',')
                                     heroes_to_add = [hero.strip() for hero in heroes_to_add]
                                     for hero in heroes_to_add:
