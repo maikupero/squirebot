@@ -217,7 +217,11 @@ def get_hero_name(hero_id):
 def select_heroes_from_pool(pool_name):
     pool_id = get_pool_id(pool_name)
     hero_ids = fetch_query(select_heroes_from_pool_query, (pool_id,))
-    return [get_hero_name(hero_id) for hero_id in hero_ids]
+    heroes_in_pool = []
+    print(hero_ids)
+    for hero in hero_ids:
+        heroes_in_pool.append(get_hero_name(hero))
+    return heroes_in_pool
 
 def add_hero_to_pool(hero_name, pool_name):
     hero_id = get_hero_id(hero_name)
@@ -234,7 +238,7 @@ def get_hero_score(hero):
     hero_id = get_hero_id(hero)
     return fetch_query(get_hero_score_query, (hero_id,))
 
-    
+
 get_pools_query = """
     SELECT DISTINCT
         pool_name
