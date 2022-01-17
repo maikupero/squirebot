@@ -191,10 +191,14 @@ def create_dota_tables():
     
     print("Success...?!")
 
-
+# POOL QUERIES
+def get_all_pools():
+    print(fetch_query(get_pools_query))
 def get_pool_id(pool_name):
     id = fetch_query(get_pool_id_query, (pool_name,))
     return id[0]
+
+# HERO QUERIES
 def get_hero_id(hero):
     if hero in hero_abbrevs:
         hero = hero_abbrevs[hero]
@@ -203,11 +207,58 @@ def get_hero_id(hero):
         return id[0]
     else:
         return "Error"
+
+def get_hero_name(hero_id):
+    return fetch_query(get_hero_name_query, (hero_id,))
+
+def select_heroes_from_pool(pool_name):
+    pool_id = get_pool_id(pool_name)
+    hero_ids = str(fetch_query(select_heroes_from_pool_query, (pool_id,))[1:-1])
+    return [get_hero_name(hero_id) for hero_id in hero_ids]
+
+# USER QUERIES
+def get_users():
+    return fetch_query(get_users_query)
+def get_users_pools(user_id):
+    return fetch_query(get_user_pools_query, (user_id,))
+
+
+
+
 def get_hero_score(hero):
     hero_id = get_hero_id(hero)
     return fetch_query(get_hero_score_query, (hero_id,))
-    
-    
+get_pools_query = """
+    SELECT DISTINCT
+        pool_name
+    FROM
+        dota_user_pools"""
+get_users_query = """
+    SELECT DISTINCT
+        user_id
+    FROM
+        dota_user_pools"""
+get_user_pools_query = """
+    SELECT DISTINCT
+        pool_name
+    FROM
+        dota_user_pools
+    WHERE
+        user_id=%s"""
+select_heroes_from_pool_query = """
+    SELECT
+        *
+    FROM
+        hero_pools
+    WHERE
+        pool_id=%s"""
+get_hero_name_query = """
+    SELECT
+        hero_name
+    FROM
+        dota_heroes
+    WHERE
+        hero_id=%s"""
 
 ### DOTA TABLE QUERIES ###
 #DELETING TO WIPE CLEAN WHILE BUILDING
