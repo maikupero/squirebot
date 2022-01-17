@@ -222,7 +222,7 @@ class DOTA:
                     if arg == "me":
                         await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(user_id))[1:-1]}")
                 else:
-                    await ctx.send(f"{arg} heroes: {sorted(sql_db.select_heroes_from_pool(arg))}.")
+                    await ctx.send(f"{arg} heroes: {sql_db.select_heroes_from_pool(arg)}.")
             else:
                 await ctx.send(f"`sb.dota pool list/poolname/username` for all the pools, or `sb.dota pool (poolname)` to look it up.")
 
@@ -252,7 +252,7 @@ class DOTA:
                             return
                         else:
                             await ctx.send(f"Adding pool {poolname} to the database")
-                            sql_db.append_user_pools_query(poolname, str(ctx.author.id))
+                            sql_db.execute_query(sql_db.append_user_pools_query, (poolname, str(ctx.author.id)))
                             pool_id = sql_db.get_pool_id(poolname)
                             print(f"Got pool id {pool_id} for poolname {poolname}")
                             try:
