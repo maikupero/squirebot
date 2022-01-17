@@ -165,9 +165,9 @@ def create_dota_tables():
     #Create Hero table and fill with hero names
     print("Creating hero table.")
     execute_query(create_hero_table_query)
-    for index, hero in enumerate(heroes, 1):
+    for hero in heroes:
         print(f"Adding {hero} to the dota_heroes table.")
-        execute_query(append_hero_table_query, (index, hero, 0))
+        execute_query(append_hero_table_query, (hero, 0))
     
     # Create pools table and fill with the default 3 attribute pools
     print("Creating user pools table.")
@@ -219,9 +219,7 @@ def get_hero_name(hero_id):
 def select_heroes_from_pool(pool_name):
     pool_id = get_pool_id(pool_name)
     hero_ids = fetch_query(select_heroes_from_pool_query, (pool_id,))
-    print(hero_ids)
     heroes_in_pool = [get_hero_name(hero_id) for hero_id in hero_ids]
-    sorted(heroes_in_pool)
     return str(heroes_in_pool)[1:-1].replace("'","").replace("[","").replace("]","")
 
 def add_hero_to_pool(hero_name, pool_name):
@@ -315,9 +313,9 @@ create_hero_pools_query = """
 # FILL HERO TABLE QUERIES
 append_hero_table_query = """
     INSERT INTO
-        dota_heroes
+        dota_heroes(hero_name,score)
     VALUES
-        (%s, %s, %s)
+        (%s, %s)
     ON CONFLICT DO NOTHING"""
 # FILL HERO POOL DEFAULTS
 append_user_pools_query = """
