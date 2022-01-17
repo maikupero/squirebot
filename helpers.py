@@ -217,7 +217,7 @@ class DOTA:
             if len(arg) > 5:
                 arg = arg[5:].strip()
                 if arg == 'list':
-                    await ctx.send(f"Here are all the pools we have stored, sir.\n{str(sql_db.get_all_pools())[1:-1]}")
+                    await ctx.send(f"Here are all the pools we have stored, sir:\n{str(sql_db.get_all_pools())[1:-1]}")
                 elif arg in sql_db.get_users() or arg == "me":
                     if arg == "me":
                         await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(ctx.author.id))[1:-1]}")
@@ -227,9 +227,34 @@ class DOTA:
                 await ctx.send(f"`sb.dota pool list/poolname/username` for all the pools, or `sb.dota pool (poolname)` to look it up.")
 
         elif arg == 'new': 
+            def check(msg):
+                return msg.author == ctx.author and msg.channel == ctx.channel
+
             if len(arg) > 4:
                 arg = arg[4:].strip()
-                if arg == 'pool':
+
+                if arg in sql_db.get_all_pools() and arg not in ['strength','agility','intelligence']:
+                    hero = ''
+                    while hero not in nvm:
+                        await ctx.send(f"Give me a hero to add to {arg}.")
+                        hero = await bot.wait_for("message", check=check)
+                        ctx.send(f"Attempting to add {hero} to {arg} pool...")  
+                        sql_db.add_hero_to_pool(hero, arg)
+
+
+
+                elif arg == 'pool':
+
+                    await ctx.send(f"What shall we call your pool?")
+                elif arg == 'hero':
+                    await ctx.send("No need to add new heroes as there are no new heroes yet. Message gaben.")
+                    try:
+                    msg = await bot.wait_for("message", check=check, timeout=30)
+                    for word in msg.content.split(","):
+                    if sql_db.
+                            await ctx.send(f"Deleted: {word.strip()}")
+                    else:
+                        await ctx.send(f"{word.strip()} is not yours to delete!")
                     await ctx.send(f"Here are all the pools we have stored, sir.\n{sql_db.fetch_all_pools(ctx)}")
                 elif arg in sql_db.get_users():
                     await ctx.send(f"Pools for {arg}: {sql_db.get_users_pools(arg)}")
@@ -239,6 +264,7 @@ class DOTA:
                 await ctx.send(f"`sb.dota pool list/poolname/username` for all the pools, or `sb.dota pool (poolname)` to look it up.")
                 
             await ctx.send("Specify what you'd like to add/edit! Try `sb.dota new (pool/hero)` to see lists.")
+
         elif arg.capitalize() in heroes or arg in hero_abbrevs.keys():
             if arg in hero_abbrevs.keys():
                 hero = hero_abbrevs[arg]
