@@ -153,14 +153,14 @@ delete_greeting_query = """
 ### DOTA TABLE FUNCTIONS ###    
 def create_dota_tables():
     #Start fresh
-    print("Wiping all dota tables.")
-    execute_query(delete_pools_table_query)
-    execute_query(delete_user_table_query)
-    execute_query(delete_hero_table_query)
+    # print("Wiping all dota tables.")
+    # execute_query(delete_pools_table_query)
+    # execute_query(delete_user_table_query)
+    # execute_query(delete_hero_table_query)
 
     #Reset Auto-incremented IDs
-    execute_query(reset_increments_hero_table_query)
-    execute_query(reset_increments_user_table_query)
+    # execute_query(reset_increments_hero_table_query)
+    # execute_query(reset_increments_user_table_query)
     
     #Create Hero table and fill with hero names
     print("Creating hero table.")
@@ -196,22 +196,26 @@ def create_dota_tables():
 def get_all_pools():
     pools = fetch_query(get_pools_query)
     if pools != None:
-        pools = (str(pools)[1:-1]).replace("'", "").title()
+        pools = (str(pools)[1:-1]).replace("'", "")
     return pools
-
 def get_pool_id(pool_name):
     id = fetch_query(get_pool_id_query, (pool_name,))
     return id[0]
 
 # HERO QUERIES
-def get_hero_id(hero):
+def findhero(hero):
     if hero in hero_abbrevs:
-        hero = hero_abbrevs[hero]
+        return hero_abbrevs[hero]
+    elif hero in heroes:
+        return hero
     elif hero.capitalize() in heroes:
-        hero = hero.capitalize()
+        return hero.capitalize()
+    else:
+        return "Error"
+def get_hero_id(hero):
+    hero = findhero(hero)
     id = fetch_query(get_hero_id_query, (hero,))
     return id[0]
-
 def get_hero_name(hero_id):
     return fetch_query(get_hero_name_query, (hero_id,))
 
