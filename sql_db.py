@@ -182,13 +182,13 @@ def create_dota_tables():
 
     for hero in strength:
         execute_query(append_hero_pools_query, (get_pool_id('Strength'), get_hero_id(hero)))
-        print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'strength' of id: {get_pool_id('Strength')}")
+        print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'Strength' of id: {get_pool_id('Strength')}")
     for hero in agility:
         execute_query(append_hero_pools_query, (get_pool_id('Agility'), get_hero_id(hero)))
-        print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'agility' of id: {get_pool_id('Agility')}")
+        print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'Agility' of id: {get_pool_id('Agility')}")
     for hero in intelligence:
         execute_query(append_hero_pools_query, (get_pool_id('Intelligence'), get_hero_id(hero)))
-        print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'intelligence' of id: {get_pool_id('Intelligence')}")
+        print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'Intelligence' of id: {get_pool_id('Intelligence')}")
     
     print("Success...?!")
 

@@ -210,6 +210,7 @@ class DOTA:
     
     async def dota_db(ctx, bot, arg):
         user_id = str(ctx.author.id)
+
         if arg.startswith("random"):
             await ctx.send(DOTA.randomdop(ctx, arg))
 
@@ -222,9 +223,10 @@ class DOTA:
                     if arg == "me":
                         await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(user_id))}")
                 else:
+                    if arg not in 
                     await ctx.send(f"{arg} heroes: {sql_db.select_heroes_from_pool(arg)}.")
             else:
-                await ctx.send(f"`sb.dota pool list/poolname/username` for all the pools, or `sb.dota pool (poolname)` to look it up.")
+                await ctx.send(f"`sb.dota pool list/poolname` for all the pools, or `sb.dota pool (poolname)` to look it up.")
 
         elif arg.startswith('new'):
             def check(msg):
@@ -244,14 +246,12 @@ class DOTA:
                         heroes_to_add = [sql_db.findhero(hero.strip()) for hero in heroes_to_add]
                         for hero in heroes_to_add:
                             if hero == "Error":
-                                return
+                                raise Exception
                             else:
                                 await ctx.send(f"Adding {hero} to {poolname}.")
                                 sql_db.execute_query(sql_db.append_hero_pools_query, (pool_id, (sql_db.get_hero_id(hero))))
-                                await ctx.send("Any more to add?")
+                        await ctx.send("Any more to add?")
                     except:
-                        if addmore == False:
-                            return
                         await ctx.send("Some issue with hero names..")
                 
             if len(arg) > 4:
