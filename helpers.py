@@ -235,9 +235,8 @@ class DOTA:
                 arg = arg[4:].strip()
                 print(f"Trying to handle dota new {arg}")
                 if arg not in ['strength','agility','intelligence','pool','hero']:
-                    hero = ''
-                    while hero not in nvm:
-                        await ctx.send(f"Give me a hero to add to {arg}.")
+                    await ctx.send(f"Give me a hero to add to {arg}.")
+                    while hero.content not in nvm:
                         hero = await bot.wait_for("message", check=check)
                         if hero.content in nvm:
                             return
@@ -245,8 +244,9 @@ class DOTA:
                         if hero == "Error":
                             await ctx.send(f"Try again, couldn't find that hero. Any multi-word hero can be references by abbreviation.")
                         else:
-                            ctx.send(f"Attempting to add {hero} to {arg} pool...")  
-                        sql_db.execute_query(sql_db.append_hero_pools_query, (sql_db.get_pool_id(arg), (sql_db.get_hero_id(hero))))
+                            ctx.send(f"Adding {hero} to {arg}.")  
+                            sql_db.execute_query(sql_db.append_hero_pools_query, (sql_db.get_pool_id(arg), (sql_db.get_hero_id(hero))))
+                            ctx.send(f"Any more to add?") 
 
 
                 elif arg == 'pool':
