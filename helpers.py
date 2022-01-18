@@ -259,7 +259,7 @@ class DOTA:
                 print(f"Trying to handle dota new {arg}")
                 if arg not in ['strength','agility','intelligence','pool','hero']:
                     try:
-                        add_heroes(ctx, sql_db.get_pool_id(arg), arg)
+                        await add_heroes(ctx, sql_db.get_pool_id(arg), arg)
                     except:
                         ctx.send("Double check pool name.")
 
@@ -273,7 +273,7 @@ class DOTA:
                         else:
                             await ctx.send(f"Adding pool {poolname} to the database")
                             sql_db.execute_query(sql_db.append_user_pools_query, (poolname, str(ctx.author.id)))
-                            add_heroes(ctx, sql_db.get_pool_id(poolname), poolname)
+                            await add_heroes(ctx, sql_db.get_pool_id(poolname), poolname)
                     except:
                         await ctx.send("Some issue with the pool name.")
 
