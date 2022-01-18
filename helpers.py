@@ -257,7 +257,7 @@ class DOTA:
             if len(arg) > 4:
                 arg = arg[4:].strip()
                 print(f"Trying to handle dota new {arg}")
-                if arg not in ['strength','agility','intelligence','pool','hero']:
+                if arg.capitalize() not in ['Strength','Agility','Intelligence','Pool','Hero']:
                     try:
                         await add_heroes(ctx, sql_db.get_pool_id(arg), arg)
                     except:
