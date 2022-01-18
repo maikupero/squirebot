@@ -227,27 +227,41 @@ class DOTA:
                 await ctx.send(f"`sb.dota pool list/poolname/username` for all the pools, or `sb.dota pool (poolname)` to look it up.")
 
         elif arg.startswith('new'):
-            print(arg)
             def check(msg):
                 return msg.author == ctx.author and msg.channel == ctx.channel
-
+            
+            async def add_heroes(ctx, pool_id, poolname):
+                await ctx.send(f"Give me a hero to add to the pool, or a comma separated list of heroes (abbreviations like kotl are ok).")
+                addmore = True
+                while addmore:
+                    try:
+                        msg = await bot.wait_for("message", check=check)
+                        if msg.content in nvm:
+                            await ctx.send("Gotcha. All done!")
+                            addmore = False
+                            return
+                        heroes_to_add = msg.content.split(',')
+                        heroes_to_add = [sql_db.findhero(hero.strip()) for hero in heroes_to_add]
+                        for hero in heroes_to_add:
+                            if hero == "Error":
+                                return
+                            else:
+                                await ctx.send(f"Adding {hero} to {poolname}.")
+                                sql_db.execute_query(sql_db.append_hero_pools_query, (pool_id, (sql_db.get_hero_id(hero))))
+                                await ctx.send("Any more to add?")
+                    except:
+                        if addmore == False:
+                            return
+                        await ctx.send("Some issue with hero names..")
+                
             if len(arg) > 4:
                 arg = arg[4:].strip()
                 print(f"Trying to handle dota new {arg}")
                 if arg not in ['strength','agility','intelligence','pool','hero']:
-                    await ctx.send(f"Give me a hero to add to {arg}.")
-                    while hero.content not in nvm:
-                        hero = await bot.wait_for("message", check=check)
-                        if hero.content in nvm:
-                            return
-                        hero = sql_db.findhero(hero.content)
-                        if hero == "Error":
-                            await ctx.send(f"Try again, couldn't find that hero. Any multi-word hero can be references by abbreviation.")
-                        else:
-                            ctx.send(f"Adding {hero} to {arg}.")  
-                            sql_db.execute_query(sql_db.append_hero_pools_query, (sql_db.get_pool_id(arg), (sql_db.get_hero_id(hero))))
-                            ctx.send(f"Any more to add?") 
-
+                    try:
+                        add_heroes(ctx, sql_db.get_pool_id(arg), arg)
+                    except:
+                        ctx.send("Double check pool name.")
 
                 elif arg == 'pool':
                     await ctx.send(f"What shall we call your pool?")
@@ -259,30 +273,15 @@ class DOTA:
                         else:
                             await ctx.send(f"Adding pool {poolname} to the database")
                             sql_db.execute_query(sql_db.append_user_pools_query, (poolname, str(ctx.author.id)))
-                            pool_id = sql_db.get_pool_id(poolname)
-                            await ctx.send(f"Give me a hero to add to the pool, or a comma separated list of heroes (abbreviations like kotl are ok).")
-                            try:
-                                while msg.content not in nvm:
-                                    await ctx.send("Any more to add?")
-                                    msg = await bot.wait_for("message", check=check)
-                                    if msg.content in nvm:
-                                        await ctx.send("Gotcha. All done!")
-                                        return
-                                    heroes_to_add = msg.content.split(',')
-                                    heroes_to_add = [hero.strip() for hero in heroes_to_add]
-                                    for hero in heroes_to_add:
-                                        await ctx.send(f"Adding {hero} to {poolname}.")
-                                        sql_db.execute_query(sql_db.append_hero_pools_query, (pool_id, (sql_db.get_hero_id(hero))))
-                            except:
-                                await ctx.send("Some issue with hero names..")
+                            add_heroes(ctx, sql_db.get_pool_id(poolname), poolname)
                     except:
                         await ctx.send("Some issue with the pool name.")
 
                 elif arg == 'hero':
                     await ctx.send("No need to add new heroes as there are no new heroes yet. Message gaben.")
                     
-                else: 
-                    await ctx.send("Specify what you'd like to add / add to! Try `sb.dota new pool` to make a new one.")
+            else: 
+                await ctx.send("Specify what you'd like to add / add to! Try `sb.dota new pool` to make a new one.")
 
         elif arg.capitalize() in heroes or arg in hero_abbrevs.keys():
             if arg in hero_abbrevs.keys():

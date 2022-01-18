@@ -153,14 +153,14 @@ delete_greeting_query = """
 ### DOTA TABLE FUNCTIONS ###    
 def create_dota_tables():
     #Start fresh
-    # print("Wiping all dota tables.")
-    # execute_query(delete_pools_table_query)
-    # execute_query(delete_user_table_query)
-    # execute_query(delete_hero_table_query)
+    print("Wiping all dota tables.")
+    execute_query(delete_pools_table_query)
+    execute_query(delete_user_table_query)
+    execute_query(delete_hero_table_query)
 
-    #Reset Auto-incremented IDs
-    # execute_query(reset_increments_hero_table_query)
-    # execute_query(reset_increments_user_table_query)
+    # Reset Auto-incremented IDs
+    execute_query(reset_increments_hero_table_query)
+    execute_query(reset_increments_user_table_query)
     
     #Create Hero table and fill with hero names
     print("Creating hero table.")
@@ -192,7 +192,7 @@ def create_dota_tables():
     
     print("Success...?!")
 
-# POOL QUERIES
+# POOL & USER FUNCTIONS
 def get_all_pools():
     pools = fetch_query(get_pools_query)
     if pools != None:
@@ -202,7 +202,17 @@ def get_pool_id(pool_name):
     id = fetch_query(get_pool_id_query, (pool_name,))
     return id[0]
 
-# HERO QUERIES
+def get_users():
+    return fetch_query(get_users_query)
+def get_users_pools(user_id):
+    pools = fetch_query(get_user_pools_query, (user_id,))
+    if pools != 'None':
+        pools = (str(pools)[1:-1]).replace("'","").title()
+    return pools
+
+
+
+# HERO FUNCTIONS
 def findhero(hero):
     if hero in hero_abbrevs:
         return hero_abbrevs[hero]
@@ -212,10 +222,12 @@ def findhero(hero):
         return hero.capitalize()
     else:
         return "Error"
+
 def get_hero_id(hero):
     hero = findhero(hero)
     id = fetch_query(get_hero_id_query, (hero,))
     return id[0]
+
 def get_hero_name(hero_id):
     return fetch_query(get_hero_name_query, (hero_id,))
 
@@ -230,20 +242,12 @@ def add_hero_to_pool(hero_name, pool_name):
     pool_id = get_pool_id(pool_name)
     execute_query(append_hero_pools_query, (pool_id, hero_id))
 
-# USER QUERIES
-def get_users():
-    return fetch_query(get_users_query)
-def get_users_pools(user_id):
-    pools = fetch_query(get_user_pools_query, (user_id,))
-    if pools != 'None':
-        pools = (str(pools)[1:-1]).replace("'","").title()
-    return pools
-
 def get_hero_score(hero):
     hero_id = get_hero_id(hero)
     return fetch_query(get_hero_score_query, (hero_id,))
 
 
+### DOTA TABLE QUERIES ###
 get_pools_query = """
     SELECT DISTINCT
         pool_name
@@ -276,7 +280,7 @@ get_hero_name_query = """
     WHERE
         hero_id=%s"""
 
-### DOTA TABLE QUERIES ###
+
 #DELETING TO WIPE CLEAN WHILE BUILDING
 delete_hero_table_query = """
     DELETE FROM
@@ -297,6 +301,7 @@ reset_increments_user_table_query = """
     ALTER SEQUENCE 
         dota_user_pools_pool_id_seq 
     RESTART WITH 1"""
+    
 #INITIAL CREATION
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
