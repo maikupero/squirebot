@@ -218,12 +218,11 @@ class DOTA:
             if len(arg) > 5:
                 arg = arg[5:].strip()
                 if arg == 'list':
-                    await ctx.send(f"Here are all the pools we have stored, sir:\n{sql_db.get_all_pools()}")
+                    await ctx.send(f"Here are all the pools we have stored, sir:\n{sql_db.get_all_pools()}. Case sensitive.")
                 elif arg in sql_db.get_users() or arg == "me":
                     if arg == "me":
                         await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(user_id))}")
                 else:
-                    if arg not in 
                     await ctx.send(f"{arg} heroes: {sql_db.select_heroes_from_pool(arg)}.")
             else:
                 await ctx.send(f"`sb.dota pool list/poolname` for all the pools, or `sb.dota pool (poolname)` to look it up.")
