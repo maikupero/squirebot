@@ -234,7 +234,7 @@ class DOTA:
             if len(arg) > 4:
                 arg = arg[4:].strip()
                 print(f"Trying to handle dota new {arg}")
-                if arg not in ['strength','agility','intelligence']:
+                if arg not in ['strength','agility','intelligence','pool','hero']:
                     hero = ''
                     while hero not in nvm:
                         await ctx.send(f"Give me a hero to add to {arg}.")
