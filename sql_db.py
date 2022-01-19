@@ -2,7 +2,7 @@ from distutils.util import execute
 import psycopg2
 import os
 from psycopg2 import sql
-from lists import default_commands, heroes, hero_abbrevs, strength, agility, intelligence, stre, agil, inte
+from lists import default_commands, heroes, strength, agility, intelligence, stre, agil, inte
 
 DB = os.environ['DATABASE_URL']
 
@@ -214,14 +214,10 @@ def get_users_pools(user_id):
 
 # HERO FUNCTIONS
 def findhero(hero):
-    if hero in hero_abbrevs:
-        return hero_abbrevs[hero]
-    elif hero in heroes:
-        return hero
-    elif hero.capitalize() in heroes:
-        return hero.capitalize()
+    if hero in heroes.keys():
+        return heroes[hero]
     else:
-        return "Error"
+        return "ERROR"
 
 def get_hero_id(hero):
     hero = findhero(hero)
