@@ -4,7 +4,7 @@ import requests
 import sql_db
 import asyncio
 
-from lists import nvm, heroes, hero_abbrevs, stre, agil, inte, role1, role2, role3, role4, role5, supps, cores, jungle
+from lists import nvm, heroes, full_hero_list, stre, agil, inte, role1, role2, role3, role4, role5, supps, cores, jungle
 
 class CHECKS:
     def check_same_user(ctx,msg):
@@ -155,27 +155,27 @@ class DOTA:
     def randomdop(ctx, pool):
         if len(pool.strip()) > 6:
             pool = pool[7:]
-        if pool == "random":
-            return random.choice(heroes)     
-        elif pool.startswith("str"):
+        if pool == "RANDOM":
+            return random.choice(full_hero_list)     
+        elif pool.startswith("STR"):
             return random.choice(stre)
-        elif pool.startswith("agi"):
+        elif pool.startswith("AGI"):
             return random.choice(agil)
-        elif pool.startswith("int"):
+        elif pool.startswith("INT"):
             return random.choice(inte)
-        elif pool == "core":
+        elif pool == "CORE":
             return random.choice(cores)
-        elif pool == "1" or pool == "carry":
+        elif pool == "1" or pool == "CARRY":
             return random.choice(role1)
         elif pool == "2":
             return random.choice(role2)
         elif pool == "3":
             return random.choice(role3)
-        elif pool.startswith("sup") or pool == "4" or pool == "5":
+        elif pool.startswith("SUP") or pool == "4" or pool == "5":
             return random.choice(supps)
-        elif pool.startswith("jung"):
+        elif pool.startswith("JUNG"):
             return random.choice(jungle)
-        elif pool == "team":
+        elif pool == "TEAM":
             return DOTA.generate_team()
         
     def generate_team():
@@ -189,7 +189,7 @@ class DOTA:
             new_team.extend(core_count)
             for i in range(remaining_random):
                 pub = random.choice(heroes)
-                while pub in core_count or pub in support_count: pub = random.choice(heroes)
+                while pub in core_count or pub in support_count: pub = random.choice(full_hero_list)
                 new_team.append(pub)
             new_team.extend(support_count)
         else:
@@ -210,24 +210,25 @@ class DOTA:
     
     async def dota_db(ctx, bot, arg):
         user_id = str(ctx.author.id)
+        arg = arg.upper()
 
-        if arg.startswith("random"):
+        if arg.startswith("RANDOM"):
             await ctx.send(DOTA.randomdop(ctx, arg))
 
-        elif arg.startswith('pool'):
+        elif arg.startswith('POOL'):
             if len(arg) > 5:
                 arg = arg[5:].strip()
-                if arg == 'list':
-                    await ctx.send(f"Here are all the pools we have stored, sir:\n{sql_db.get_all_pools()}. Case sensitive.")
-                elif arg in sql_db.get_users() or arg == "me":
-                    if arg == "me":
+                if arg == 'LIST':
+                    await ctx.send(f"Here are all the pools we have stored, sir (Case Insensitive):\n{sql_db.get_all_pools()}.")
+                elif arg in sql_db.get_users() or arg == "ME":
+                    if arg == "ME":
                         await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(user_id))}")
                 else:
                     await ctx.send(f"{arg} heroes: {sql_db.select_heroes_from_pool(arg)}.")
             else:
                 await ctx.send(f"`sb.dota pool list/poolname` for all the pools, or `sb.dota pool (poolname)` to look it up.")
 
-        elif arg.startswith('new'):
+        elif arg.startswith('NEW'):
             def check(msg):
                 return msg.author == ctx.author and msg.channel == ctx.channel
             
@@ -241,7 +242,7 @@ class DOTA:
                             await ctx.send("Gotcha. All done!")
                             addmore = False
                             return
-                        heroes_to_add = msg.content.split(',')
+                        heroes_to_add = msg.content.upper().split(',')
                         heroes_to_add = [sql_db.findhero(hero.strip()) for hero in heroes_to_add]
                         for hero in heroes_to_add:
                             if hero == "Error":
@@ -251,23 +252,25 @@ class DOTA:
                                 sql_db.execute_query(sql_db.append_hero_pools_query, (pool_id, (sql_db.get_hero_id(hero))))
                         await ctx.send("Any more to add?")
                     except:
-                        await ctx.send("Some issue with hero names..")
+                        await ctx.send("Some issue with hero names, try again..")
                 
             if len(arg) > 4:
                 arg = arg[4:].strip()
                 print(f"Trying to handle dota new {arg}")
-                if arg.capitalize() not in ['Strength','Agility','Intelligence','Pool','Hero']:
+                if arg not in ['STRENGTH','AGILITY','INTELLIGENCE','POOL','HERO']:
                     try:
                         await add_heroes(ctx, sql_db.get_pool_id(arg), arg)
                     except:
                         ctx.send("Double check pool name.")
 
-                elif arg == 'pool':
+                elif arg.upper == 'POOL':
                     await ctx.send(f"What shall we call your pool?")
                     try:
                         msg = await bot.wait_for("message", check=check)
-                        poolname = msg.content
-                        if poolname.capitalize() in sql_db.get_all_pools():
+                        poolname = msg.content.title()
+                        print(f"[sql_db.get_all_pools().split(',')]: {[sql_db.get_all_pools().split(',')]}")
+                        if poolname in [sql_db.get_all_pools().split(',')]:
+                            await ctx.send("A pool with that name already exists!")
                             return
                         else:
                             await ctx.send(f"Adding pool {poolname} to the database")
@@ -282,12 +285,8 @@ class DOTA:
             else: 
                 await ctx.send("Specify what you'd like to add / add to! Try `sb.dota new pool` to make a new one.")
 
-        elif arg.capitalize() in heroes or arg in hero_abbrevs.keys():
-            if arg in hero_abbrevs.keys():
-                hero = hero_abbrevs[arg]
-            else: 
-                hero = arg.capitalize()
-            await ctx.send(f"Looking up {hero}...")
+        elif arg in heroes:
+            await ctx.send(f"Looking up {heroes[arg]}...")
         
         else:
             await ctx.send("Sorry, try again with some new dota request.")
