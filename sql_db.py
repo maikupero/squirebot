@@ -210,10 +210,10 @@ def get_users_pools(user_id):
 
 def delete_pool(pool, user_id, master_id):
     pool_id = get_pool_id(pool)
-    check_id = fetch_query(get_creator_id, (pool_id,))
+    check_id = fetch_query(get_user_id, (pool_id,))
     if str(user_id) in [check_id[0], str(master_id)]:
         print(f"Attempting to delete {pool} of id {pool_id}")
-        execute_query(delete_pool_query, (pool,))
+        execute_query(delete_pool_query, (pool_id,))
         return 1
 
 
@@ -280,7 +280,13 @@ get_hero_name_query = """
         dota_heroes
     WHERE
         hero_id=%s"""
-
+get_user_id = """
+    SELECT 
+        user_id
+    FROM
+        user_pools
+    WHERE
+        pool_id=%s"""
 
 #DELETING TO WIPE CLEAN WHILE BUILDING
 delete_hero_table_query = """
@@ -294,6 +300,7 @@ delete_pools_table_query = """
         hero_pools"""
 
 #DELETE QUERIES FOR USERS
+
 delete_pool_query = """
     DELETE FROM
         hero_pools
