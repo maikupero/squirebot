@@ -224,7 +224,7 @@ class DOTA:
                     if arg == "ME":
                         await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(user_id))}")
                 else:
-                    await ctx.send(f"{arg} heroes: {sql_db.select_heroes_from_pool(arg)}.")
+                    await ctx.send(f"{arg} heroes: {sql_db.select_heroes_from_pool(arg.title())}.")
             else:
                 await ctx.send(f"`sb.dota pool list/poolname` for all the pools, or `sb.dota pool (poolname)` to look it up.")
 
