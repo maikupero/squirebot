@@ -17,7 +17,7 @@ class DBSTUFF:
         def check(msg):
             return msg.author == message.author and msg.channel == message.channel
         try:
-            msg = await bot.wait_for("message", check=CHECKS.check_same_user, timeout=30)
+            msg = await bot.wait_for("message", check=check, timeout=30)
             response = str(msg.content)
             if response.lower() in nvm:
                 await message.channel.send("No problemo.")
@@ -245,7 +245,7 @@ class DOTA:
                         heroes_to_add = msg.content.upper().split(',')
                         heroes_to_add = [sql_db.findhero(hero.strip()) for hero in heroes_to_add]
                         for hero in heroes_to_add:
-                            if hero == "Error":
+                            if hero == "ERROR":
                                 raise Exception
                             elif hero in sql_db.select_heroes_from_pool(poolname):
                                 raise Exception
