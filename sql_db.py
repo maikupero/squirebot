@@ -165,7 +165,7 @@ def create_dota_tables():
     #Create Hero table and fill with hero names
     print("Creating hero table.")
     execute_query(create_hero_table_query)
-    for hero in set(sorted(heroes.values())):
+    for hero in sorted(set(heroes.values)):
         print(f"Adding {hero} to the dota_heroes table.")
         execute_query(append_hero_table_query, (hero, 0))
     
@@ -214,7 +214,7 @@ def get_users_pools(user_id):
 
 # HERO FUNCTIONS
 def findhero(hero):
-    if hero in heroes.keys():
+    if hero.upper() in heroes.keys():
         return heroes[hero]
     else:
         return "ERROR"
