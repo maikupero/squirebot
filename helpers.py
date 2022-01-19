@@ -224,7 +224,7 @@ class DOTA:
                     if arg == "ME":
                         await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(user_id))}")
                 else:
-                    await ctx.send(f"{arg} heroes: {sql_db.select_heroes_from_pool(arg.title())}.")
+                    await ctx.send(f"{arg.title()} heroes: {sql_db.select_heroes_from_pool(arg.title())}.")
             else:
                 await ctx.send(f"`sb.dota pool list/poolname` for all the pools, or `sb.dota pool (poolname)` to look it up.")
 
@@ -247,12 +247,14 @@ class DOTA:
                         for hero in heroes_to_add:
                             if hero == "Error":
                                 raise Exception
+                            elif hero in sql_db.select_heroes_from_pool(poolname):
+                                raise Exception
                             else:
                                 await ctx.send(f"Adding {hero} to {poolname}.")
                                 sql_db.execute_query(sql_db.append_hero_pools_query, (pool_id, (sql_db.get_hero_id(hero))))
                         await ctx.send("Any more to add?")
                     except:
-                        await ctx.send("Some issue with hero names, try again..")
+                        await ctx.send("Duplicate or typo, try again..")
                 
             if len(arg) > 4:
                 arg = arg[4:].strip()
@@ -269,8 +271,7 @@ class DOTA:
                     try:
                         msg = await bot.wait_for("message", check=check)
                         poolname = msg.content.title()
-                        print(f"[sql_db.get_all_pools().split(',')]: {[sql_db.get_all_pools().split(',')]}")
-                        if poolname in [sql_db.get_all_pools().split(',')]:
+                        if poolname in sql_db.get_all_pools().split(','):
                             await ctx.send("A pool with that name already exists!")
                             return
                         else:
