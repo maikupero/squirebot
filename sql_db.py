@@ -221,9 +221,7 @@ def findhero(hero):
 
 def get_hero_id(hero):
     hero = findhero(hero)
-    print(f"Found {hero}")
     id = fetch_query(get_hero_id_query, (hero,))
-    print(f"Found {id}")
     return id[0]
 
 def get_hero_name(hero_id):
