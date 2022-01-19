@@ -49,7 +49,7 @@ class DBSTUFF:
             await ctx.send(f"Specify poolname to delete a pool if it is yours to delete.\nStored pools: {sql_db.get_all_pools()}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
-                msg = msg.content.split(",").title()
+                msg = msg.content.title().split(",")
                 for pool in msg:
                     if sql_db.delete_pool(pool.strip(), user_id, master_id) == 1:
                         await ctx.send(f"Deleted: {pool.strip()}")
