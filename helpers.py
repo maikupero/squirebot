@@ -271,8 +271,9 @@ class DOTA:
                     try:
                         msg = await bot.wait_for("message", check=check)
                         poolname = msg.content.title()
-                        print(f"poolname: {poolname}, stored pools: {sql_db.get_all_pools().split(',')}")
-                        if poolname in sql_db.get_all_pools().split(','):
+                        pools = [pool.strip() for pool in sql_db.get_all_pools().split(',')]
+                        print(f"poolname: {poolname}, stored pools: {pools}")
+                        if poolname in pools:
                             await ctx.send("A pool with that name already exists!")
                             return
                         else:
