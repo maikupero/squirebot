@@ -2,7 +2,7 @@ from distutils.util import execute
 import psycopg2
 import os
 from psycopg2 import sql
-from lists import default_commands, heroes, strength, agility, intelligence, stre, agil, inte
+from lists import default_commands, heroes, full_hero_list, strength, agility, intelligence, stre, agil, inte
 
 DB = os.environ['DATABASE_URL']
 
@@ -165,7 +165,7 @@ def create_dota_tables():
     #Create Hero table and fill with hero names
     print("Creating hero table.")
     execute_query(create_hero_table_query)
-    for hero in sorted(set(heroes.values)):
+    for hero in full_hero_list:
         print(f"Adding {hero} to the dota_heroes table.")
         execute_query(append_hero_table_query, (hero, 0))
     
