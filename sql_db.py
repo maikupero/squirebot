@@ -165,7 +165,7 @@ def create_dota_tables():
     #Create Hero table and fill with hero names
     print("Creating hero table.")
     execute_query(create_hero_table_query)
-    for hero in heroes:
+    for hero in set(heroes.values()):
         print(f"Adding {hero} to the dota_heroes table.")
         execute_query(append_hero_table_query, (hero, 0))
     
