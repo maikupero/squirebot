@@ -152,11 +152,11 @@ delete_greeting_query = """
 
 ### DOTA TABLE FUNCTIONS ###    
 def create_dota_tables():
-    #Start fresh
+    # Start fresh - Also remember to uncomment default attribute hero pools if you want them, and comment them out after the first time.
     print("Wiping all dota tables.")
-    # execute_query(delete_pools_table_query)
-    # execute_query(delete_user_table_query)
-    # execute_query(delete_hero_table_query)
+    execute_query(delete_pools_table_query)
+    execute_query(delete_user_table_query)
+    execute_query(delete_hero_table_query)
 
     # Reset Auto-incremented IDs
     execute_query(reset_increments_hero_table_query)
