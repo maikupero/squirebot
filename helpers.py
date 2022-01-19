@@ -8,14 +8,14 @@ from lists import nvm, heroes, full_hero_list, stre, agil, inte, role1, role2, r
 
 class CHECKS:
     def check_same_user(ctx,msg):
-        return msg.author == ctx.author and msg.channel == ctx.channel
+        return msg.author == ctx.author and msg.channel == ctx.channel and msg.content[:3].upper() != "SB."
 
 class DBSTUFF:
     async def new_conversation(message, bot, greeting):
         creator_id = message.author.id
         await message.channel.send(f"Oh, '{greeting}'. What should I say? No comma's please! (nvm, cancel, etc. to cancel)")
         def check(msg):
-            return msg.author == message.author and msg.channel == message.channel
+            return CHECKS.check_same_user(message, msg)
         try:
             msg = await bot.wait_for("message", check=check, timeout=30)
             response = str(msg.content)
@@ -30,7 +30,7 @@ class DBSTUFF:
 
     async def delete(bot, ctx, arg):
         def check(msg):
-            return msg.author == ctx.author and msg.channel == ctx.channel
+            return CHECKS.check_same_user(ctx, msg)
         master_id = ctx.guild.owner_id
         user_id = ctx.author.id
 
