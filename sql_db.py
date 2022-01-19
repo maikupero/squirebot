@@ -296,7 +296,8 @@ delete_pools_table_query = """
         hero_pools"""
 drop_dota_user_pools_query = """
     DROP TABLE
-        dota_user_pools"""
+        dota_user_pools
+    CASCADE"""
 
 #DELETE QUERIES FOR USERS
 delete_pool_query = """

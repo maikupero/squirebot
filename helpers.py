@@ -242,7 +242,7 @@ class DOTA:
 
         elif arg.startswith('NEW'):
             def check(msg):
-                return msg.author == ctx.author and msg.channel == ctx.channel
+                return msg.author == ctx.author and msg.channel == ctx.channel and msg.content[:3].upper() != "SB."
             
             async def add_heroes(ctx, pool_id, poolname):
                 await ctx.send(f"Give me a hero to add to the pool, or a comma separated list of heroes (abbreviations like kotl are ok).")
@@ -250,7 +250,7 @@ class DOTA:
                 while addmore:
                     try:
                         msg = await bot.wait_for("message", check=check)
-                        if msg.content in nvm or msg.content[:3] == "sb.":
+                        if msg.content in nvm:
                             await ctx.send("Gotcha. All done!")
                             addmore = False
                             return
