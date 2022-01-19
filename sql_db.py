@@ -154,13 +154,13 @@ delete_greeting_query = """
 def create_dota_tables():
     #Start fresh
     print("Wiping all dota tables.")
-    execute_query(delete_pools_table_query)
-    execute_query(delete_user_table_query)
-    execute_query(delete_hero_table_query)
+    # execute_query(delete_pools_table_query)
+    # execute_query(delete_user_table_query)
+    # execute_query(delete_hero_table_query)
 
     # Reset Auto-incremented IDs
-    execute_query(reset_increments_hero_table_query)
-    execute_query(reset_increments_user_table_query)
+    # execute_query(reset_increments_hero_table_query)
+    # execute_query(reset_increments_user_table_query)
     
     #Create Hero table and fill with hero names
     print("Creating hero table.")
@@ -201,7 +201,6 @@ def get_all_pools():
 def get_pool_id(pool_name):
     id = fetch_query(get_pool_id_query, (pool_name,))
     return id[0]
-
 def get_users():
     return fetch_query(get_users_query)
 def get_users_pools(user_id):
@@ -210,6 +209,13 @@ def get_users_pools(user_id):
         pools = (str(pools)[1:-1]).replace("'","").title()
     return pools
 
+def delete_pool(pool, user_id, master_id):
+    pool_id = get_pool_id(pool)
+    check_id = fetch_query(get_creator_id, (pool_id,))
+    if str(user_id) in [check_id[0], str(master_id)]:
+        print(f"Attempting to delete {pool} of id {pool_id}")
+        execute_query(delete_pool_query, (pool,))
+        return 1
 
 
 # HERO FUNCTIONS
@@ -287,6 +293,14 @@ delete_user_table_query = """
 delete_pools_table_query = """
     DELETE FROM
         hero_pools"""
+
+#DELETE QUERIES FOR USERS
+delete_pool_query = """
+    DELETE FROM
+        hero_pools
+    WHERE
+        pool_id=%s
+"""
 
 #RESETTING AUTO INCREMENT IDS
 reset_increments_hero_table_query = """

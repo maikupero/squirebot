@@ -28,7 +28,7 @@ class DBSTUFF:
         except asyncio.TimeoutError:
             await message.channel.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
 
-    async def deletefrom(bot, ctx, arg):
+    async def delete(bot, ctx, arg):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel
         master_id = ctx.guild.owner_id
@@ -45,6 +45,17 @@ class DBSTUFF:
                         await ctx.send(f"{word.strip()} is not yours to delete!")
             except asyncio.TimeoutError:
                 await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
+        elif "DOTA" or "POOL" in arg.upper():
+            await ctx.send(f"Specify poolname to delete a pool if it is yours to delete.\nStored pools: {sql_db.get_all_pools()}")
+            try:
+                msg = await bot.wait_for("message", check=check, timeout=30)
+                for pool in msg.content.split(","):
+                    if sql_db.delete_pool(pool.strip(), user_id, master_id) == 1:
+                        await ctx.send(f"Deleted: {pool.strip()}")
+                    else:
+                        await ctx.send(f"{pool.strip()} is not yours to delete!")
+            except asyncio.TimeoutError:
+                await ctx.send("Sorry, try again from `sb.delete (poolname)`.")
         else:   
             await ctx.send("Try `sb.deletefrom greetings` or `sb.deletefrom commands`")
     
