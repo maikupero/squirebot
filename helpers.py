@@ -49,7 +49,8 @@ class DBSTUFF:
             await ctx.send(f"Specify poolname to delete a pool if it is yours to delete.\nStored pools: {sql_db.get_all_pools()}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
-                for pool in msg.content.split(","):
+                msg = msg.content.split(",").title()
+                for pool in msg:
                     if sql_db.delete_pool(pool.strip(), user_id, master_id) == 1:
                         await ctx.send(f"Deleted: {pool.strip()}")
                     else:
@@ -249,7 +250,7 @@ class DOTA:
                 while addmore:
                     try:
                         msg = await bot.wait_for("message", check=check)
-                        if msg.content in nvm:
+                        if msg.content in nvm or msg.content[:3] == "sb.":
                             await ctx.send("Gotcha. All done!")
                             addmore = False
                             return

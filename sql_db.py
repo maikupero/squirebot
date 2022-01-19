@@ -154,13 +154,14 @@ delete_greeting_query = """
 def create_dota_tables():
     #Start fresh
     print("Wiping all dota tables.")
-    # execute_query(delete_pools_table_query)
-    # execute_query(delete_user_table_query)
-    # execute_query(delete_hero_table_query)
+    execute_query(delete_pools_table_query)
+    execute_query(delete_user_table_query)
+    execute_query(delete_hero_table_query)
+    execute_query(drop_dota_user_pools_query)
 
     # Reset Auto-incremented IDs
-    # execute_query(reset_increments_hero_table_query)
-    # execute_query(reset_increments_user_table_query)
+    execute_query(reset_increments_hero_table_query)
+    execute_query(reset_increments_user_table_query)
     
     #Create Hero table and fill with hero names
     print("Creating hero table.")
@@ -254,17 +255,17 @@ get_pools_query = """
     SELECT DISTINCT
         pool_name
     FROM
-        dota_user_pools"""
+        user_pools"""
 get_users_query = """
     SELECT DISTINCT
         user_id
     FROM
-        dota_user_pools"""
+        user_pools"""
 get_user_pools_query = """
     SELECT DISTINCT
         pool_name
     FROM
-        dota_user_pools
+        user_pools
     WHERE
         user_id=%s"""
 select_heroes_from_pool_query = """
@@ -289,10 +290,13 @@ delete_hero_table_query = """
         dota_heroes"""
 delete_user_table_query = """
     DELETE FROM
-        dota_user_pools"""
+        user_pools"""
 delete_pools_table_query = """
     DELETE FROM
         hero_pools"""
+drop_dota_user_pools_query = """
+    DROP TABLE
+        dota_user_pools"""
 
 #DELETE QUERIES FOR USERS
 delete_pool_query = """
@@ -309,23 +313,23 @@ reset_increments_hero_table_query = """
     RESTART WITH 1"""
 reset_increments_user_table_query = """
     ALTER SEQUENCE 
-        dota_user_pools_pool_id_seq 
+        user_pools_pool_id_seq 
     RESTART WITH 1"""
     
 #INITIAL CREATION
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
         dota_heroes
-    (hero_id SERIAL PRIMARY KEY, hero_name text unique, score int)"""
+    (hero_id SERIAL PRIMARY KEY, hero_name text, score int, UNIQUE(hero_name))"""
 create_user_pools_query = """
     CREATE TABLE IF NOT EXISTS
-        dota_user_pools
-    (pool_id SERIAL PRIMARY KEY, pool_name text unique, user_id text)"""
+        user_pools
+    (pool_id SERIAL PRIMARY KEY, pool_name text, user_id text, UNIQUE(pool_name))"""
 create_hero_pools_query = """
     CREATE TABLE IF NOT EXISTS
         hero_pools
     (pool_id int, hero_id int, 
-    FOREIGN KEY (pool_id) REFERENCES dota_user_pools(pool_id), 
+    FOREIGN KEY (pool_id) REFERENCES user_pools(pool_id), 
     FOREIGN KEY (hero_id) REFERENCES dota_heroes(hero_id))"""
 
 # FILL HERO TABLE QUERIES
@@ -338,7 +342,7 @@ append_hero_table_query = """
 # FILL HERO POOL DEFAULTS
 append_user_pools_query = """
     INSERT INTO
-        dota_user_pools(pool_name, user_id)
+        user_pools(pool_name, user_id)
     VALUES
         (%s, %s)
     ON CONFLICT DO NOTHING"""
@@ -354,7 +358,7 @@ get_pool_id_query = """
     SELECT
         pool_id
     FROM 
-        dota_user_pools
+        user_pools
     WHERE
         pool_name=%s"""
 get_hero_id_query = """
