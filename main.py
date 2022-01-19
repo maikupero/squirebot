@@ -44,7 +44,7 @@ async def on_message(message):
             if greeting in sql_db.fetch_all_greetings():
                 await message.channel.send(str(sql_db.response(greeting))[2:-2])
             else:
-                await helpers.DBSTUFF.new_conversation(message, bot, greeting)
+                await helpers.DBSTUFF.new_conversation(bot, message, greeting)
 
 
 

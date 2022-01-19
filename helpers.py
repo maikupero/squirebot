@@ -11,7 +11,7 @@ class CHECKS:
         return msg.author == ctx.author and msg.channel == ctx.channel and msg.content[:3].upper() != "SB."
 
 class DBSTUFF:
-    async def new_conversation(message, bot, greeting):
+    async def new_conversation(bot, message, greeting):
         creator_id = message.author.id
         await message.channel.send(f"Oh, '{greeting}'. What should I say? No comma's please! (nvm, cancel, etc. to cancel)")
         def check(msg):
