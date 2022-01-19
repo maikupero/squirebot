@@ -258,12 +258,13 @@ class DOTA:
                 arg = arg[4:].strip()
                 print(f"Trying to handle dota new {arg}")
                 if arg not in ['STRENGTH','AGILITY','INTELLIGENCE','POOL','HERO']:
+                    print("in here now")
                     try:
-                        await add_heroes(ctx, sql_db.get_pool_id(arg), arg)
+                        await add_heroes(ctx, sql_db.get_pool_id(arg.title()), arg.title())
                     except:
                         ctx.send("Double check pool name.")
 
-                elif arg.upper == 'POOL':
+                elif arg == 'POOL':
                     await ctx.send(f"What shall we call your pool?")
                     try:
                         msg = await bot.wait_for("message", check=check)
