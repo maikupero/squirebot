@@ -215,7 +215,7 @@ def get_users_pools(user_id):
 # HERO FUNCTIONS
 def findhero(hero):
     if hero.upper() in heroes.keys():
-        return heroes[hero]
+        return heroes[hero.upper()]
     else:
         return "ERROR"
 
