@@ -213,8 +213,8 @@ def delete_pool(pool, user_id, master_id):
     check_id = fetch_query(get_user_id, (pool_id,))
     if str(user_id) in [check_id[0], str(master_id)]:
         print(f"Attempting to delete {pool} of id {pool_id}")
-        execute_query(delete_pool_query, (pool_id,))
         execute_query(delete_from_hero_pools_query, (pool_id,))
+        execute_query(delete_pool_query, (pool_id,))
         return 1
 
 # HERO FUNCTIONS

@@ -9,6 +9,12 @@ from lists import nvm, heroes, full_hero_list, stre, agil, inte, role1, role2, r
 class CHECKS:
     def check_same_user(ctx,msg):
         return msg.author == ctx.author and msg.channel == ctx.channel and msg.content[:3].upper() != "SB."
+    async def check_for_nvm(ctx, content):
+        if content in nvm:
+            await ctx.send("Gotcha, no problemo.")
+            return True
+        else: 
+            return False
 
 class DBSTUFF:
     async def new_conversation(bot, message, greeting):
@@ -19,8 +25,7 @@ class DBSTUFF:
         try:
             msg = await bot.wait_for("message", check=check, timeout=30)
             response = str(msg.content)
-            if response.lower() in nvm:
-                await message.channel.send("No problemo.")
+            if CHECKS.check_for_nvm(response.lower()):
                 return
             else:
                 sql_db.append_conversation_table(greeting, response, creator_id)
@@ -49,8 +54,7 @@ class DBSTUFF:
             await ctx.send(f"Specify poolname to delete a pool if it is yours to delete.\nStored pools: {sql_db.get_all_pools()}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
-                if msg.content in nvm:
-                    await ctx.send("Gotcha! No worries.")
+                if CHECKS.check_for_nvm(msg.content):
                     return
                 msg = msg.content.title().split(",")
                 for pool in msg:
@@ -291,6 +295,8 @@ class DOTA:
                     await ctx.send(f"What shall we call your pool?")
                     try:
                         msg = await bot.wait_for("message", check=check)
+                        if CHECKS.check_for_nvm(msg.content): 
+                            return
                         poolname = msg.content.title()
                         pools = [pool.strip() for pool in sql_db.get_all_pools().split(',')]
                         if poolname in pools:
