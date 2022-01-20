@@ -161,10 +161,10 @@ class AOE4:
 class DOTA:
     def dota_help():
         top = "Dota sucks. Use `sb.dota (command)`."
-        random = "> `sb.dota random core` // `sb.dota random 3` // `sb.dota random team`"
-        hero = "RANDOM: Random team, hero from specified pool, or hero if unspecified.\n\n> `sb.dota earthshaker` // `sb.dota pool green"
-        pool = "HERO: Gives all stored info on provided hero or stored pool.\n\n>`sb.dota pool green // sb.dota pool list`"
-        new = "POOL: Lists the heroes stored in the specified pool, or specify list to see all stored pools.\n\n> `sb.dota new pool` OR `sb.dota new (poolname)`"
+        random = "> `sb.dota random core` || `sb.dota random 3` || `sb.dota random team`"
+        hero = "RANDOM: Random team, hero from specified pool, or hero if unspecified.\n\n> `sb.dota earthshaker`"
+        pool = "HERO: Gives all stored info on provided hero.\n\n> `sb.dota pool green || sb.dota pool list`"
+        new = "POOL: Lists the heroes stored in the specified pool, or specify list to see all stored pools.\n\n> `sb.dota new pool` || `sb.dota new (poolname)`"
         delete = "NEW: Begins dialogue towards a new pool to the Dotabase, or new heroes to a pool.\n\n> `sb.dota delete pool` - Lists all pools and then prompts you to delete, barring permissions."
         return (f"{top}\n{random}\n{hero}\n{pool}\n{new}\n{delete}")
 
@@ -199,7 +199,7 @@ class DOTA:
             pool_id = sql_db.get_pool_id(pool.title())
             hero_ids = sql_db.fetch_query(sql_db.select_heroes_from_pool_query, (pool_id,))
             heroes_in_pool = [sql_db.get_hero_name(hero_id) for hero_id in hero_ids]
-            return random.choice(heroes_in_pool)
+            return str(random.choice(heroes_in_pool))[2:-2]
         else:
             return "Couldn't find what to random from!"
         
