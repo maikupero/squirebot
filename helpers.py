@@ -277,35 +277,33 @@ class DOTA:
         async def edit_pool(poolname):
             accepted_edits = ["ADD", "DEL", "DELETE", "DELETE POOL"]
             def check_edit(msg):
-                return CHECKS.check_same_user(ctx, msg) and msg.content.upper() in accepted_edits
+                return CHECKS.check_same_user(ctx, msg)
             
             await ctx.send(f"Heroes in {poolname}:\n{sql_db.select_heroes_from_pool(poolname)}\n Want to Add/Delete heroes? Tell me `add` or `delete`. Or `Delete Pool`.")
             
             try:
                 msg = await bot.wait_for("message", check=check_edit)
-                print(f"msg.author{msg.author} == ctx.author{ctx.author} and msg.channel{msg.channel} == ctx.channel{ctx.channel} and msg.content({msg.content}")
                 
                 if msg.content.lower().strip() in nvm:
                     await ctx.send("Gotcha no problem brother.")
                     return
-                edit_type = msg.content.upper().strip()
-
-                if edit_type in accepted_edits:
-                    add_delete_heroes(ctx, sql_db.get_pool_id(), poolname, edit_type)
-
-                elif edit_type == "DELETE POOL":
-                    await ctx.send("Are you sure you want to delete {poolname}? Y/N")
-                    response = await bot.wait_for("message", check=check)
-                    if response.lower() in nvm:
-                        await ctx.send("Gotcha no problem brother.")
-                        return
-                    elif response.upper() in ["YES", "Y"]:
-                        if sql_db.delete_pool(poolname, user_id, ctx.guild.owner_id) == 1:
-                            await ctx.send(f"Deleted: {poolname}")
+                if msg.content.upper().strip() in accepted_edits:
+                    edit_type = msg.content.upper().strip()
+                    if edit_type == "DELETE POOL":
+                        await ctx.send("Are you sure you want to delete {poolname}? Y/N")
+                        response = await bot.wait_for("message", check=check)
+                        if response.lower() in nvm:
+                            await ctx.send("Gotcha no problem brother.")
+                            return
+                        elif response.upper() in ["YES", "Y"]:
+                            if sql_db.delete_pool(poolname, user_id, ctx.guild.owner_id) == 1:
+                                await ctx.send(f"Deleted: {poolname}")
+                            else:
+                                await ctx.send(f"{poolname} is not yours to delete!")
                         else:
-                            await ctx.send(f"{poolname} is not yours to delete!")
+                            await ctx.send("That was the easiest instruction ever come on sir.")
                     else:
-                        await ctx.send("That was the easiest instruction ever come on sir.")
+                        add_delete_heroes(ctx, sql_db.get_pool_id(), poolname, edit_type)                
             except:
                 await ctx.send("Try again, probably some issue with your typing you noob. Sorry for the sass, sir.")
                     
@@ -337,8 +335,11 @@ class DOTA:
                         await ctx.send("Gotcha, no problem brother.")
                         return
                     elif msg.content.title() in sql_db.get_all_pools():
-                        print(f"Going to edit_pool with {msg.content.title()}")
-                        await edit_pool(msg.content.title())
+                        if msg.content.title() in ["Strength", "Agility", "Intelligence"]:
+                            await ctx.send("Can't edit the defaults, sorry fam.")
+                        else:
+                            print(f"Going to edit_pool with {msg.content.title()}")
+                            await edit_pool(msg.content.title())
                     else:
                         await ctx.send("Couldn't find your pool. Try again!")
                 except asyncio.TimeoutError:
@@ -347,7 +348,10 @@ class DOTA:
             elif len(arg) > 5:
                 arg = arg[5:]
                 if arg.title() in sql_db.get_all_pools():
-                    await edit_pool(arg.title())
+                    if arg.title() in ["Strength", "Agility", "Intelligence"]:
+                        await ctx.send("Can't edit the defaults, sorry fam.")
+                    else:
+                        await edit_pool(arg.title())
                 else:
                     await ctx.send("Couldn't find your pool. Try again!")
 
