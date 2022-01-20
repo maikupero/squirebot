@@ -274,9 +274,9 @@ class DOTA:
                 except:
                     await ctx.send("Duplicate or typo, try again..")
 
-        async def edit_pool(poolname):
+        async def edit_pool(msg, poolname):
             def check_edit(msg):
-                msg.author == ctx.author and msg.channel == ctx.channel and any(msg.content in x for x in ["ADD","DELETE","DELETE POOL"])
+                msg.author == ctx.author and msg.channel == ctx.channel and any(msg.content == x for x in ["ADD","DELETE","DELETE POOL"])
             
             await ctx.send(f"Heroes in {poolname}:\n{sql_db.select_heroes_from_pool(poolname)}\n Want to Add/Delete heroes? Tell me `add` or `delete`. Or `Delete Pool`.")
             
@@ -334,9 +334,9 @@ class DOTA:
                         await ctx.send("Gotcha, no problem brother.")
                         return
                     elif msg.content.title() in sql_db.get_all_pools():
-                        await edit_pool(msg.content.title())
+                        await edit_pool(msg, msg.content.title())
                     else:
-                        ctx.send("Couldn't find your pool. Try again!")
+                        await ctx.send("Couldn't find your pool. Try again!")
                 except asyncio.TimeoutError:
                     await ctx.send("Sorry, try again from `sb.delete (poolname)`.")
 
@@ -345,7 +345,7 @@ class DOTA:
                 if arg.title() in sql_db.get_all_pools():
                     await edit_pool(arg.title())
                 else:
-                    ctx.send("Couldn't find your pool. Try again!")
+                    await ctx.send("Couldn't find your pool. Try again!")
 
 
         elif arg.startswith('NEW'):
