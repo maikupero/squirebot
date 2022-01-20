@@ -160,9 +160,11 @@ class DOTA:
         top = "Dota sucks. Use `sb.dota (command)`."
         hr = "___________________Command List_____________________"
         random = "random () : If unspecified suggests a random hero to play. Otherwise, can specify team or pool.\n// `sb.dota random core` • `sb.dota random 3` • `sb.dota random team` //"
-        hero = "hero_name : Gives all stored info on provided hero. If two words, use abbreviation.\n// `sb.dota hero earthshaker` //"
-        append = "append () : Begins dialogue towards adding a new pool to the DB.\n// `sb.dota append` //"
-        return (f"{top}\n{hr}\n```{random}\n{hero}\n{append}```")
+        hero = "hero: Gives all stored info on provided hero or stored pool.\n// `sb.dota earthshaker` // `sb.dota pool green"
+        pool = "pool () : Lists the heroes stored in the specified pool.\n//`sb.dota pool green` //"
+        new = "new () : Begins dialogue towards adding to the Dotabase.\n// `sb.dota new pool` //"
+        delete = "sb.delete pool To delete pools from the database (barring your permissions)."
+        return (f"{top}\n{hr}\n```{random}\n{hero}\n{pool}\n{new}\n{delete}```")
 
     def randomdop(ctx, pool):
         if len(pool.strip()) > 6:
