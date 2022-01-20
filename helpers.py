@@ -275,7 +275,6 @@ class DOTA:
                     await ctx.send("Duplicate or typo, try again..")
 
         async def edit_pool(poolname):
-            print(ctx.content, poolname)
             def check_edit(msg):
                 msg.author == ctx.author and msg.channel == ctx.channel and any(msg.content == x for x in ["ADD","DELETE","DELETE POOL"])
             
