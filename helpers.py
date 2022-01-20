@@ -25,7 +25,7 @@ class DBSTUFF:
         try:
             msg = await bot.wait_for("message", check=check, timeout=30)
             response = str(msg.content)
-            if CHECKS.check_for_nvm(response.lower()):
+            if CHECKS.check_for_nvm(message.channel, response.lower()):
                 return
             else:
                 sql_db.append_conversation_table(greeting, response, creator_id)
@@ -54,7 +54,7 @@ class DBSTUFF:
             await ctx.send(f"Specify poolname to delete a pool if it is yours to delete.\nStored pools: {sql_db.get_all_pools()}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
-                if CHECKS.check_for_nvm(msg.content):
+                if CHECKS.check_for_nvm(ctx, msg.content):
                     return
                 msg = msg.content.title().split(",")
                 for pool in msg:
@@ -295,7 +295,7 @@ class DOTA:
                     await ctx.send(f"What shall we call your pool?")
                     try:
                         msg = await bot.wait_for("message", check=check)
-                        if CHECKS.check_for_nvm(msg.content): 
+                        if CHECKS.check_for_nvm(ctx, msg.content): 
                             return
                         poolname = msg.content.title()
                         pools = [pool.strip() for pool in sql_db.get_all_pools().split(',')]
