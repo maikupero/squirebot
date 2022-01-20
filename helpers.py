@@ -6,17 +6,16 @@ import asyncio
 
 from lists import nvm, heroes, full_hero_list, stre, agil, inte, role1, role2, role3, role4, role5, supps, cores, jungle
 
+
+
 class CHECKS:
     def check_same_user(ctx,msg):
         return msg.author == ctx.author and msg.channel == ctx.channel and msg.content[:3].upper() != "SB."
-    async def check_for_nvm(ctx, content):
-        if content in nvm:
-            await ctx.send("Gotcha, no problemo.")
-            return True
-        else: 
-            return False
+
+
 
 class DBSTUFF:
+
     async def new_conversation(bot, message, greeting):
         creator_id = message.author.id
         await message.channel.send(f"Oh, '{greeting}'. What should I say? No comma's please! (nvm, cancel, etc. to cancel)")
@@ -25,13 +24,15 @@ class DBSTUFF:
         try:
             msg = await bot.wait_for("message", check=check, timeout=30)
             response = str(msg.content)
-            if CHECKS.check_for_nvm(message.channel, response.lower()):
+            if response.lower in nvm:
+                await message.channel.send("Gotcha, no problemo.")
                 return
             else:
                 sql_db.append_conversation_table(greeting, response, creator_id)
                 await message.channel.send(f"Got it! Storing greeting '{greeting}' with response '{response}'.")
         except asyncio.TimeoutError:
             await message.channel.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
+
 
     async def delete(bot, ctx, arg):
         def check(msg):
@@ -54,7 +55,8 @@ class DBSTUFF:
             await ctx.send(f"Specify poolname to delete a pool if it is yours to delete.\nStored pools: {sql_db.get_all_pools()}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
-                if CHECKS.check_for_nvm(ctx, msg.content):
+                if msg.content in nvm:
+                    await ctx.send("Gotcha no problem brother.")
                     return
                 msg = msg.content.title().split(",")
                 for pool in msg:
@@ -67,7 +69,10 @@ class DBSTUFF:
         else:   
             await ctx.send("Try `sb.deletefrom greetings` or `sb.deletefrom commands`")
     
+
+
 class SERVICE:
+
     def attend():
         responses = ["Ready, sir.", "As you order, sir.", "What can I do for you?", "Work work.", 
         "Something need doing?", "How can I help you, sir?", "How can I be of service, my lord?"]
@@ -161,6 +166,8 @@ class AOE4:
             civ = civs[num]
             flag = discord.utils.get(ctx.guild.emojis, name=flags[num])
             await ctx.send(f'{flag} {flag} {flag} {civ} {flag} {flag} {flag}')
+
+
 
 class DOTA:
     def dota_help():
@@ -295,7 +302,8 @@ class DOTA:
                     await ctx.send(f"What shall we call your pool?")
                     try:
                         msg = await bot.wait_for("message", check=check)
-                        if CHECKS.check_for_nvm(ctx, msg.content): 
+                        if msg.content in nvm:
+                            await ctx.send("Alrighty no worries.")
                             return
                         poolname = msg.content.title()
                         pools = [pool.strip() for pool in sql_db.get_all_pools().split(',')]
@@ -320,6 +328,8 @@ class DOTA:
         
         else:
             await ctx.send("Sorry, try again with some new dota request.")
+       
+
        
 class GAMES:
     async def guess(ctx, bot):
