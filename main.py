@@ -42,7 +42,7 @@ async def on_message(message):
             greeting = message.content[3:53].replace(",", "")
             print(f"Attempting to handle '{greeting}' command from {message.author}")
             if greeting in sql_db.fetch_all_greetings():
-                print(f"Ignoring next 2 lines, found greeting in {sql_db.fetch_all_greetings()}")
+                print(f"Ignoring next 2 lines, found greeting in stored greetings.}")
                 await message.channel.send(str(sql_db.response(greeting))[2:-2])
             else:
                 await helpers.DBSTUFF.new_conversation(bot, message, greeting)
