@@ -274,7 +274,7 @@ class DOTA:
                                 raise Exception
                             else:
                                 await ctx.send(f"Adding {hero} to {poolname}.")
-                                sql_db.execute_query(sql_db.append_hero_pools_query, (pool_id, (sql_db.get_hero_id(hero))))
+                                sql_db.execute_query(sql_db.append_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
                         await ctx.send("Any more to add?")
                     except:
                         await ctx.send("Duplicate or typo, try again..")
