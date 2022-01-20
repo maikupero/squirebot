@@ -336,7 +336,7 @@ class DOTA:
                         await ctx.send("Gotcha no problem brother.")
                         return
                     elif msg.content.title() in sql_db.get_all_pools():
-                        edit_pool(msg.content.title())
+                        await edit_pool(msg.content.title())
                     else:
                         ctx.send("Couldn't find your pool. Try again!")
                 except asyncio.TimeoutError:
@@ -345,7 +345,7 @@ class DOTA:
             elif len(arg) > 5:
                 arg = arg[5:]
                 if arg.title() in sql_db.get_all_pools():
-                    edit_pool(arg.title())
+                    await edit_pool(arg.title())
                 else:
                     ctx.send("Couldn't find your pool. Try again!")
 
