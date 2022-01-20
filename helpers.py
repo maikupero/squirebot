@@ -161,11 +161,11 @@ class AOE4:
 class DOTA:
     def dota_help():
         top = "Dota sucks. Use `sb.dota (command)`."
-        random = "> `sb.dota random core` || `sb.dota random 3` || `sb.dota random team`"
+        random = "> `sb.dota random core` \|\| `sb.dota random 3` \|\| `sb.dota random team`"
         hero = "RANDOM: Random team, hero from specified pool, or hero if unspecified.\n\n> `sb.dota earthshaker`"
-        pool = "HERO: Gives all stored info on provided hero.\n\n> `sb.dota pool green || sb.dota pool list`"
-        new = "POOL: Lists the heroes stored in the specified pool, or specify list to see all stored pools.\n\n> `sb.dota new pool` || `sb.dota new (poolname)`"
-        delete = "NEW: Begins dialogue towards a new pool to the Dotabase, or new heroes to a pool.\n\n> `sb.dota delete pool` - Lists all pools and then prompts you to delete, barring permissions."
+        pool = "HERO: Gives all stored info on provided hero.\n\n> `sb.dota pool green \|\| sb.dota pool list`"
+        new = "POOL: Lists all heroes stored in the specified pool, or all stored pools.\n\n> `sb.dota new pool` \|\| `sb.dota new (poolname)`"
+        delete = "NEW: Add pool to database or add heroes to an existing pool.\n\n> `sb.dota delete pool` - Lists all pools and then prompts you to delete, barring permissions."
         return (f"{top}\n{random}\n{hero}\n{pool}\n{new}\n{delete}")
 
     def randomdop(ctx, pool):
