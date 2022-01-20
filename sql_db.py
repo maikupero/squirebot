@@ -358,17 +358,17 @@ append_user_pools_query = """
         (%s, %s)
     ON CONFLICT DO NOTHING"""
 append_hero_pools_query = """
-    INSERT INTO
-        hero_pools
-    VALUES
-        (%(pool_id)s, %(hero_id)s)
-    WHERE NOT EXISTS
+    IF NOT EXISTS
         (SELECT
-            *
+            1
         FROM
             hero_pools
         WHERE
-            pool_id=%(pool_id)s AND hero_id=%(hero_id)s)"""
+            pool_id=%(pool_id)s AND hero_id=%(hero_id)s)
+    INSERT INTO
+        hero_pools
+    VALUES
+        (%(pool_id)s, %(hero_id)s)"""
 
 
 
