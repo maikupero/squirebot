@@ -93,7 +93,6 @@ delete_command_query = """
 ### CONVERSATION TABLE FUNCTIONS ###
 def create_conversation_table():
     execute_query(create_conversation_table_query)
-    execute_query(append_conversation_table_query, ('hi','hey!','default'))
 
 def append_conversation_table(greeting, response, creator_id):
     execute_query(append_conversation_table_query, (greeting, response, creator_id))
@@ -150,18 +149,19 @@ delete_greeting_query = """
 """
 
 
-
 ### DOTA TABLE FUNCTIONS ###    
 def create_dota_tables():
-    # *** FIRST TIME SETUP ONLY ***
-    # Start fresh - Also remember to uncomment default attribute hero pools if you want them, and comment them out after the first time.
-    # print("Wiping all dota tables.")
-    # execute_query(delete_pools_table_query)
-    # execute_query(delete_user_table_query)
-    # execute_query(delete_hero_table_query)
-    # # Reset Auto-incremented IDs
-    # execute_query(reset_increments_hero_table_query)
-    # execute_query(reset_increments_user_table_query)
+
+    # ***************** FIRST TIME SETUP ONLY *****************
+
+    print("Wiping all dota tables.")
+    execute_query(delete_pools_table_query)
+    execute_query(delete_user_table_query)
+    execute_query(delete_hero_table_query)
+
+    # Reset Auto-incremented IDs
+    execute_query(reset_increments_hero_table_query)
+    execute_query(reset_increments_user_table_query)
     
     #Create Hero table and fill with hero names
     print("Creating hero table.")
@@ -176,22 +176,21 @@ def create_dota_tables():
     execute_query(append_user_pools_query, ('Strength','default'))
     execute_query(append_user_pools_query, ('Agility','default'))
     execute_query(append_user_pools_query, ('Intelligence','default'))
+
+    # Create user table
+    print("Creating hero-pool pairs table.")
+    execute_query(create_hero_pools_query)
+    for hero in strength:
+        execute_query(append_hero_pools_query, (get_pool_id('Strength'), get_hero_id(hero)))
+        print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'Strength' of id: {get_pool_id('Strength')}")
+    for hero in agility:
+        execute_query(append_hero_pools_query, (get_pool_id('Agility'), get_hero_id(hero)))
+        print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'Agility' of id: {get_pool_id('Agility')}")
+    for hero in intelligence:
+        execute_query(append_hero_pools_query, (get_pool_id('Intelligence'), get_hero_id(hero)))
+        print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'Intelligence' of id: {get_pool_id('Intelligence')}")
     
-    # *** FIRST TIME SETUP ONLY ***
-    # Create user table - 
-    # print("Creating hero-pool pairs table.")
-    # execute_query(create_hero_pools_query)
-    # for hero in strength:
-    #     execute_query(append_hero_pools_query, (get_pool_id('Strength'), get_hero_id(hero)))
-    #     print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'Strength' of id: {get_pool_id('Strength')}")
-    # for hero in agility:
-    #     execute_query(append_hero_pools_query, (get_pool_id('Agility'), get_hero_id(hero)))
-    #     print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'Agility' of id: {get_pool_id('Agility')}")
-    # for hero in intelligence:
-    #     execute_query(append_hero_pools_query, (get_pool_id('Intelligence'), get_hero_id(hero)))
-    #     print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'Intelligence' of id: {get_pool_id('Intelligence')}")
-    
-    # print("Success...?!")
+    print("Success...?!")
 
 # POOL & USER FUNCTIONS
 def get_all_pools():
@@ -292,13 +291,13 @@ get_user_id = """
 
 #DELETING TO WIPE CLEAN WHILE BUILDING
 delete_hero_table_query = """
-    DELETE FROM
+    DROP TABLE
         dota_heroes"""
 delete_user_table_query = """
-    DELETE FROM
+    DROP TABLE
         user_pools"""
 delete_pools_table_query = """
-    DELETE FROM
+    DROP TABLE
         hero_pools"""
 
 #DELETE QUERIES FOR USERS
