@@ -341,34 +341,31 @@ create_hero_pools_query = """
     FOREIGN KEY (hero_id) REFERENCES dota_heroes(hero_id))"""
 
 
-# FILL HERO TABLE QUERIES
+# FILL TABLE DEFAULTS
 append_hero_table_query = """
     INSERT INTO
-        dota_heroes(hero_name,score)
+        dota_heroes (hero_name,score)
     VALUES
         (%s, %s)
     ON CONFLICT DO NOTHING"""
-
-
-# FILL HERO POOL DEFAULTS
 append_user_pools_query = """
     INSERT INTO
-        user_pools(pool_name, user_id)
+        user_pools (pool_name, user_id)
     VALUES
         (%s, %s)
     ON CONFLICT DO NOTHING"""
 append_hero_pools_query = """
-    IF NOT EXISTS
+    INSERT INTO
+        hero_pools (pool_id, hero_id)
+    SELECT
+        %(pool_id)s, %(hero_id)s
+    WHERE NOT EXISTS
         (SELECT
-            1
+            *
         FROM
             hero_pools
         WHERE
-            pool_id=%(pool_id)s AND hero_id=%(hero_id)s)
-    INSERT INTO
-        hero_pools
-    VALUES
-        (%(pool_id)s, %(hero_id)s)"""
+            pool_id=%(pool_id)s AND hero_id=%(hero_id)s)"""
 
 
 
