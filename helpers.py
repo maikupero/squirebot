@@ -277,7 +277,7 @@ class DOTA:
         async def edit_pool(poolname):
             accepted_edits = ["ADD", "DEL", "DELETE", "DELETE POOL"]
             def check_edit(msg):
-                CHECKS.check_same_user(ctx, msg) and msg.content.upper() in accepted_edits
+                return CHECKS.check_same_user(ctx, msg) and msg.content.upper() in accepted_edits
             
             await ctx.send(f"Heroes in {poolname}:\n{sql_db.select_heroes_from_pool(poolname)}\n Want to Add/Delete heroes? Tell me `add` or `delete`. Or `Delete Pool`.")
             
