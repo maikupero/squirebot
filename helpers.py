@@ -158,13 +158,12 @@ class AOE4:
 class DOTA:
     def dota_help():
         top = "Dota sucks. Use `sb.dota (command)`."
-        hr = "___________________Command List_____________________"
-        random = "random () : If unspecified suggests a random hero to play. Otherwise, can specify team or pool.\n// `sb.dota random core` • `sb.dota random 3` • `sb.dota random team` //"
-        hero = "hero: Gives all stored info on provided hero or stored pool.\n// `sb.dota earthshaker` // `sb.dota pool green"
-        pool = "pool () : Lists the heroes stored in the specified pool.\n//`sb.dota pool green` //"
-        new = "new () : Begins dialogue towards adding to the Dotabase.\n// `sb.dota new pool` //"
-        delete = "sb.delete pool To delete pools from the database (barring your permissions)."
-        return (f"{top}\n{hr}\n```{random}\n{hero}\n{pool}\n{new}\n{delete}```")
+        random = "random () : Random team, hero from specified pool, or hero if unspecified.\n > `sb.dota random core` // `sb.dota random 3` // `sb.dota random team`"
+        hero = "hero: Gives all stored info on provided hero or stored pool.\n > `sb.dota earthshaker` // `sb.dota pool green"
+        pool = "pool () : Lists the heroes stored in the specified pool, or specify list to see all stored pools.\n >`sb.dota pool green // sb.dota pool list`"
+        new = "new () : Begins dialogue towards adding to the Dotabase.\n > `sb.dota new pool`"
+        delete = "delete pool : Lists all pools and then prompts you to delete, barring permissions."
+        return (f"{top}\n{random}\n{hero}\n{pool}\n{new}\n{delete}")
 
     def randomdop(ctx, pool):
         if len(pool.strip()) > 6:
@@ -191,6 +190,16 @@ class DOTA:
             return random.choice(jungle)
         elif pool == "TEAM":
             return DOTA.generate_team()
+        else:
+            pools = sql_db.fetch_query(sql_db.get_pools_query)
+            print(f"POOLS: {pools}")
+            if pool in pools:
+                pool_id = sql_db.get_pool_id(pool)
+                hero_ids = sql_db.fetch_query(sql_db.select_heroes_from_pool_query, (pool_id,))
+                heroes_in_pool = [sql_db.get_hero_name(hero_id) for hero_id in hero_ids]
+                return random.choice(heroes_in_pool)
+            else:
+                return "Couldn't find what to random from!"
         
     def generate_team():
         new_team = []
