@@ -15,68 +15,7 @@ class CHECKS:
 
 
 
-class DBSTUFF:
-
-
-    async def new_conversation(bot, message, greeting):
-        creator_id = message.author.id
-        await message.channel.send(f"Oh, '{greeting}'. What should I say? No comma's please! (nvm, cancel, etc. to cancel)")
-        def check(msg):
-            return CHECKS.check_same_user(message, msg)
-        try:
-            msg = await bot.wait_for("message", check=check, timeout=30)
-            response = str(msg.content)
-            if response.lower in nvm:
-                await message.channel.send("Gotcha, no problemo.")
-                return
-            else:
-                sql_db.append_conversation_table(greeting, response, creator_id)
-                await message.channel.send(f"Got it! Storing greeting '{greeting}' with response '{response}'.")
-        except asyncio.TimeoutError:
-            await message.channel.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
-
-
-    async def delete(bot, ctx, arg):
-        def check(msg):
-            return CHECKS.check_same_user(ctx, msg)
-        master_id = ctx.guild.owner_id
-        user_id = ctx.author.id
-
-        if arg in ["greetings","conversation"]:
-            await ctx.send(f"Specify item (or comma separated list of items) from:\n{str(sql_db.fetch_all_greetings())[1:-1]}")
-            try:
-                msg = await bot.wait_for("message", check=check, timeout=30)
-                for word in msg.content.split(","):
-                    if sql_db.delete_greeting(word.strip(), user_id, master_id) == 1:
-                        await ctx.send(f"Deleted: {word.strip()}")
-                    else:
-                        await ctx.send(f"{word.strip()} is not yours to delete!")
-            except asyncio.TimeoutError:
-                await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
-        elif "DOTA" or "POOL" in arg.upper():
-            await ctx.send(f"Specify poolname to delete a pool if it is yours to delete.\nStored pools: {sql_db.get_all_pools()}")
-            try:
-                msg = await bot.wait_for("message", check=check, timeout=30)
-                if msg.content in nvm:
-                    await ctx.send("Gotcha no problem brother.")
-                    return
-                msg = msg.content.title().split(",")
-                for pool in msg:
-                    if sql_db.delete_pool(pool.strip(), user_id, master_id) == 1:
-                        await ctx.send(f"Deleted: {pool.strip()}")
-                    else:
-                        await ctx.send(f"{pool.strip()} is not yours to delete!")
-            except asyncio.TimeoutError:
-                await ctx.send("Sorry, try again from `sb.delete (poolname)`.")
-        else:   
-            await ctx.send("Try `sb.deletefrom greetings` or `sb.deletefrom commands`")
-    
-
-
-
-
 class SERVICE:
-
 
     def attend():
         responses = ["Ready, sir.", "As you order, sir.", "What can I do for you?", "Work work.", 
@@ -161,23 +100,65 @@ class SERVICE:
 
 
 
-class AOE4:
+class DBSTUFF:
+
+    async def new_conversation(bot, message, greeting):
+        creator_id = message.author.id
+        await message.channel.send(f"Oh, '{greeting}'. What should I say? No comma's please! (nvm, cancel, etc. to cancel)")
+        def check(msg):
+            return CHECKS.check_same_user(message, msg)
+        try:
+            msg = await bot.wait_for("message", check=check, timeout=30)
+            response = str(msg.content)
+            if response.lower in nvm:
+                await message.channel.send("Gotcha, no problemo.")
+                return
+            else:
+                sql_db.append_conversation_table(greeting, response, creator_id)
+                await message.channel.send(f"Got it! Storing greeting '{greeting}' with response '{response}'.")
+        except asyncio.TimeoutError:
+            await message.channel.send("I'm so sorry sir, :man_bowing: I have too many other things to take care of I really must get going but do not hesitate to call again I'm so sorry, milord.")
 
 
-    async def randomciv(ctx, arg):
-        if arg:
-            if int(arg) > 0 and int(arg) < 9:
-                civcount = int(arg)
-        else: 
-            civcount = 1
-        for i in range(civcount):
-            num = random.randint(0,7)
-            civs = ["The Abbasid Dynasty","The Chinese","The Delhi Sultanate","The French","The English","The Holy Roman Empire","The Mongols","The Rus Civilization"]
-            flags = ["abbasid","chinese","delhi","french","english","hre","mongols","rus"]
-            civ = civs[num]
-            flag = discord.utils.get(ctx.guild.emojis, name=flags[num])
-            await ctx.send(f'{flag} {flag} {flag} {civ} {flag} {flag} {flag}')
 
+    async def delete(bot, ctx, arg):
+        def check(msg):
+            return CHECKS.check_same_user(ctx, msg)
+        master_id = ctx.guild.owner_id
+        user_id = ctx.author.id
+
+
+        if arg in ["greetings","conversation"]:
+            await ctx.send(f"Specify item (or comma separated list of items) from:\n{str(sql_db.fetch_all_greetings())[1:-1]}")
+            try:
+                msg = await bot.wait_for("message", check=check, timeout=30)
+                for word in msg.content.split(","):
+                    if sql_db.delete_greeting(word.strip(), user_id, master_id) == 1:
+                        await ctx.send(f"Deleted: {word.strip()}")
+                    else:
+                        await ctx.send(f"{word.strip()} is not yours to delete!")
+            except asyncio.TimeoutError:
+                await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
+
+
+        elif "DOTA" or "POOL" in arg.upper():
+            await ctx.send(f"Specify poolname to delete a pool if it is yours to delete.\nStored pools: {sql_db.get_all_pools()}")
+            try:
+                msg = await bot.wait_for("message", check=check, timeout=30)
+                if msg.content in nvm:
+                    await ctx.send("Gotcha no problem brother.")
+                    return
+                msg = msg.content.title().split(",")
+                for pool in msg:
+                    if sql_db.delete_pool(pool.strip(), user_id, master_id) == 1:
+                        await ctx.send(f"Deleted: {pool.strip()}")
+                    else:
+                        await ctx.send(f"{pool.strip()} is not yours to delete!")
+            except asyncio.TimeoutError:
+                await ctx.send("Sorry, try again from `sb.delete (poolname)`.")
+        else:   
+            await ctx.send("Try `sb.deletefrom greetings` or `sb.deletefrom commands`")
+    
 
 
 
@@ -191,8 +172,9 @@ class DOTA:
         hero = "RANDOM: Random team, hero from specified pool, or hero if unspecified.\n\n> `sb.dota earthshaker`"
         pool = "HERO: Gives all stored info on provided hero.\n\n> `sb.dota pool green \|\| sb.dota pool list`"
         new = "POOL: Lists all heroes stored in the specified pool, or all stored pools.\n\n> `sb.dota new pool` \|\| `sb.dota new (poolname)`"
-        delete = "NEW: Add pool to database or add heroes to an existing pool.\n\n> `sb.dota delete pool` - Lists all pools and then prompts you to delete, barring permissions."
-        return (f"{top}\n{random}\n{hero}\n{pool}\n{new}\n{delete}")
+        edit = "NEW: Add pool to database or add heroes to an existing pool.\n\n> `sb.dota edit (pool)`"
+        delete = "EDIT: Add/remove heroes to a pool, or delete a pool if its yours to delete.\n\n> `sb.dota delete pool` - Lists all pools and then prompts you to delete, barring permissions."
+        return (f"{top}\n{random}\n{hero}\n{pool}\n{new}\n{edit}\n{delete}")
 
 
     def randomdop(ctx, pool):
@@ -264,8 +246,69 @@ class DOTA:
         user_id = str(ctx.author.id)
         arg = arg.upper()
 
+        async def add_delete_heroes(ctx, pool_id, poolname, edit_type):
+            await ctx.send(f"Give me a hero to {edit_type.lower()} to the pool, or a comma separated list of heroes (abbreviations like kotl are ok).")
+            repeat = True
+            while repeat:
+                try:
+                    msg = await bot.wait_for("message", check=check)
+                    if msg.content in nvm:
+                        await ctx.send("Gotcha. All done!")
+                        repeat = False
+                        return
+                    provided_heroes = msg.content.upper().split(',')
+                    provided_heroes = [sql_db.findhero(hero.strip()) for hero in provided_heroes]
+                    for hero in provided_heroes:
+                        if hero == "ERROR":
+                            raise Exception
+                        elif hero in sql_db.select_heroes_from_pool(poolname):
+                            raise Exception
+                        else:
+                            if edit_type == "ADD":
+                                await ctx.send(f"Adding {hero} to {poolname}.")
+                                sql_db.execute_query(sql_db.append_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
+                            elif edit_type == "DELETE":
+                                await ctx.send(f"Removing {hero} from {poolname}.")
+                                sql_db.execute_query(sql_db.delete_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
+                    await ctx.send(f"Any more to {edit_type.lower()}?")
+                except:
+                    await ctx.send("Duplicate or typo, try again..")
+            
+        async def edit_pool(poolname):
+            def check_edit(msg):
+                msg.author == ctx.author and msg.channel == ctx.channel and any(msg.content in x for x in ["ADD","DELETE","DELETE POOL"])
+            
+            await ctx.send(f"Heroes in {poolname}:\n{sql_db.select_heroes_from_pool(poolname)}\n Want to Add/Delete heroes? Tell me `add` or `delete`. Or `Delete Pool`.")
+            
+            try:
+                edit_type = await bot.wait_for("message", check=check_edit)
+                if edit_type.content.lower().strip() in nvm:
+                    await ctx.send("Gotcha no problem brother.")
+                    return
+                edit_type = edit_type.content.upper().strip()
+
+                if edit_type in ["ADD", "DEL", "DELETE"]:
+                    add_delete_heroes(ctx, sql_db.get_pool_id(), poolname, edit_type)
+
+                elif edit_type == "DELETE POOL":
+                    await ctx.send("Are you sure you want to delete {poolname}? Y/N")
+                    response = await bot.wait_for("message", check=check)
+                    if response.lower() in nvm:
+                        await ctx.send("Gotcha no problem brother.")
+                        return
+                    elif response.upper() in ["YES", "Y"]:
+                        if sql_db.delete_pool(poolname, user_id, ctx.guild.owner_id) == 1:
+                            await ctx.send(f"Deleted: {poolname}")
+                        else:
+                            await ctx.send(f"{poolname} is not yours to delete!")
+                    else:
+                        await ctx.send("That was the easiest instruction ever come on sir.")
+            except:
+                await ctx.send("Try again, probably some issue with your typing you noob. Sorry for the sass, sir.")
+                    
         if arg.startswith("RANDOM"):
             await ctx.send(DOTA.randomdop(ctx, arg))
+
 
         elif arg.startswith('POOL'):
             if len(arg) > 5:
@@ -280,39 +323,42 @@ class DOTA:
             else:
                 await ctx.send(f"`sb.dota pool list/poolname` for all the pools, or `sb.dota pool (poolname)` to look it up.")
 
+
+        elif arg.startswith('EDIT'):
+            def check(msg):
+                return CHECKS.check_same_user(ctx, msg)
+
+            if arg.strip() == 'EDIT' or 'EDIT POOL':
+                await ctx.send(f"Specify poolname to edit a pool. Don't be troll.\nStored pools: {sql_db.get_all_pools()}")
+                try:
+                    msg = await bot.wait_for("message", check=check)
+                    if msg.content in nvm:
+                        await ctx.send("Gotcha no problem brother.")
+                        return
+                    elif msg.content.title() in sql_db.get_all_pools():
+                        edit_pool(msg.content.title())
+                    else:
+                        ctx.send("Couldn't find your pool. Try again!")
+                except asyncio.TimeoutError:
+                    await ctx.send("Sorry, try again from `sb.delete (poolname)`.")
+
+            elif len(arg) > 5:
+                arg = arg[5:]
+                if arg.title() in sql_db.get_all_pools():
+                    edit_pool(arg.title())
+                else:
+                    ctx.send("Couldn't find your pool. Try again!")
+
+
         elif arg.startswith('NEW'):
             def check(msg):
-                return msg.author == ctx.author and msg.channel == ctx.channel and msg.content[:3].upper() != "SB."
-            
-            async def add_heroes(ctx, pool_id, poolname):
-                await ctx.send(f"Give me a hero to add to the pool, or a comma separated list of heroes (abbreviations like kotl are ok).")
-                addmore = True
-                while addmore:
-                    try:
-                        msg = await bot.wait_for("message", check=check)
-                        if msg.content in nvm:
-                            await ctx.send("Gotcha. All done!")
-                            addmore = False
-                            return
-                        heroes_to_add = msg.content.upper().split(',')
-                        heroes_to_add = [sql_db.findhero(hero.strip()) for hero in heroes_to_add]
-                        for hero in heroes_to_add:
-                            if hero == "ERROR":
-                                raise Exception
-                            elif hero in sql_db.select_heroes_from_pool(poolname):
-                                raise Exception
-                            else:
-                                await ctx.send(f"Adding {hero} to {poolname}.")
-                                sql_db.execute_query(sql_db.append_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
-                        await ctx.send("Any more to add?")
-                    except:
-                        await ctx.send("Duplicate or typo, try again..")
+                return msg.author == ctx.author and msg.channel == ctx.channel and msg.content[:3].upper() != "SB."            
                 
             if len(arg) > 4:
                 arg = arg[4:].strip()
                 if arg not in ['STRENGTH','AGILITY','INTELLIGENCE','POOL','HERO']:
                     try:
-                        await add_heroes(ctx, sql_db.get_pool_id(arg.title()), arg.title())
+                        await add_delete_heroes(ctx, sql_db.get_pool_id(arg.title()), arg.title(), "ADD")
                     except:
                         await ctx.send("Double check pool name.")
 
@@ -331,7 +377,7 @@ class DOTA:
                         else:
                             await ctx.send(f"Adding pool {poolname} to the database")
                             sql_db.execute_query(sql_db.append_user_pools_query, (poolname, str(ctx.author.id)))
-                            await add_heroes(ctx, sql_db.get_pool_id(poolname), poolname)
+                            await add_delete_heroes(ctx, sql_db.get_pool_id(poolname), poolname, "ADD")
                     except:
                         await ctx.send("Some issue with the pool name.")
 
@@ -351,16 +397,33 @@ class DOTA:
 
 
 
+class AOE4:
+
+
+    async def randomciv(ctx, arg):
+        if arg:
+            if int(arg) > 0 and int(arg) < 9:
+                civcount = int(arg)
+        else: 
+            civcount = 1
+        for i in range(civcount):
+            num = random.randint(0,7)
+            civs = ["The Abbasid Dynasty","The Chinese","The Delhi Sultanate","The French","The English","The Holy Roman Empire","The Mongols","The Rus Civilization"]
+            flags = ["abbasid","chinese","delhi","french","english","hre","mongols","rus"]
+            civ = civs[num]
+            flag = discord.utils.get(ctx.guild.emojis, name=flags[num])
+            await ctx.send(f'{flag} {flag} {flag} {civ} {flag} {flag} {flag}')
+
+
 class GAMES:
+
 
     async def guess(ctx, bot):
         num = random.randint(1, 10)
         await ctx.send('Guess a number 1-10')
-        
         def guess_check(msg):
             return CHECKS.check_same_user(ctx, msg) and int(msg.content) in range(1, 11)
         msg = await bot.wait_for("message", check=guess_check)
-    
         if int(msg.content) == num:
             await ctx.send("Correct")
         else:
