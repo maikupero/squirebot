@@ -1,4 +1,4 @@
-nvm = ["no", "nvm", "nevermind", "cancel", "oops", "nope"]
+nvm = ["no", "nvm", "nevermind", "cancel", "oops", "nope", "nah"]
 
 default_commands = ['hi','help','attend','weather','dota','dotes','dop','doto','guess','aoe','randomciv','delete','greetings','conversation','commands','tables']
 
