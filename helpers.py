@@ -269,11 +269,11 @@ class DOTA:
                                 sql_db.execute_query(sql_db.append_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
                             elif edit_type == "DELETE":
                                 await ctx.send(f"Removing {hero} from {poolname}.")
-                                sql_db.execute_query(sql_db.delete_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
+                                sql_db.execute_query(sql_db.delete_hero_from_pool_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
                     await ctx.send(f"Any more to {edit_type.lower()}?")
                 except:
                     await ctx.send("Duplicate or typo, try again..")
-            
+
         async def edit_pool(poolname):
             def check_edit(msg):
                 msg.author == ctx.author and msg.channel == ctx.channel and any(msg.content in x for x in ["ADD","DELETE","DELETE POOL"])
@@ -308,7 +308,6 @@ class DOTA:
                     
         if arg.startswith("RANDOM"):
             await ctx.send(DOTA.randomdop(ctx, arg))
-
 
         elif arg.startswith('POOL'):
             if len(arg) > 5:

@@ -1,4 +1,5 @@
 from distutils.util import execute
+from multiprocessing import pool
 import psycopg2
 import os
 from psycopg2 import sql
@@ -356,14 +357,17 @@ delete_pool_query = """
     DELETE FROM
         user_pools
     WHERE
-        pool_id=%s
-"""
+        pool_id=%s"""
 delete_from_hero_pools_query = """
     DELETE FROM
         hero_pools
     WHERE
         pool_id=%s"""
-
+delete_hero_from_pool_query = """
+    DELETE FROM
+        hero_pools
+    WHERE
+        pool_id=%(pool_id)s AND hero_id=%(hero_id)s"""
 
 
 # VARIED SELECT QUERIES
