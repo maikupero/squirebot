@@ -172,7 +172,6 @@ class DOTA:
         if len(pool.strip()) > 6:
             pool = pool[7:]
         stored_pools = sql_db.fetch_query(sql_db.get_pools_query)
-        print(f"POOL: {pool.title()} STORED POOLS: {stored_pools}")
         if pool == "RANDOM":
             return random.choice(full_hero_list)     
         elif pool.startswith("STR"):
@@ -218,7 +217,6 @@ class DOTA:
                 new_team.append(pub)
             new_team.extend(support_count)
         else:
-            print(f"seed {seed}")
             pub = random.choice(role1)
             while pub in new_team: pub = random.choice(role1)
             new_team.append(pub)
@@ -283,9 +281,7 @@ class DOTA:
                 
             if len(arg) > 4:
                 arg = arg[4:].strip()
-                print(f"Trying to handle dota new {arg}")
                 if arg not in ['STRENGTH','AGILITY','INTELLIGENCE','POOL','HERO']:
-                    print("in here now")
                     try:
                         await add_heroes(ctx, sql_db.get_pool_id(arg.title()), arg.title())
                     except:
@@ -297,7 +293,6 @@ class DOTA:
                         msg = await bot.wait_for("message", check=check)
                         poolname = msg.content.title()
                         pools = [pool.strip() for pool in sql_db.get_all_pools().split(',')]
-                        print(f"poolname: {poolname}, stored pools: {pools}")
                         if poolname in pools:
                             await ctx.send("A pool with that name already exists!")
                             return
