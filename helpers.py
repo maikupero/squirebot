@@ -274,7 +274,8 @@ class DOTA:
                 except:
                     await ctx.send("Duplicate or typo, try again..")
 
-        async def edit_pool(msg, poolname):
+        async def edit_pool(poolname):
+            print(ctx.content, poolname)
             def check_edit(msg):
                 msg.author == ctx.author and msg.channel == ctx.channel and any(msg.content == x for x in ["ADD","DELETE","DELETE POOL"])
             
@@ -334,7 +335,7 @@ class DOTA:
                         await ctx.send("Gotcha, no problem brother.")
                         return
                     elif msg.content.title() in sql_db.get_all_pools():
-                        await edit_pool(msg, msg.content.title())
+                        await edit_pool(msg.content.title())
                     else:
                         await ctx.send("Couldn't find your pool. Try again!")
                 except asyncio.TimeoutError:
