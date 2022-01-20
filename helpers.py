@@ -110,7 +110,7 @@ class DBSTUFF:
         try:
             msg = await bot.wait_for("message", check=check, timeout=30)
             response = str(msg.content)
-            if response.lower in nvm:
+            if response.lower() in nvm:
                 await message.channel.send("Gotcha, no problemo.")
                 return
             else:
@@ -275,19 +275,21 @@ class DOTA:
                     await ctx.send("Duplicate or typo, try again..")
 
         async def edit_pool(poolname):
+            accepted_edits = ["ADD", "DEL", "DELETE", "DELETE POOL"]
             def check_edit(msg):
-                msg.author == ctx.author and msg.channel == ctx.channel and any(msg.content == x for x in ["ADD","DELETE","DELETE POOL"])
+                msg.author == ctx.author and msg.channel == ctx.channel and any(msg.content == x for x in accepted_edits)
             
             await ctx.send(f"Heroes in {poolname}:\n{sql_db.select_heroes_from_pool(poolname)}\n Want to Add/Delete heroes? Tell me `add` or `delete`. Or `Delete Pool`.")
             
             try:
                 edit_type = await bot.wait_for("message", check=check_edit)
+                print(edit_type)
                 if edit_type.content.lower().strip() in nvm:
                     await ctx.send("Gotcha no problem brother.")
                     return
                 edit_type = edit_type.content.upper().strip()
 
-                if edit_type in ["ADD", "DEL", "DELETE"]:
+                if edit_type in accepted_edits:
                     add_delete_heroes(ctx, sql_db.get_pool_id(), poolname, edit_type)
 
                 elif edit_type == "DELETE POOL":
