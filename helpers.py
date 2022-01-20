@@ -285,7 +285,7 @@ class DOTA:
                     try:
                         await add_heroes(ctx, sql_db.get_pool_id(arg.title()), arg.title())
                     except:
-                        ctx.send("Double check pool name.")
+                        await ctx.send("Double check pool name.")
 
                 elif arg == 'POOL':
                     await ctx.send(f"What shall we call your pool?")
