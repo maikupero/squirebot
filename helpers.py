@@ -326,13 +326,12 @@ class DOTA:
         elif arg.startswith('EDIT'):
             def check(msg):
                 return CHECKS.check_same_user(ctx, msg)
-
-            if arg.strip() == 'EDIT' or 'EDIT POOL':
+            if arg.strip() in ['EDIT', 'EDIT POOL']:
                 await ctx.send(f"Specify poolname to edit a pool. Don't be troll.\nStored pools: {sql_db.get_all_pools()}")
                 try:
                     msg = await bot.wait_for("message", check=check)
                     if msg.content in nvm:
-                        await ctx.send("Gotcha no problem brother.")
+                        await ctx.send("Gotcha, no problem brother.")
                         return
                     elif msg.content.title() in sql_db.get_all_pools():
                         await edit_pool(msg.content.title())
