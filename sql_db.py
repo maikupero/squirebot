@@ -6,7 +6,12 @@ from lists import default_commands, heroes, full_hero_list, strength, agility, i
 
 DB = os.environ['DATABASE_URL']
 
+
+
+
+
 # BASE COMMANDS FOR CONNECTION AND QUERIES
+
 def connect(DB):
     return psycopg2.connect(DB, sslmode='require')
 
@@ -36,21 +41,11 @@ def fetch_query(query, args=()):
         print(f'***Error: {e} handling query: {query}')
 
 
-### GENERAL FUNCTIONS ###
-def fetch_tables():
-    return fetch_query(select_tables)
-select_tables = """
-    SELECT 
-        Table_name
-    FROM 
-        information_schema.tables 
-    WHERE 
-        table_schema='public'
-"""
 
 
 
 ### COMMAND TABLE FUNCTIONS ###
+
 def create_command_table():
     execute_query(create_command_table_query)
     for command in default_commands:
@@ -66,31 +61,12 @@ def delete_command(command):
     print(f"Attempting to delete {command}")
     execute_query(delete_command_query, (command,))
 
-### COMMAND TABLE QUERIES ###
-create_command_table_query = """
-    CREATE TABLE IF NOT EXISTS
-        recognized_commands
-    (commands text unique)"""
-append_command_table_query = """
-    INSERT INTO
-        recognized_commands
-    VALUES
-        (%s)
-    ON CONFLICT DO NOTHING"""
-select_commands = """
-    SELECT
-        commands
-    FROM
-        recognized_commands"""
-delete_command_query = """
-    DELETE FROM
-        recognized_commands
-    WHERE
-        commands=%s"""
+
 
 
 
 ### CONVERSATION TABLE FUNCTIONS ###
+
 def create_conversation_table():
     execute_query(create_conversation_table_query)
 
@@ -111,54 +87,25 @@ def delete_greeting(greeting, user_id, master_id):
         execute_query(delete_greeting_query, (greeting,))
         return 1
 
-### CONVERSATION TABLE QUERIES ###
-create_conversation_table_query = """
-    CREATE TABLE IF NOT EXISTS
-        conversation
-    (greeting text unique, response text, creator_id text)"""
-append_conversation_table_query = """
-    INSERT INTO
-        conversation
-    VALUES
-        (%s, %s, %s)
-    ON CONFLICT DO NOTHING"""
-select_greetings = """
-    SELECT
-        greeting
-    FROM
-        conversation"""
-select_response = """
-    SELECT
-        response
-    FROM
-        conversation
-    WHERE
-        greeting=%s"""
-get_creator_id = """
-    SELECT 
-        creator_id
-    FROM
-        conversation
-    WHERE
-        greeting=%s"""
-delete_greeting_query = """
-    DELETE FROM
-        conversation
-    WHERE
-        greeting=%s
-"""
 
 
-### DOTA TABLE FUNCTIONS ###    
+
+############################
+### DOTA TABLE FUNCTIONS ###
+############################
+
+
+
+# INITIAL TABLE CREATION AND INSERTION OF DEFAULT VALUES
+
 def create_dota_tables():
 
-    # Drop all tables for a fresh start.
+    # Drop all tables for a fresh start. and also reset the auto increment IDs.
     # print("Wiping all dota tables.")
     # execute_query(delete_pools_table_query)
     # execute_query(delete_user_table_query)
     # execute_query(delete_hero_table_query)
 
-    # Reset Auto-incremented IDs
     # execute_query(reset_increments_hero_table_query)
     # execute_query(reset_increments_user_table_query)
     
@@ -191,7 +138,10 @@ def create_dota_tables():
     
     print("Success...?!")
 
+
+
 # POOL & USER FUNCTIONS
+
 def get_all_pools():
     pools = fetch_query(get_pools_query)
     if pools != None:
@@ -217,7 +167,10 @@ def delete_pool(pool, user_id, master_id):
         execute_query(delete_pool_query, (pool_id,))
         return 1
 
+
+
 # HERO FUNCTIONS
+
 def findhero(hero):
     if hero.upper() in heroes.keys():
         return heroes[hero.upper()]
@@ -248,7 +201,193 @@ def get_hero_score(hero):
     return fetch_query(get_hero_score_query, (hero_id,))
 
 
+
+
+
+
+### COMMAND TABLE QUERIES ###
+create_command_table_query = """
+    CREATE TABLE IF NOT EXISTS
+        recognized_commands
+    (commands text unique)"""
+
+append_command_table_query = """
+    INSERT INTO
+        recognized_commands
+    VALUES
+        (%s)
+    ON CONFLICT DO NOTHING"""
+
+select_commands = """
+    SELECT
+        commands
+    FROM
+        recognized_commands"""
+
+delete_command_query = """
+    DELETE FROM
+        recognized_commands
+    WHERE
+        commands=%s"""
+
+
+
+
+
+### CONVERSATION TABLE QUERIES ###
+create_conversation_table_query = """
+    CREATE TABLE IF NOT EXISTS
+        conversation
+    (greeting text unique, response text, creator_id text)"""
+
+append_conversation_table_query = """
+    INSERT INTO
+        conversation
+    VALUES
+        (%s, %s, %s)
+    ON CONFLICT DO NOTHING"""
+
+select_greetings = """
+    SELECT
+        greeting
+    FROM
+        conversation"""
+
+select_response = """
+    SELECT
+        response
+    FROM
+        conversation
+    WHERE
+        greeting=%s"""
+
+get_creator_id = """
+    SELECT 
+        creator_id
+    FROM
+        conversation
+    WHERE
+        greeting=%s"""
+        
+delete_greeting_query = """
+    DELETE FROM
+        conversation
+    WHERE
+        greeting=%s
+"""
+
+
+
+
+##########################
 ### DOTA TABLE QUERIES ###
+##########################
+
+#DELETING TO WIPE CLEAN WHILE BUILDING
+delete_hero_table_query = """
+    DROP TABLE
+        dota_heroes"""
+delete_user_table_query = """
+    DROP TABLE
+        user_pools"""
+delete_pools_table_query = """
+    DROP TABLE
+        hero_pools"""
+
+
+#RESETTING AUTO INCREMENT IDS
+reset_increments_hero_table_query = """
+    ALTER SEQUENCE 
+        dota_heroes_hero_id_seq 
+    RESTART WITH 1"""
+reset_increments_user_table_query = """
+    ALTER SEQUENCE 
+        user_pools_pool_id_seq 
+    RESTART WITH 1"""
+
+
+#INITIAL TABLE CREATION
+create_hero_table_query = """
+    CREATE TABLE IF NOT EXISTS
+        dota_heroes
+    (hero_id SERIAL PRIMARY KEY, hero_name text, score int, UNIQUE(hero_name))"""
+create_user_pools_query = """
+    CREATE TABLE IF NOT EXISTS
+        user_pools
+    (pool_id SERIAL PRIMARY KEY, pool_name text, user_id text, UNIQUE(pool_name))"""
+create_hero_pools_query = """
+    CREATE TABLE IF NOT EXISTS
+        hero_pools
+    (pool_id int, hero_id int, 
+    FOREIGN KEY (pool_id) REFERENCES user_pools(pool_id), 
+    FOREIGN KEY (hero_id) REFERENCES dota_heroes(hero_id))"""
+
+
+# APPEND TABLE QUERIES
+append_hero_table_query = """
+    INSERT INTO
+        dota_heroes (hero_name,score)
+    VALUES
+        (%s, %s)
+    ON CONFLICT DO NOTHING"""
+append_user_pools_query = """
+    INSERT INTO
+        user_pools (pool_name, user_id)
+    VALUES
+        (%s, %s)
+    ON CONFLICT DO NOTHING"""
+append_hero_pools_query = """
+    INSERT INTO
+        hero_pools (pool_id, hero_id)
+    SELECT
+        %(pool_id)s, %(hero_id)s
+    WHERE NOT EXISTS
+        (SELECT
+            *
+        FROM
+            hero_pools
+        WHERE
+            pool_id=%(pool_id)s AND hero_id=%(hero_id)s)"""
+
+
+
+#DELETE QUERIES FOR USERS
+delete_pool_query = """
+    DELETE FROM
+        user_pools
+    WHERE
+        pool_id=%s
+"""
+delete_from_hero_pools_query = """
+    DELETE FROM
+        hero_pools
+    WHERE
+        pool_id=%s"""
+
+
+
+# VARIED SELECT QUERIES
+get_pool_id_query = """
+    SELECT
+        pool_id
+    FROM 
+        user_pools
+    WHERE
+        pool_name=%s"""
+get_hero_id_query = """
+    SELECT 
+        hero_id
+    FROM
+        dota_heroes
+    WHERE
+        hero_name=%s"""
+get_hero_score_query = """
+    SELECT
+        score
+    FROM
+        dota_heroes
+    WHERE
+        hero_id=%s"""
 get_pools_query = """
     SELECT DISTINCT
         pool_name
@@ -287,106 +426,3 @@ get_user_id = """
         user_pools
     WHERE
         pool_id=%s"""
-
-#DELETING TO WIPE CLEAN WHILE BUILDING
-delete_hero_table_query = """
-    DROP TABLE
-        dota_heroes"""
-delete_user_table_query = """
-    DROP TABLE
-        user_pools"""
-delete_pools_table_query = """
-    DROP TABLE
-        hero_pools"""
-
-#DELETE QUERIES FOR USERS
-delete_pool_query = """
-    DELETE FROM
-        user_pools
-    WHERE
-        pool_id=%s
-"""
-delete_from_hero_pools_query = """
-    DELETE FROM
-        hero_pools
-    WHERE
-        pool_id=%s"""
-
-
-#RESETTING AUTO INCREMENT IDS
-reset_increments_hero_table_query = """
-    ALTER SEQUENCE 
-        dota_heroes_hero_id_seq 
-    RESTART WITH 1"""
-reset_increments_user_table_query = """
-    ALTER SEQUENCE 
-        user_pools_pool_id_seq 
-    RESTART WITH 1"""
-    
-
-#INITIAL CREATION
-create_hero_table_query = """
-    CREATE TABLE IF NOT EXISTS
-        dota_heroes
-    (hero_id SERIAL PRIMARY KEY, hero_name text, score int, UNIQUE(hero_name))"""
-create_user_pools_query = """
-    CREATE TABLE IF NOT EXISTS
-        user_pools
-    (pool_id SERIAL PRIMARY KEY, pool_name text, user_id text, UNIQUE(pool_name))"""
-create_hero_pools_query = """
-    CREATE TABLE IF NOT EXISTS
-        hero_pools
-    (pool_id int, hero_id int, 
-    FOREIGN KEY (pool_id) REFERENCES user_pools(pool_id), 
-    FOREIGN KEY (hero_id) REFERENCES dota_heroes(hero_id))"""
-
-
-# FILL TABLE DEFAULTS
-append_hero_table_query = """
-    INSERT INTO
-        dota_heroes (hero_name,score)
-    VALUES
-        (%s, %s)
-    ON CONFLICT DO NOTHING"""
-append_user_pools_query = """
-    INSERT INTO
-        user_pools (pool_name, user_id)
-    VALUES
-        (%s, %s)
-    ON CONFLICT DO NOTHING"""
-append_hero_pools_query = """
-    INSERT INTO
-        hero_pools (pool_id, hero_id)
-    SELECT
-        %(pool_id)s, %(hero_id)s
-    WHERE NOT EXISTS
-        (SELECT
-            *
-        FROM
-            hero_pools
-        WHERE
-            pool_id=%(pool_id)s AND hero_id=%(hero_id)s)"""
-
-
-
-get_pool_id_query = """
-    SELECT
-        pool_id
-    FROM 
-        user_pools
-    WHERE
-        pool_name=%s"""
-get_hero_id_query = """
-    SELECT 
-        hero_id
-    FROM
-        dota_heroes
-    WHERE
-        hero_name=%s"""
-get_hero_score_query = """
-    SELECT
-        score
-    FROM
-        dota_heroes
-    WHERE
-        hero_id=%s"""

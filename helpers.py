@@ -9,12 +9,14 @@ from lists import nvm, heroes, full_hero_list, stre, agil, inte, role1, role2, r
 
 
 class CHECKS:
+
     def check_same_user(ctx,msg):
         return msg.author == ctx.author and msg.channel == ctx.channel and msg.content[:3].upper() != "SB."
 
 
 
 class DBSTUFF:
+
 
     async def new_conversation(bot, message, greeting):
         creator_id = message.author.id
@@ -71,12 +73,16 @@ class DBSTUFF:
     
 
 
+
+
 class SERVICE:
+
 
     def attend():
         responses = ["Ready, sir.", "As you order, sir.", "What can I do for you?", "Work work.", 
         "Something need doing?", "How can I help you, sir?", "How can I be of service, my lord?"]
         return random.choice(responses)
+
 
     def help(ctx, *args):
         if args[0]:
@@ -93,6 +99,7 @@ class SERVICE:
         dota = f"`dota` {discord.utils.get(ctx.guild.emojis, name='omni')}"
         aoe = f"`randomciv`/`aoe`/`civ` {discord.utils.get(ctx.guild.emojis, name='hre')}"
         return f"{tag}\n{header}\n{hr}\n{help}\n{attend}\n{guess}\n{weather}\n{dbstuff}\n{dota}\n{aoe}"
+
 
     async def weather(ctx, location, api):
         base_url = "https://api.openweathermap.org/data/2.5/weather?"
@@ -152,7 +159,11 @@ class SERVICE:
             
 
 
+
+
 class AOE4:
+
+
     async def randomciv(ctx, arg):
         if arg:
             if int(arg) > 0 and int(arg) < 9:
@@ -169,7 +180,11 @@ class AOE4:
 
 
 
+
+
 class DOTA:
+
+
     def dota_help():
         top = "Dota sucks. Use `sb.dota (command)`."
         random = "> `sb.dota random core` \|\| `sb.dota random 3` \|\| `sb.dota random team`"
@@ -178,6 +193,7 @@ class DOTA:
         new = "POOL: Lists all heroes stored in the specified pool, or all stored pools.\n\n> `sb.dota new pool` \|\| `sb.dota new (poolname)`"
         delete = "NEW: Add pool to database or add heroes to an existing pool.\n\n> `sb.dota delete pool` - Lists all pools and then prompts you to delete, barring permissions."
         return (f"{top}\n{random}\n{hero}\n{pool}\n{new}\n{delete}")
+
 
     def randomdop(ctx, pool):
         if len(pool.strip()) > 6:
@@ -213,6 +229,7 @@ class DOTA:
         else:
             return "Couldn't find what to random from!"
         
+
     def generate_team():
         new_team = []
         seed = random.randint(1,2)
@@ -242,6 +259,7 @@ class DOTA:
         
         return " • ".join(new_team)
     
+
     async def dota_db(ctx, bot, arg):
         user_id = str(ctx.author.id)
         arg = arg.upper()
@@ -330,8 +348,11 @@ class DOTA:
             await ctx.send("Sorry, try again with some new dota request.")
        
 
-       
+
+
+
 class GAMES:
+
     async def guess(ctx, bot):
         num = random.randint(1, 10)
         await ctx.send('Guess a number 1-10')
