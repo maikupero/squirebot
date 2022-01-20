@@ -361,7 +361,7 @@ append_hero_pools_query = """
     INSERT INTO
         hero_pools
     VALUES
-        (%(pool_id)s, %(hero_id)s),
+        (%(pool_id)s, %(hero_id)s)
     WHERE NOT EXISTS
         (SELECT
             *
