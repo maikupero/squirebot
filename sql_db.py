@@ -241,7 +241,7 @@ def select_heroes_from_pool(pool_name):
 def add_hero_to_pool(hero_name, pool_name):
     hero_id = get_hero_id(hero_name)
     pool_id = get_pool_id(pool_name)
-    execute_query(append_hero_pools_query, (pool_id, hero_id))
+    execute_query(append_hero_pools_query, {'pool_id':pool_id, 'hero_id':hero_id})
 
 def get_hero_score(hero):
     hero_id = get_hero_id(hero)
