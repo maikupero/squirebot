@@ -49,6 +49,9 @@ class DBSTUFF:
             await ctx.send(f"Specify poolname to delete a pool if it is yours to delete.\nStored pools: {sql_db.get_all_pools()}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
+                if msg.content in nvm:
+                    await ctx.send("Gotcha! No worries.")
+                    return
                 msg = msg.content.title().split(",")
                 for pool in msg:
                     if sql_db.delete_pool(pool.strip(), user_id, master_id) == 1:
@@ -193,7 +196,7 @@ class DOTA:
             return random.choice(jungle)
         elif pool == "TEAM":
             return DOTA.generate_team()
-        elif pool in stored_pools:
+        elif pool.title() in stored_pools:
             pool_id = sql_db.get_pool_id(pool)
             hero_ids = sql_db.fetch_query(sql_db.select_heroes_from_pool_query, (pool_id,))
             heroes_in_pool = [sql_db.get_hero_name(hero_id) for hero_id in hero_ids]
