@@ -303,7 +303,7 @@ delete_pools_table_query = """
 
 delete_pool_query = """
     DELETE FROM
-        hero_pools
+        user_pools
     WHERE
         pool_id=%s
 """
