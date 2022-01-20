@@ -277,13 +277,13 @@ class DOTA:
         async def edit_pool(poolname):
             accepted_edits = ["ADD", "DEL", "DELETE", "DELETE POOL"]
             def check_edit(msg):
-                msg.author == ctx.author and msg.channel == ctx.channel and any(msg.content.upper() == x for x in accepted_edits)
+                CHECKS.check_same_user(ctx, msg) and msg.content.upper() in accepted_edits
             
             await ctx.send(f"Heroes in {poolname}:\n{sql_db.select_heroes_from_pool(poolname)}\n Want to Add/Delete heroes? Tell me `add` or `delete`. Or `Delete Pool`.")
             
             try:
                 msg = await bot.wait_for("message", check=check_edit)
-                print(f"msg.author{msg.author} == ctx.author{ctx.author} and msg.channel{msg.channel} == ctx.channel{ctx.channel} and any(msg.content({msg.content}) == x for x in accepted_edits({accepted_edits}))")
+                print(f"msg.author{msg.author} == ctx.author{ctx.author} and msg.channel{msg.channel} == ctx.channel{ctx.channel} and msg.content({msg.content}")
                 
                 if msg.content.lower().strip() in nvm:
                     await ctx.send("Gotcha no problem brother.")
