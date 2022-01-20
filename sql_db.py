@@ -152,16 +152,15 @@ delete_greeting_query = """
 ### DOTA TABLE FUNCTIONS ###    
 def create_dota_tables():
 
-    # ***************** FIRST TIME SETUP ONLY *****************
-
-    # print("Wiping all dota tables.")
-    # execute_query(delete_pools_table_query)
-    # execute_query(delete_user_table_query)
-    # execute_query(delete_hero_table_query)
+    # Drop all tables for a fresh start.
+    print("Wiping all dota tables.")
+    execute_query(delete_pools_table_query)
+    execute_query(delete_user_table_query)
+    execute_query(delete_hero_table_query)
 
     # Reset Auto-incremented IDs
-    # execute_query(reset_increments_hero_table_query)
-    # execute_query(reset_increments_user_table_query)
+    execute_query(reset_increments_hero_table_query)
+    execute_query(reset_increments_user_table_query)
     
     #Create Hero table and fill with hero names
     print("Creating hero table.")
@@ -181,13 +180,13 @@ def create_dota_tables():
     print("Creating hero-pool pairs table.")
     execute_query(create_hero_pools_query)
     for hero in strength:
-        execute_query(append_hero_pools_query, (get_pool_id('Strength'), get_hero_id(hero)))
+        execute_query(append_hero_pools_query, {'pool_id':get_pool_id('Strength'), 'hero_id':get_hero_id(hero)})
         print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'Strength' of id: {get_pool_id('Strength')}")
     for hero in agility:
-        execute_query(append_hero_pools_query, (get_pool_id('Agility'), get_hero_id(hero)))
+        execute_query(append_hero_pools_query, {'pool_id':get_pool_id('Agility'), 'hero_id':get_hero_id(hero)})
         print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'Agility' of id: {get_pool_id('Agility')}")
     for hero in intelligence:
-        execute_query(append_hero_pools_query, (get_pool_id('Intelligence'), get_hero_id(hero)))
+        execute_query(append_hero_pools_query, {'pool_id':get_pool_id('Intelligence'), 'hero_id':get_hero_id(hero)})
         print(f"Adding {hero} of id: {get_hero_id(hero)} to pool 'Intelligence' of id: {get_pool_id('Intelligence')}")
     
     print("Success...?!")
@@ -313,6 +312,7 @@ delete_from_hero_pools_query = """
     WHERE
         pool_id=%s"""
 
+
 #RESETTING AUTO INCREMENT IDS
 reset_increments_hero_table_query = """
     ALTER SEQUENCE 
@@ -323,6 +323,7 @@ reset_increments_user_table_query = """
         user_pools_pool_id_seq 
     RESTART WITH 1"""
     
+
 #INITIAL CREATION
 create_hero_table_query = """
     CREATE TABLE IF NOT EXISTS
@@ -339,6 +340,7 @@ create_hero_pools_query = """
     FOREIGN KEY (pool_id) REFERENCES user_pools(pool_id), 
     FOREIGN KEY (hero_id) REFERENCES dota_heroes(hero_id))"""
 
+
 # FILL HERO TABLE QUERIES
 append_hero_table_query = """
     INSERT INTO
@@ -346,6 +348,8 @@ append_hero_table_query = """
     VALUES
         (%s, %s)
     ON CONFLICT DO NOTHING"""
+
+
 # FILL HERO POOL DEFAULTS
 append_user_pools_query = """
     INSERT INTO
@@ -357,8 +361,15 @@ append_hero_pools_query = """
     INSERT INTO
         hero_pools
     VALUES
-        (%s, %s)
-    ON CONFLICT DO NOTHING"""
+        (%(pool_id)s, %(hero_id)s),
+    WHERE NOT EXISTS
+        (SELECT
+            *
+        FROM
+            hero_pools
+        WHERE
+            pool_id=%(pool_id)s AND hero_id=%(hero_id)s)"""
+
 
 
 get_pool_id_query = """
@@ -382,25 +393,3 @@ get_hero_score_query = """
         dota_heroes
     WHERE
         hero_id=%s"""
-
-
-
-#GENERAL QUERIES
-select_all_columns = """
-    SELECT 
-        column_name
-    FROM 
-        information_schema.columns 
-    WHERE 
-        table_name={}
-"""
-
-get_column_query = """
-    SELECT
-        column_name
-    FROM 
-        information_schema.columns 
-    WHERE 
-        table_name={}
-    LIMIT 1
-"""
