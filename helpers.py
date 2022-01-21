@@ -262,21 +262,27 @@ class DOTA:
                     for hero in provided_heroes:
                         if hero == "ERROR":
                             raise Exception
-                        elif hero in sql_db.select_heroes_from_pool(poolname):
-                            raise Exception
-                        else:
-                            if edit_type == "ADD":
+                        
+                        elif edit_type == "ADD":
+                            if hero in sql_db.select_heroes_from_pool(poolname):
+                                raise Exception
+                            else:
                                 try:
                                     await ctx.send(f"Adding {hero} to {poolname}.")
                                     sql_db.execute_query(sql_db.append_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
                                 except:
-                                    await ctx.send(f"Hero's already in there or typo!")
-                            elif edit_type == "DELETE":
+                                    raise Exception
+                                    
+                        elif edit_type == "DELETE":
+                            if hero not in sql_db.select_heroes_from_pool(poolname):
+                                await ctx.send("Hero isn't in there.")
+                                raise Exception
+                            else:
                                 try:
                                     await ctx.send(f"Removing {hero} from {poolname}.")
                                     sql_db.execute_query(sql_db.delete_hero_from_pool_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
                                 except:
-                                    await ctx.send(f"Hero's not in there or typo!")
+                                    raise Exception
                     await ctx.send(f"Any more to {edit_type.lower()}?")
                 except:
                     await ctx.send("Duplicate or typo, try again..")
