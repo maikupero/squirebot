@@ -246,7 +246,7 @@ class DOTA:
         user_id = str(ctx.author.id)
         arg = arg.upper()
 
-        async def add_delete_heroes(ctx, pool_id, poolname, edit_type):
+        async def add_delete_heroes(pool_id, poolname, edit_type):
             await ctx.send(f"Give me a hero to {edit_type.lower()} to the pool, or a comma separated list of heroes (abbreviations like kotl are ok).")
             repeat = True
             while repeat:
@@ -280,12 +280,13 @@ class DOTA:
             
             try:
                 msg = await bot.wait_for("message", check=check)
-                print("Made it past the check")
+                print(f"Made it past the check with {msg.content}")
                 if msg.content.lower().strip() in nvm:
                     await ctx.send("Gotcha no problem brother.")
                     return
                 if msg.content.upper().strip() in accepted_edits:
                     edit_type = msg.content.upper().strip()
+                    print(f"Made it through accepted edits with edit_type: {edit_type}")
                     if edit_type == "DELETE POOL":
                         await ctx.send("Are you sure you want to delete {poolname}? Y/N")
                         response = await bot.wait_for("message", check=check)
@@ -300,7 +301,7 @@ class DOTA:
                         else:
                             await ctx.send("That was the easiest instruction ever come on sir.")
                     else:
-                        add_delete_heroes(ctx, sql_db.get_pool_id(), poolname, edit_type)                
+                        add_delete_heroes(sql_db.get_pool_id(poolname), poolname, edit_type)                
             except:
                 await ctx.send("Try again, probably some issue with your typing you noob. Sorry for the sass, sir.")
                     
