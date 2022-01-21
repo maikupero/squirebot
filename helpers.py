@@ -247,7 +247,7 @@ class DOTA:
         arg = arg.upper()
 
         async def add_delete_heroes(pool_id, poolname, edit_type):
-            await ctx.send(f"Give me a hero to {edit_type.lower()} to the pool, or a comma separated list of heroes (abbreviations like kotl are ok).")
+            await ctx.send(f"Give me a hero to {edit_type.lower()} to/from the pool, or a comma separated list of heroes (abbreviations like kotl are ok).")
             repeat = True
             while repeat:
                 try:
@@ -258,6 +258,7 @@ class DOTA:
                         return
                     provided_heroes = msg.content.upper().split(',')
                     provided_heroes = [sql_db.findhero(hero.strip()) for hero in provided_heroes]
+                    print(provided_heroes)
                     for hero in provided_heroes:
                         if hero == "ERROR":
                             raise Exception
@@ -265,11 +266,17 @@ class DOTA:
                             raise Exception
                         else:
                             if edit_type == "ADD":
-                                await ctx.send(f"Adding {hero} to {poolname}.")
-                                sql_db.execute_query(sql_db.append_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
+                                try:
+                                    await ctx.send(f"Adding {hero} to {poolname}.")
+                                    sql_db.execute_query(sql_db.append_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
+                                except:
+                                    await ctx.send(f"Hero's already in there or typo!")
                             elif edit_type == "DELETE":
-                                await ctx.send(f"Removing {hero} from {poolname}.")
-                                sql_db.execute_query(sql_db.delete_hero_from_pool_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
+                                try:
+                                    await ctx.send(f"Removing {hero} from {poolname}.")
+                                    sql_db.execute_query(sql_db.delete_hero_from_pool_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
+                                except:
+                                    await ctx.send(f"Hero's not in there or typo!")
                     await ctx.send(f"Any more to {edit_type.lower()}?")
                 except:
                     await ctx.send("Duplicate or typo, try again..")
@@ -288,12 +295,12 @@ class DOTA:
                     edit_type = msg.content.upper().strip()
                     print(f"Made it through accepted edits with edit_type: {edit_type}")
                     if edit_type == "DELETE POOL":
-                        await ctx.send("Are you sure you want to delete {poolname}? Y/N")
+                        await ctx.send(f"Are you sure you want to delete {poolname}? Y/N")
                         response = await bot.wait_for("message", check=check)
-                        if response.lower() in nvm:
+                        if response.content.lower() in nvm:
                             await ctx.send("Gotcha no problem brother.")
                             return
-                        elif response.upper() in ["YES", "Y"]:
+                        elif response.content.upper() in ["YES", "Y"]:
                             if sql_db.delete_pool(poolname, user_id, ctx.guild.owner_id) == 1:
                                 await ctx.send(f"Deleted: {poolname}")
                             else:
@@ -301,7 +308,7 @@ class DOTA:
                         else:
                             await ctx.send("That was the easiest instruction ever come on sir.")
                     else:
-                        await add_delete_heroes(sql_db.get_pool_id(poolname), poolname, edit_type)                
+                        await add_delete_heroes(sql_db.get_pool_id(poolname), poolname, "DELETE")                
             except:
                 await ctx.send("Try again, probably some issue with your typing you noob. Sorry for the sass, sir.")
                     
