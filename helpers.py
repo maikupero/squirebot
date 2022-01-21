@@ -387,10 +387,8 @@ class DOTA:
                         if msg.content.lower() in nvm:
                             await ctx.send("Alrighty no worries.")
                             return
-                        poolname = msg.content.replace("\"", "").title()
+                        poolname = msg.content.replace("\"", "").replace("\'","").title()
                         print(poolname)
-                        # poolname = poolname.title()
-                        # print(poolname)
                         pools = [pool.strip() for pool in sql_db.get_all_pools().split(',')]
                         if poolname in pools:
                             await ctx.send("A pool with that name already exists!")
@@ -398,7 +396,7 @@ class DOTA:
                         else:
                             await ctx.send(f"Adding pool {poolname} to the database")
                             sql_db.execute_query(sql_db.append_user_pools_query, (poolname, str(ctx.author.id)))
-                            await add_delete_heroes(ctx, sql_db.get_pool_id(poolname.replace("\'","\\\'")), poolname.replace("\'","\\\'"), "ADD")
+                            await add_delete_heroes(ctx, sql_db.get_pool_id(poolname), poolname, "ADD")
                     except:
                         await ctx.send("Some issue with the pool name.")
 
