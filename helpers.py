@@ -387,7 +387,9 @@ class DOTA:
                         if msg.content.lower() in nvm:
                             await ctx.send("Alrighty no worries.")
                             return
-                        poolname = f"{msg.content}"
+                        poolname = msg.content.replace("\"", "").replace("\'","\\\'")
+                        print(poolname)
+                        poolname = poolname.title()
                         print(poolname)
                         pools = [pool.strip() for pool in sql_db.get_all_pools().split(',')]
                         if poolname in pools:
