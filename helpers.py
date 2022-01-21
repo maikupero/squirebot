@@ -272,7 +272,7 @@ class DOTA:
                                     sql_db.execute_query(sql_db.append_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
                                 except:
                                     raise Exception
-                                    
+
                         elif edit_type == "DELETE":
                             if hero not in sql_db.select_heroes_from_pool(poolname):
                                 await ctx.send("Hero isn't in there.")
@@ -314,7 +314,10 @@ class DOTA:
                         else:
                             await ctx.send("That was the easiest instruction ever come on sir.")
                     else:
-                        await add_delete_heroes(sql_db.get_pool_id(poolname), poolname, "DELETE")                
+                        if edit_type == "ADD":
+                            await add_delete_heroes(sql_db.get_pool_id(poolname), poolname, "ADD")  
+                        else:
+                            await add_delete_heroes(sql_db.get_pool_id(poolname), poolname, "DELETE")                
             except:
                 await ctx.send("Try again, probably some issue with your typing you noob. Sorry for the sass, sir.")
                     
@@ -369,8 +372,8 @@ class DOTA:
 
         elif arg.startswith('NEW'):
             def check(msg):
-                return msg.author == ctx.author and msg.channel == ctx.channel and msg.content[:3].upper() != "SB."            
-                
+                return CHECKS.check_same_user(ctx,msg)
+
             if len(arg) > 4:
                 arg = arg[4:].strip()
                 if arg not in ['STRENGTH','AGILITY','INTELLIGENCE','POOL','HERO']:
@@ -383,10 +386,11 @@ class DOTA:
                     await ctx.send(f"What shall we call your pool?")
                     try:
                         msg = await bot.wait_for("message", check=check)
-                        if msg.content in nvm:
+                        if msg.content.lower() in nvm:
                             await ctx.send("Alrighty no worries.")
                             return
-                        poolname = msg.content.title()
+                        poolname = str(msg.content.title().replace("\"","").replace("'","\\\'"))
+                        print(poolname)
                         pools = [pool.strip() for pool in sql_db.get_all_pools().split(',')]
                         if poolname in pools:
                             await ctx.send("A pool with that name already exists!")
