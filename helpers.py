@@ -301,7 +301,7 @@ class DOTA:
                         else:
                             await ctx.send("That was the easiest instruction ever come on sir.")
                     else:
-                        add_delete_heroes(sql_db.get_pool_id(poolname), poolname, edit_type)                
+                        await add_delete_heroes(sql_db.get_pool_id(poolname), poolname, edit_type)                
             except:
                 await ctx.send("Try again, probably some issue with your typing you noob. Sorry for the sass, sir.")
                     
