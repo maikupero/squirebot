@@ -435,6 +435,7 @@ class DOTA:
                     except:
                         await ctx.send(f"Had some issue finding that {sql_db.get_hero_name(id)} in the db.")
                 hero_list = [sql_db.get_hero_name(id)[0] for id in hero_id_list]
+                hero_list = ", ".join(hero_list)
                 await ctx.send(f"Our feelings towards {hero_list} have been recorded.")
             else:
                 await ctx.send(f"Try again and let me know who gets the {plus_or_minus.lower()}. `sb.dota love hoodwink`")
@@ -470,7 +471,7 @@ class DOTA:
                 response = "___Top 5:___\n"
                 for heroscore in top:
                     response += f"{heroscore[0]}: {heroscore[1]}\n"
-                response += "~\n___Bottom 5:___\n"
+                response += "\n___Bottom 5:___\n"
                 for heroscore in bottom:
                     response += f"{heroscore[0]}: {heroscore[1]}\n"
                 await ctx.send(response)
