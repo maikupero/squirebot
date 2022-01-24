@@ -1,9 +1,7 @@
-from distutils.util import execute
-from multiprocessing import pool
 import psycopg2
 import os
-from psycopg2 import sql
-from lists import default_commands, heroes, full_hero_list, strength, agility, intelligence, stre, agil, inte
+
+from lists import default_commands, heroes, full_hero_list, strength, agility, intelligence
 
 DB = os.environ['DATABASE_URL']
 
@@ -155,11 +153,14 @@ def get_all_pools():
     if pools != None:
         pools = (str(pools)[1:-1]).replace("'", "")
     return pools
+
 def get_pool_id(pool_name):
     id = fetch_query(get_pool_id_query, (pool_name,))
     return id[0]
+
 def get_users():
     return fetch_query(get_users_query)
+
 def get_users_pools(user_id):
     pools = fetch_query(get_user_pools_query, (user_id,))
     if pools != 'None':
@@ -204,10 +205,14 @@ def add_hero_to_pool(hero_name, pool_name):
     pool_id = get_pool_id(pool_name)
     execute_query(append_hero_pools_query, {'pool_id':pool_id, 'hero_id':hero_id})
 
+
+
 # HERO SCORE FUNCTIONS
+
 def get_hero_score(hero):
     hero_id = get_hero_id(hero)
     return fetch_query(get_hero_score_query, (int(hero_id),))
+
 def get_scores(count, top_or_bottom):
     if top_or_bottom == 'TOP':
         return fetch_two_query(get_top_scores_query, (int(count),))
@@ -223,6 +228,7 @@ def change_hero_score(hero_id, plus_or_minus):
 
 def reset_score(hero_to_reset):
     execute_query(reset_score_query, (get_hero_id(hero_to_reset),))
+
 def reset_all_scores():
     execute_query(reset_all_scores_query)
 
@@ -450,6 +456,8 @@ select_heroes_from_pool_query = """
         hero_pools
     WHERE
         pool_id=%s"""
+
+
 
 # HERO SCORE QUERIES
 get_hero_score_query = """
