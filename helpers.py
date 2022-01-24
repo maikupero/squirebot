@@ -508,6 +508,7 @@ class DOTA:
                             if msg.content.upper() in ["YES", "Y"]:
                                 try:
                                     sql_db.reset_score(hero_to_reset)
+                                    await ctx.send("Success!")
                                 except:
                                     await ctx.send(f"Failed to reset the score.")
                             else:
@@ -524,6 +525,7 @@ class DOTA:
                         if msg.content.upper() in ["YES", "Y"]:
                             try:
                                 sql_db.reset_all_scores()
+                                await ctx.send("Success!")
                             except:
                                 await ctx.send(f"Failed to reset all scores.")
                         else:

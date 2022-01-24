@@ -494,7 +494,7 @@ reset_score_query = """
     UPDATE
         dota_heroes
     SET
-        score = score + 1
+        score = 0
     WHERE
         hero_id=%s
 """
