@@ -219,6 +219,7 @@ def get_scores(count, top_or_bottom):
         return fetch_two_query(get_top_scores_query, (int(count),))
     else:
         return fetch_two_query(get_bottom_scores_query, (int(count),))
+        
 get_hero_score_query = """
     SELECT
         score
