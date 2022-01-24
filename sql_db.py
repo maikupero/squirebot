@@ -7,7 +7,8 @@ from lists import default_commands, heroes, full_hero_list, strength, agility, i
 
 DB = os.environ['DATABASE_URL']
 
-
+# For when the time comes to implement dota api stuff
+# https://steamcommunity.com/dev/registerkey
 
 
 
