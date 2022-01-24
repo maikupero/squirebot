@@ -196,7 +196,7 @@ def add_hero_to_pool(hero_name, pool_name):
 
 def get_hero_score(hero):
     hero_id = get_hero_id(hero)
-    return fetch_query(get_hero_score_query, (hero_id,))
+    return fetch_query(get_hero_score_query, (int(hero_id),))
 
 def change_hero_score(hero_id, plus_or_minus):
     print(f"Attempting to lookup {hero_id} and {plus_or_minus}")
@@ -210,6 +210,13 @@ def get_scores(count, top_or_bottom):
         return fetch_query(get_top_scores_query, (int(count),))
     else:
         return fetch_query(get_bottom_scores_query, (int(count),))
+get_hero_score_query = """
+    SELECT
+        score
+    FROM
+        dota_heroes
+    WHERE
+        hero_id=%s"""
 add_hero_score_query = """
     UPDATE
         dota_heroes
@@ -227,19 +234,21 @@ subtract_hero_score_query = """
         hero_id=%s
 """
 get_top_scores_query = """
-    SELECT TOP (%s)
+    SELECT
         hero_name
     FROM
         dota_heroes
     ORDER BY
-        score ASC"""
+        score ASC
+    FETCH FIRST %s ROWS ONLY"""
 get_bottom_scores_query = """
-    SELECT TOP (%s)
+    SELECT
         hero_name
     FROM
         dota_heroes
     ORDER BY
-        score DESC"""
+        score DESC
+    FETCH FIRST %s ROWS ONLY"""
 
 
 ### COMMAND TABLE QUERIES ###
@@ -462,10 +471,3 @@ select_heroes_from_pool_query = """
         hero_pools
     WHERE
         pool_id=%s"""
-get_hero_score_query = """
-    SELECT
-        score
-    FROM
-        dota_heroes
-    WHERE
-        hero_id=%s"""
