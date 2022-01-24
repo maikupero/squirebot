@@ -397,7 +397,7 @@ class DOTA:
                 elif arg.startswith('DELETE'):
                     if len(arg) > 7:
                         try:
-                            await delete_pool(arg[7:])
+                            await delete_pool(arg[7:].title())
                         except:
                             await ctx.send("Couldn't delete pool. Check syntax?")
                     else:
@@ -405,9 +405,9 @@ class DOTA:
                             await ctx.send(f"Which pool are you hoping to delete?\n{sql_db.get_all_pools()}")
                             msg = await bot.wait_for("message", check=check)
                             if msg.content.title() in sql_db.get_all_pools():
-                                await delete_pool(arg[7:])
+                                await delete_pool(arg[7:].title())
                             else:
-                                    raise Exception
+                                raise Exception
                         except:
                             await ctx.send("Had some issue deleting that pool. Perhaps permissions or a typo.")
                     
