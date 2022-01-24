@@ -446,11 +446,11 @@ class DOTA:
                 top = sql_db.get_scores('5', 'TOP')
                 bottom = sql_db.get_scores('5','BOTTOM')
                 await ctx.send("Top 5:")
-                for hero in top:
-                    await ctx.send(f"{sql_db.get_scores('5', 'TOP')}")
+                for heroscore in top:
+                    await ctx.send(f"{heroscore[0]}: {heroscore[1]}")
                 await ctx.send(f"Bottom 5:")
-                for hero in bottom:
-                    await ctx.send(f"{sql_db.get_scores('5','BOTTOM')}")
+                for heroscore in bottom:
+                    await ctx.send(f"{heroscore[0]}: {heroscore[1]}")
             elif len(arg.split(' ')) > 1:
                 heroes_to_check = arg[5:].strip().split(',')
                 hero_id_list = [sql_db.get_hero_id(hero.strip()) for hero in heroes_to_check]
