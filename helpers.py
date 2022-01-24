@@ -260,7 +260,6 @@ class DOTA:
                         return
                     provided_heroes = msg.content.upper().split(',')
                     provided_heroes = [sql_db.findhero(hero.strip()) for hero in provided_heroes]
-                    print(provided_heroes)
                     for hero in provided_heroes:
                         if hero == "ERROR":
                             raise Exception
@@ -504,12 +503,11 @@ class DOTA:
                     await ctx.send(f"Some issue getting the {top_or_bottom.lower()} scores you requested.")
             else:
                 response = ''
-                arg = arg[0]
-                if arg == 'TOP':
+                if arg[0] == 'TOP':
                     scores = sql_db.get_scores('5', 'TOP')
                     for score in scores:
                         response += f"{score[0]}: {score[1]}\n"
-                elif arg == 'BOTTOM':
+                elif arg[0] == 'BOTTOM':
                     scores = sql_db.get_scores('5', 'BOTTOM')
                     for score in scores:
                         response += f"{score[0]}: {score[1]}\n"
