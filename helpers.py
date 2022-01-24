@@ -483,11 +483,11 @@ class DOTA:
                     await ctx.send(f"Some issue getting the {top_or_bottom.lower()} scores you requested.")
             else:
                 response = ''
-                if arg.startswith('TOP'):
+                if arg == 'TOP':
                     scores = sql_db.get_scores('5', 'TOP')
                     for score in scores:
                         response += f"{score[0]}: {score[1]}\n"
-                elif arg.startswith('BOTTOM'):
+                elif arg == 'BOTTOM':
                     scores = sql_db.get_scores('5', 'BOTTOM')
                     for score in scores:
                         response += f"{score[0]}: {score[1]}\n"
