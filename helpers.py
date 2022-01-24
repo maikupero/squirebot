@@ -443,8 +443,14 @@ class DOTA:
 
         elif arg.startswith('SCORE'):
             if arg.strip() == 'SCORES' or 'ALL' in arg[6:11]:
-                await ctx.send(f"Top 10: {sql_db.get_scores('10', 'TOP')}")
-                await ctx.send(f"Bottom 10: {sql_db.get_scores('10','BOTTOM')}")
+                top = sql_db.get_scores('5', 'TOP')
+                bottom = sql_db.get_scores('5','BOTTOM')
+                await ctx.send("Top 5:")
+                for hero in top:
+                    await ctx.send(f"{sql_db.get_scores('5', 'TOP')}")
+                await ctx.send(f"Bottom 5:")
+                for hero in bottom:
+                    await ctx.send(f"{sql_db.get_scores('5','BOTTOM')}")
             elif len(arg.split(' ')) > 1:
                 heroes_to_check = arg[5:].strip().split(',')
                 hero_id_list = [sql_db.get_hero_id(hero.strip()) for hero in heroes_to_check]
