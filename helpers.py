@@ -132,11 +132,13 @@ class DBSTUFF:
             await ctx.send(f"Specify item (or comma separated list of items) from:\n{str(sql_db.fetch_all_greetings())[1:-1]}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
+                response = ''
                 for word in msg.content.split(","):
                     if sql_db.delete_greeting(word.strip(), user_id, master_id) == 1:
-                        await ctx.send(f"Deleted: {word.strip()}")
+                        response += f"Deleted: {word.strip()}\n"
                     else:
-                        await ctx.send(f"{word.strip()} is not yours to delete!")
+                        response += f"{word.strip()} is not yours to delete!\n"
+                await ctx.send(response)
             except asyncio.TimeoutError:
                 await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
 
@@ -149,11 +151,13 @@ class DBSTUFF:
                     await ctx.send("Gotcha no problem brother.")
                     return
                 msg = msg.content.title().split(",")
+                response = ''
                 for pool in msg:
                     if sql_db.delete_pool(pool.strip(), user_id, master_id) == 1:
-                        await ctx.send(f"Deleted: {pool.strip()}")
+                        response += f"Deleted: {pool.strip()}\n"
                     else:
-                        await ctx.send(f"{pool.strip()} is not yours to delete!")
+                        response += f"{pool.strip()} is not yours to delete!\n"
+                await ctx.send(response)
             except asyncio.TimeoutError:
                 await ctx.send("Sorry, try again from `sb.delete (poolname)`.")
         else:   
@@ -249,6 +253,7 @@ class DOTA:
         async def add_delete_heroes(pool_id, poolname, edit_type):
             await ctx.send(f"Give me a hero to {edit_type.lower()}, or a comma separated list of heroes (abbreviations like kotl are ok).")
             repeat = True
+            response = ''
             while repeat:
                 try:
                     msg = await bot.wait_for("message", check=check)
@@ -265,24 +270,26 @@ class DOTA:
                         
                         elif edit_type == "ADD":
                             if hero in sql_db.select_heroes_from_pool(poolname):
+                                response += f"{hero} is already in there.\n"
                                 raise Exception
                             else:
                                 try:
-                                    await ctx.send(f"Adding {hero} to {poolname}.")
+                                    response += f"Adding {hero} to {poolname}.\n"
                                     sql_db.execute_query(sql_db.append_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
                                 except:
                                     raise Exception
 
                         elif edit_type == "DELETE":
                             if hero not in sql_db.select_heroes_from_pool(poolname):
-                                await ctx.send("Hero isn't in there.")
+                                response += f"{hero} isn't in there to delete.\n"
                                 raise Exception
                             else:
                                 try:
-                                    await ctx.send(f"Removing {hero} from {poolname}.")
+                                    response += f"Removing {hero} from {poolname}.\n"
                                     sql_db.execute_query(sql_db.delete_hero_from_pool_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
                                 except:
                                     raise Exception
+                    await ctx.send(response)
                     await ctx.send(f"Any more to {edit_type.lower()}?")
                 except:
                     await ctx.send("Duplicate or typo, try again..")
