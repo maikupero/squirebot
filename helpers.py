@@ -426,7 +426,10 @@ class DOTA:
             plus_or_minus = 'ADD' if arg[:4] == 'LOVE' else 'SUB'
             if len(arg) > 5:
                 hero_to_score = arg[5:].split(',')
-                hero_id_list = [sql_db.get_hero_id(hero = heroes[hero.strip()]) for hero in hero_to_score]
+                try:
+                    hero_id_list = [sql_db.get_hero_id(hero = heroes[hero.strip()]) for hero in hero_to_score]
+                except:
+                    await ctx.send("Probably a typo in there eh?")
                 for id in hero_id_list:
                     try:
                         sql_db.change_hero_score(id, plus_or_minus)
@@ -501,6 +504,7 @@ class DOTA:
                     await ctx.send(f"Some issue getting the {top_or_bottom.lower()} scores you requested.")
             else:
                 response = ''
+                print(arg)
                 if arg == 'TOP':
                     scores = sql_db.get_scores('5', 'TOP')
                     for score in scores:
