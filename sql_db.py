@@ -216,9 +216,9 @@ def change_hero_score(hero_id, plus_or_minus):
 
 def get_scores(count, top_or_bottom):
     if top_or_bottom == 'TOP':
-        return fetch_two_query(get_top_scores_query, (int(count)*2,))
+        return fetch_two_query(get_top_scores_query, (int(count),))
     else:
-        return fetch_two_query(get_bottom_scores_query, (int(count)*2,))
+        return fetch_two_query(get_bottom_scores_query, (int(count),))
 
 get_hero_score_query = """
     SELECT
