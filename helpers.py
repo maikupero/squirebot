@@ -428,16 +428,18 @@ class DOTA:
                 hero_to_score = arg[4:].split(',')
                 hero_id_list = [sql_db.get_hero_id(hero = heroes[hero.strip()]) for hero in hero_to_score]
                 print(f"Got hero_id_list: {hero_id_list}")
+                response = ""
                 for id in hero_id_list:
                     try:
                         if plus_or_minus == 'ADD':
-                            await ctx.send(f"+1 for {sql_db.get_hero_name(id)[0]} has been recorded.")
+                            response += f"+1 for {sql_db.get_hero_name(id)[0]} has been recorded.\n"
                             sql_db.change_hero_score(id, plus_or_minus)
                         else:
-                            await ctx.send(f"-1 for {sql_db.get_hero_name(id)[0]} has been recorded.")
+                            response += f"-1 for {sql_db.get_hero_name(id)[0]} has been recorded.\n"
                             sql_db.change_hero_score(id, plus_or_minus)
                     except:
-                        await ctx.send("Had some issue finding that hero in the db.")
+                        response += ctx.send(f"Had some issue finding {sql_db.get_hero_name(id)} in the db.\n")
+                await ctx.send(response)
             else:
                 await ctx.send(f"Try again and let me know who you guys won/lost with. comma separated please. `sb.dota win ns, np, hoodwink`")
 
@@ -445,12 +447,13 @@ class DOTA:
             if arg.strip() == 'SCORES' or 'ALL' in arg[6:11]:
                 top = sql_db.get_scores('5', 'TOP')
                 bottom = sql_db.get_scores('5','BOTTOM')
-                await ctx.send("Top 5:")
+                response = "Top 5:\n"
                 for heroscore in top:
-                    await ctx.send(f"{heroscore[0]}: {heroscore[1]}")
-                await ctx.send(f"Bottom 5:")
+                    response += f"{heroscore[0]}: {heroscore[1]}\n"
+                response += "Bottom 5:\n"
                 for heroscore in bottom:
-                    await ctx.send(f"{heroscore[0]}: {heroscore[1]}")
+                    response += f"{heroscore[0]}: {heroscore[1]}\n"
+                await ctx.send(response)
             elif len(arg.split(' ')) > 1:
                 heroes_to_check = arg[5:].strip().split(',')
                 hero_id_list = [sql_db.get_hero_id(hero.strip()) for hero in heroes_to_check]
@@ -472,21 +475,25 @@ class DOTA:
                     top_or_bottom = arg[0].strip()
                     count = arg[1].strip() if int(arg[1].strip()) <= 10 else '10'
                     scores = sql_db.get_scores(count, top_or_bottom)
+                    response = ""
                     for score in scores:
-                        await ctx.send(f"{score[0]}: {score[1]}")
+                        response += f"{score[0]}: {score[1]}\n"
+                    await ctx.send(response)
                 except: 
                     await ctx.send(f"Some issue getting the {top_or_bottom.lower()} scores you requested.")
             else:
+                response = ''
                 if arg.startswith('TOP'):
                     scores = sql_db.get_scores('5', 'TOP')
                     for score in scores:
-                        await ctx.send(f"{score[0]}: {score[1]}")
+                        response += f"{score[0]}: {score[1]}\n"
                 elif arg.startswith('BOTTOM'):
                     scores = sql_db.get_scores('5', 'BOTTOM')
                     for score in scores:
-                        await ctx.send(f"{score[0]}: {score[1]}")
+                        response += f"{score[0]}: {score[1]}\n"
                 else:
-                    await ctx.send("Some issue with the top/bottom request.")
+                    response += "Some issue with the top/bottom request."
+                await ctx.send(response)
 
         elif arg in heroes:
             hero = heroes[arg]
