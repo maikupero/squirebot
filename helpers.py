@@ -410,14 +410,14 @@ class DOTA:
         elif arg.startswith('LOVE') or arg.startswith('HATE'):
             plus_or_minus = 'ADD' if arg[:4] == 'LOVE' else 'SUB'
             if len(arg) > 5:
-                hero_to_score = arg[5:].strip().upper()
-                try:
-                    hero_id = sql_db.get_hero_id(heroes[hero_to_score])
-                    print(f"Got hero_id {hero_id}")
-                    sql_db.change_hero_score(hero_id, plus_or_minus)
-                    await ctx.send(f"Our {plus_or_minus.lower()} for {str([heroes[hero] for hero in hero_to_score])[1:-1]} has been recorded.")
-                except:
-                    await ctx.send("Had some issue finding that hero in the db.")
+                hero_to_score = arg[5:].split(',')
+                hero_id_list = [sql_db.get_hero_id(hero = heroes[hero.strip()]) for hero in hero_to_score]
+                for id in hero_id_list:
+                    try:
+                        sql_db.change_hero_score(id, plus_or_minus)
+                    except:
+                        await ctx.send(f"Had some issue finding that {sql_db.get_hero_name(id)} in the db.")
+                await ctx.send(f"Our feelings towards {str([sql_db.get_hero_name(id) for id in hero_id_list])[2:-2]} have been recorded.")
             else:
                 await ctx.send(f"Try again and let me know who gets the {plus_or_minus.lower()}. `sb.dota love hoodwink`")
 
@@ -452,7 +452,7 @@ class DOTA:
                     try:
                         hero = sql_db.get_hero_name(id)[0]
                         score = sql_db.get_hero_score(hero)
-                        await ctx.send(f"{hero}: {score[0]}.")
+                        await ctx.send(f"{hero}: {score[0]}")
                     except:
                         await ctx.send(f"Had trouble finding {sql_db.get_hero_name(id)[0]}'s score.")
             elif arg == 'SCORE':
