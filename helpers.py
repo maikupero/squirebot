@@ -325,8 +325,10 @@ class DOTA:
             else:
                 await ctx.send("That was the easiest instruction ever come on sir.")
 
+
         if arg.startswith("RANDOM"):
             await ctx.send(DOTA.randomdop(ctx, arg))
+
 
         elif arg.startswith('POOL'):
             if len(arg) > 5:
@@ -439,7 +441,10 @@ class DOTA:
             plus_or_minus = 'ADD' if (arg[:3] == 'WIN' or arg[:3] == 'WON') else 'SUB'
             if len(arg.strip()) > 4:
                 hero_to_score = arg[4:].split(',')
-                hero_id_list = [sql_db.get_hero_id(hero = heroes[hero.strip()]) for hero in hero_to_score]
+                try:
+                    hero_id_list = [sql_db.get_hero_id(hero = heroes[hero.strip()]) for hero in hero_to_score]
+                except:
+                    await ctx.send("Maybe some typo in there, huh?")
                 print(f"Got hero_id_list: {hero_id_list}")
                 response = ""
                 for id in hero_id_list:
