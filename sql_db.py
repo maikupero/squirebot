@@ -235,19 +235,19 @@ subtract_hero_score_query = """
 """
 get_top_scores_query = """
     SELECT
-        hero_name
-    FROM
-        dota_heroes
-    ORDER BY
-        score ASC
-    FETCH FIRST %s ROWS ONLY"""
-get_bottom_scores_query = """
-    SELECT
-        hero_name
+        hero_name, score
     FROM
         dota_heroes
     ORDER BY
         score DESC
+    FETCH FIRST %s ROWS ONLY"""
+get_bottom_scores_query = """
+    SELECT
+        hero_name, score
+    FROM
+        dota_heroes
+    ORDER BY
+        score ASC
     FETCH FIRST %s ROWS ONLY"""
 
 
