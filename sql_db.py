@@ -201,15 +201,15 @@ def get_hero_score(hero):
 def change_hero_score(hero_id, plus_or_minus):
     print(f"Attempting to lookup {hero_id} and {plus_or_minus}")
     if plus_or_minus == "ADD":
-        return execute_query(add_hero_score_query, (hero_id,))
+        execute_query(add_hero_score_query, (hero_id,))
     elif plus_or_minus == "SUB":
-        return execute_query(subtract_hero_score_query, (hero_id,))
+        execute_query(subtract_hero_score_query, (hero_id,))
 
 def get_scores(count, top_or_bottom):
     if top_or_bottom == 'TOP':
-        return fetch_query(get_top_scores_query, (count,))
+        return fetch_query(get_top_scores_query, (int(count),))
     else:
-        return fetch_query(get_bottom_scores_query, (count,))
+        return fetch_query(get_bottom_scores_query, (int(count),))
 add_hero_score_query = """
     UPDATE
         dota_heroes

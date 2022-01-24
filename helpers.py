@@ -430,10 +430,10 @@ class DOTA:
                 for id in hero_id_list:
                     try:
                         if plus_or_minus == 'ADD':
-                            await ctx.send(f"+1 for {sql_db.get_hero_name(id)} has been recorded.")
+                            await ctx.send(f"+1 for {sql_db.get_hero_name(id)[0]} has been recorded.")
                             sql_db.change_hero_score(id, plus_or_minus)
                         else:
-                            await ctx.send(f"-1 for {sql_db.get_hero_name(id)} has been recorded.")
+                            await ctx.send(f"-1 for {sql_db.get_hero_name(id)[0]} has been recorded.")
                             sql_db.change_hero_score(id, plus_or_minus)
                     except:
                         await ctx.send("Had some issue finding that hero in the db.")
@@ -452,7 +452,7 @@ class DOTA:
                     try:
                         hero = sql_db.get_hero_name(id)[0]
                         score = sql_db.get_hero_score(hero)
-                        await ctx.send(f"{hero}: {score}.")
+                        await ctx.send(f"{hero}: {score[0]}.")
                     except:
                         await ctx.send(f"Had trouble finding {sql_db.get_hero_name(id)[0]}'s score.")
             elif arg == 'SCORE':
