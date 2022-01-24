@@ -4,7 +4,7 @@ import requests
 import sql_db
 import asyncio
 
-from lists import nvm, heroes, full_hero_list, stre, agil, inte, role1, role2, role3, role4, role5, supps, cores, jungle
+from lists import responses, nvm, heroes, full_hero_list, strength, agility, intelligence, role1, role2, role3, role4, role5, supps, cores, jungle
 
 
 
@@ -14,14 +14,10 @@ class CHECKS:
         return msg.author == ctx.author and msg.channel == ctx.channel and msg.content[:3].upper() != "SB."
 
 
-
 class SERVICE:
 
     def attend():
-        responses = ["Ready, sir.", "As you order, sir.", "What can I do for you?", "Work work.", 
-        "Something need doing?", "How can I help you, sir?", "How can I be of service, my lord?"]
         return random.choice(responses)
-
 
     def help(ctx, *args):
         if args[0]:
@@ -110,7 +106,7 @@ class DBSTUFF:
         try:
             msg = await bot.wait_for("message", check=check, timeout=30)
             response = str(msg.content)
-            if response.lower() in nvm:
+            if response.upper() in nvm:
                 await message.channel.send("Gotcha, no problemo.")
                 return
             else:
@@ -147,7 +143,7 @@ class DBSTUFF:
             await ctx.send(f"Specify poolname to delete a pool if it is yours to delete.\nStored pools: {sql_db.get_all_pools()}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
-                if msg.content in nvm:
+                if msg.content.upper() in nvm:
                     await ctx.send("Gotcha no problem brother.")
                     return
                 msg = msg.content.title().split(",")
@@ -175,10 +171,9 @@ class DOTA:
         random = "> `sb.dota random core` \|\| `sb.dota random 3` \|\| `sb.dota random team`"
         hero = "RANDOM: Random team, hero from specified pool, or hero if unspecified.\n\n> `sb.dota earthshaker`"
         pool = "HERO: Gives all stored info on provided hero.\n\n> `sb.dota pool green \|\| sb.dota pool list`"
-        new = "POOL: Lists all heroes stored in the specified pool, or all stored pools.\n\n> `sb.dota new pool` \|\| `sb.dota new (poolname)`"
-        edit = "NEW: Add pool to database or add heroes to an existing pool.\n\n> `sb.dota edit (pool)`"
+        edit = "POOL: Branches into list (all pools), new (make a new pool), -poolname- (see heroes in pool), edit, delete.\n\n> `sb.dota pool (pool)`"
         delete = "EDIT: Add/remove heroes to a pool, or delete a pool if its yours to delete.\n\n> `sb.dota delete pool` - Lists all pools and then prompts you to delete, barring permissions."
-        return (f"{top}\n{random}\n{hero}\n{pool}\n{new}\n{edit}\n{delete}")
+        return (f"{top}\n{random}\n{hero}\n{pool}\n{edit}\n{delete}")
 
 
     def randomdop(ctx, pool):
@@ -188,11 +183,11 @@ class DOTA:
         if pool == "RANDOM":
             return random.choice(full_hero_list)     
         elif pool.startswith("STR"):
-            return random.choice(stre)
+            return random.choice(strength)
         elif pool.startswith("AGI"):
-            return random.choice(agil)
+            return random.choice(agility)
         elif pool.startswith("INT"):
-            return random.choice(inte)
+            return random.choice(intelligence)
         elif pool == "CORE":
             return random.choice(cores)
         elif pool == "1" or pool == "CARRY":
@@ -259,7 +254,7 @@ class DOTA:
                 response = ''
                 try:
                     msg = await bot.wait_for("message", check=check)
-                    if msg.content in nvm:
+                    if msg.content.upper() in nvm:
                         await ctx.send("Gotcha. All done!")
                         repeat = False
                         return
@@ -302,7 +297,7 @@ class DOTA:
             
             try:
                 msg = await bot.wait_for("message", check=check)
-                if msg.content.lower().strip() in nvm:
+                if msg.content.upper().strip() in nvm:
                     await ctx.send("Gotcha no problem brother.")
                     return
                 if msg.content.upper().strip() in accepted_edits:
@@ -310,7 +305,7 @@ class DOTA:
                     if edit_type == "DELETE POOL":
                         await ctx.send(f"Are you sure you want to delete {poolname}? Y/N")
                         response = await bot.wait_for("message", check=check)
-                        if response.content.lower() in nvm:
+                        if response.content.upper() in nvm:
                             await ctx.send("Gotcha no problem brother.")
                             return
                         elif response.content.upper() in ["YES", "Y"]:
@@ -351,7 +346,7 @@ class DOTA:
                     await ctx.send(f"What shall we call your pool?")
                     try:
                         msg = await bot.wait_for("message", check=check)
-                        if msg.content.lower() in nvm:
+                        if msg.content.upper() in nvm:
                             await ctx.send("Alrighty no worries.")
                             return
                         poolname = msg.content.replace("\"", "").replace("\'","").title()
@@ -372,7 +367,7 @@ class DOTA:
                         await ctx.send(f"Specify poolname to edit a pool. Don't be troll.\nStored pools: {sql_db.get_all_pools()}")
                         try:
                             msg = await bot.wait_for("message", check=check)
-                            if msg.content in nvm:
+                            if msg.content.upper() in nvm:
                                 await ctx.send("Gotcha, no problem brother.")
                                 return
                             elif msg.content.title() in sql_db.get_all_pools():
@@ -395,6 +390,8 @@ class DOTA:
                                 await edit_pool(arg)
                         else:
                             await ctx.send("Couldn't find your pool. Try again!")
+                    
+                    elif arg.startswith('DEL'):
 
                 else:
                     await ctx.send(f"`sb.dota pool list`, `sb.dota pool (poolname)`, `sb.dota pool edit (poolname)`, `sb.dota pool new`.")
