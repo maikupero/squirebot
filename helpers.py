@@ -294,7 +294,6 @@ class DOTA:
         async def edit_pool(poolname):
             accepted_edits = ["ADD", "DEL", "DELETE", "DELETE POOL"]
             await ctx.send(f"Heroes in {poolname}:\n{sql_db.select_heroes_from_pool(poolname)}\n Want to Add/Delete heroes? Tell me `add` or `delete`. Or `Delete Pool`.")
-            
             try:
                 msg = await bot.wait_for("message", check=check)
                 if msg.content.upper().strip() in nvm:
@@ -303,18 +302,7 @@ class DOTA:
                 if msg.content.upper().strip() in accepted_edits:
                     edit_type = msg.content.upper().strip()
                     if edit_type == "DELETE POOL":
-                        await ctx.send(f"Are you sure you want to delete {poolname}? Y/N")
-                        response = await bot.wait_for("message", check=check)
-                        if response.content.upper() in nvm:
-                            await ctx.send("Gotcha no problem brother.")
-                            return
-                        elif response.content.upper() in ["YES", "Y"]:
-                            if sql_db.delete_pool(poolname, user_id, ctx.guild.owner_id) == 1:
-                                await ctx.send(f"Deleted: {poolname}")
-                            else:
-                                await ctx.send(f"{poolname} is not yours to delete!")
-                        else:
-                            await ctx.send("That was the easiest instruction ever come on sir.")
+                        await delete_pool(poolname)
                     else:
                         if edit_type == "ADD":
                             await add_delete_heroes(sql_db.get_pool_id(poolname), poolname, "ADD")  
@@ -323,6 +311,20 @@ class DOTA:
             except:
                 await ctx.send("Try again, probably some issue with your typing you noob. Sorry for the sass, sir.")
                     
+        async def delete_pool(poolname):
+            await ctx.send(f"Are you sure you want to delete {poolname}? Y/N")
+            response = await bot.wait_for("message", check=check)
+            if response.content.upper() in nvm:
+                await ctx.send("Gotcha no problem brother.")
+                return
+            elif response.content.upper() in ["YES", "Y"]:
+                if sql_db.delete_pool(poolname, user_id, ctx.guild.owner_id) == 1:
+                    await ctx.send(f"Deleted: {poolname}.")
+                else:
+                    await ctx.send(f"{poolname} is not yours to delete!")
+            else:
+                await ctx.send("That was the easiest instruction ever come on sir.")
+
         if arg.startswith("RANDOM"):
             await ctx.send(DOTA.randomdop(ctx, arg))
 
@@ -391,7 +393,23 @@ class DOTA:
                         else:
                             await ctx.send("Couldn't find your pool. Try again!")
                     
-                    elif arg.startswith('DEL'):
+                elif arg.startswith('DELETE'):
+                    if len(arg) > 7:
+                        try:
+                            await delete_pool(arg[7:])
+                        except:
+                            await ctx.send("Couldn't delete pool. Check syntax?")
+                    else:
+                        try:
+                            await ctx.send(f"Which pool are you hoping to delete?\n{sql_db.get_all_pools()}")
+                            msg = await bot.wait_for("message", check=check)
+                            if msg.content.title() in sql_db.get_all_pools():
+                                await delete_pool(arg[7:])
+                            else:
+                                    raise Exception
+                        except:
+                            await ctx.send("Had some issue deleting that pool. Perhaps permissions or a typo.")
+                    
 
                 else:
                     await ctx.send(f"`sb.dota pool list`, `sb.dota pool (poolname)`, `sb.dota pool edit (poolname)`, `sb.dota pool new`.")
@@ -430,7 +448,7 @@ class DOTA:
                             response += f"-1 for {sql_db.get_hero_name(id)[0]} has been recorded.\n"
                             sql_db.change_hero_score(id, plus_or_minus)
                     except:
-                        response += ctx.send(f"Had some issue finding {sql_db.get_hero_name(id)} in the db.\n")
+                        response += f"Had some issue finding {sql_db.get_hero_name(id)} in the db.\n"
                 await ctx.send(response)
             else:
                 await ctx.send(f"Try again and let me know who you guys won/lost with. comma separated please. `sb.dota win ns, np, hoodwink`")
