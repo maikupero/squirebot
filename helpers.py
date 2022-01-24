@@ -519,7 +519,7 @@ class DOTA:
             def check(msg):
                 return CHECKS.check_same_user(ctx, msg)
             if ctx.author.id == ctx.guild.owner_id:
-                if len(arg.strip()) > 5:
+                if len(arg.strip()) > 5 and 'ALL' not in arg:
                     try: 
                         hero_to_reset = heroes[arg[5:].strip()]
                         await ctx.send(f"Are you sure you want to reset the score for {hero_to_reset}? Y/N.")
@@ -537,7 +537,7 @@ class DOTA:
                         except asyncio.TimeoutError:
                             await ctx.send("Sorry took too long, I'm gonna hold off on the full reset.")
                     except:
-                        await ctx.send("Couldn't find that hero in the database)")
+                        await ctx.send("Couldn't find that hero in the database")
                 elif arg == "RESET" or arg == "RESET ALL":
                     await ctx.send(f"Are you sure you want to reset all scores stored on the database? Y/N.")
                     try:
