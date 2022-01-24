@@ -417,7 +417,7 @@ class DOTA:
                         sql_db.change_hero_score(id, plus_or_minus)
                     except:
                         await ctx.send(f"Had some issue finding that {sql_db.get_hero_name(id)} in the db.")
-                await ctx.send(f"Our feelings towards {str([sql_db.get_hero_name(id) for id in hero_id_list])[2:-2]} have been recorded.")
+                await ctx.send(f"Our feelings towards {(sql_db.get_hero_name(id)[0] for id in hero_id_list)} have been recorded.")
             else:
                 await ctx.send(f"Try again and let me know who gets the {plus_or_minus.lower()}. `sb.dota love hoodwink`")
 
@@ -478,7 +478,7 @@ class DOTA:
         elif arg in heroes:
             hero = heroes[arg]
             await ctx.send(f"Looking up {hero}...")
-            await ctx.send(f"In {ctx.message.guild.name}, {hero} is {sql_db.fetch_query(sql_db.get_hero_score_query, (sql_db.get_hero_id(hero)))}.")
+            await ctx.send(f"In {ctx.message.guild.name}, {hero} is {sql_db.get_hero_score(hero)}.")
         
         else:
             await ctx.send("Sorry, try again with some new dota request.")
