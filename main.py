@@ -5,7 +5,6 @@ import asyncio
 import discord
 from discord.ext.commands import Bot as DiscordBot
 
-from lists import heroes
 import helpers
 
 # Env variables. # Network & Database connections through psycopg2, postgres, heroku. 
