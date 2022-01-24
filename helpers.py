@@ -469,9 +469,9 @@ class DOTA:
                 await ctx.send("Whose score are we checking? Try `sb.dota score (heroname)` or `sb.dota (heroname)`.")
                 
         elif arg.startswith('TOP') or arg.startswith('BOTTOM'):
-            if len(arg.split(' ')) > 1:
+            arg = arg.split(' ')
+            if len(arg) > 1 and arg[0] in ['TOP', 'BOTTOM']:
                 try: 
-                    arg = arg.split(' ')
                     top_or_bottom = arg[0].strip()
                     count = arg[1].strip() if int(arg[1].strip()) <= 10 else '10'
                     scores = sql_db.get_scores(count, top_or_bottom)
@@ -499,7 +499,7 @@ class DOTA:
             def check(msg):
                 return CHECKS.check_same_user(ctx, msg)
             if ctx.author.id == ctx.guild.owner_id:
-                if len(arg.strip() > 5):
+                if len(arg.strip()) > 5:
                     try: 
                         hero_to_reset = heroes[arg[5:].strip()]
                         await ctx.send(f"Are you sure you want to reset the score for {hero_to_reset}? Y/N.")
