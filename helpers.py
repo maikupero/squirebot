@@ -143,7 +143,7 @@ class DBSTUFF:
                 await ctx.send("Sorry, try again from `sb.deletefrom (table)`.")
 
 
-        elif "DOTA" or "POOL" in arg.upper():
+        elif arg.upper() in ["DOTA", "POOL"]:
             await ctx.send(f"Specify poolname to delete a pool if it is yours to delete.\nStored pools: {sql_db.get_all_pools()}")
             try:
                 msg = await bot.wait_for("message", check=check, timeout=30)
@@ -161,7 +161,7 @@ class DBSTUFF:
             except asyncio.TimeoutError:
                 await ctx.send("Sorry, try again from `sb.delete (poolname)`.")
         else:   
-            await ctx.send("Try `sb.deletefrom greetings` or `sb.deletefrom commands`")
+            await ctx.send("Try `sb.delete greetings` or `sb.delete pool`")
     
 
 
@@ -249,12 +249,14 @@ class DOTA:
     async def dota_db(ctx, bot, arg):
         user_id = str(ctx.author.id)
         arg = arg.upper()
+        def check(msg):
+            return CHECKS.check_same_user(ctx,msg)
 
         async def add_delete_heroes(pool_id, poolname, edit_type):
             await ctx.send(f"Give me a hero to {edit_type.lower()}, or a comma separated list of heroes (abbreviations like kotl are ok).")
             repeat = True
-            response = ''
             while repeat:
+                response = ''
                 try:
                     msg = await bot.wait_for("message", check=check)
                     if msg.content in nvm:
@@ -332,62 +334,20 @@ class DOTA:
         elif arg.startswith('POOL'):
             if len(arg) > 5:
                 arg = arg[5:].strip()
+
+
                 if arg == 'LIST':
                     await ctx.send(f"Here are all the pools we have stored, sir (Case Insensitive):\n{sql_db.get_all_pools()}.")
+
+
                 elif arg in sql_db.get_users() or arg == "ME":
                     if arg == "ME":
                         await ctx.send(f"Your stored pools: {str(sql_db.get_users_pools(user_id))}")
-                else:
-                    await ctx.send(f"{arg.title()} heroes: {sql_db.select_heroes_from_pool(arg.title())}.")
-            else:
-                await ctx.send(f"`sb.dota pool list/poolname` for all the pools, or `sb.dota pool (poolname)` to look it up.")
-
-
-        elif arg.startswith('EDIT'):
-            def check(msg):
-                return CHECKS.check_same_user(ctx, msg)
-            if arg.strip() in ['EDIT', 'EDIT POOL']:
-                await ctx.send(f"Specify poolname to edit a pool. Don't be troll.\nStored pools: {sql_db.get_all_pools()}")
-                try:
-                    msg = await bot.wait_for("message", check=check)
-                    if msg.content in nvm:
-                        await ctx.send("Gotcha, no problem brother.")
-                        return
-                    elif msg.content.title() in sql_db.get_all_pools():
-                        if msg.content.title() in ["Strength", "Agility", "Intelligence"]:
-                            await ctx.send("Can't edit the defaults, sorry fam.")
-                        else:
-                            print(f"Going to edit_pool with {msg.content.title()}")
-                            await edit_pool(msg.content.title())
                     else:
-                        await ctx.send("Couldn't find your pool. Try again!")
-                except asyncio.TimeoutError:
-                    await ctx.send("Sorry, try again from `sb.delete (poolname)`.")
-
-            elif len(arg) > 5:
-                arg = arg[5:]
-                if arg.title() in sql_db.get_all_pools():
-                    if arg.title() in ["Strength", "Agility", "Intelligence"]:
-                        await ctx.send("Can't edit the defaults, sorry fam.")
-                    else:
-                        await edit_pool(arg.title())
-                else:
-                    await ctx.send("Couldn't find your pool. Try again!")
+                        await ctx.send(f"Stored pools for {arg}: {str(sql_db.get_users_pools(sql_db.get_user_id(arg)))}")
 
 
-        elif arg.startswith('NEW'):
-            def check(msg):
-                return CHECKS.check_same_user(ctx,msg)
-
-            if len(arg) > 4:
-                arg = arg[4:].strip()
-                if arg not in ['STRENGTH','AGILITY','INTELLIGENCE','POOL','HERO']:
-                    try:
-                        await add_delete_heroes(ctx, sql_db.get_pool_id(arg.title()), arg.title(), "ADD")
-                    except:
-                        await ctx.send("Double check pool name.")
-
-                elif arg == 'POOL':
+                elif arg.startswith('NEW') or arg.startswith('ADD'):
                     await ctx.send(f"What shall we call your pool?")
                     try:
                         msg = await bot.wait_for("message", check=check)
@@ -406,12 +366,40 @@ class DOTA:
                     except:
                         await ctx.send("Some issue with the pool name.")
 
-                elif arg == 'hero':
-                    await ctx.send("No need to add new heroes as there are no new heroes yet. Message gaben.")
-                    
-            else: 
-                await ctx.send("Specify what you'd like to add / add to! Try `sb.dota new pool` to make a new one.")
 
+                elif arg.startswith('EDIT'):
+                    if arg == 'EDIT':
+                        await ctx.send(f"Specify poolname to edit a pool. Don't be troll.\nStored pools: {sql_db.get_all_pools()}")
+                        try:
+                            msg = await bot.wait_for("message", check=check)
+                            if msg.content in nvm:
+                                await ctx.send("Gotcha, no problem brother.")
+                                return
+                            elif msg.content.title() in sql_db.get_all_pools():
+                                if msg.content.title() in ["Strength", "Agility", "Intelligence"]:
+                                    await ctx.send("Can't edit the defaults, sorry fam.")
+                                else:
+                                    print(f"Going to edit_pool with {msg.content.title()}")
+                                    await edit_pool(msg.content.title())
+                            else:
+                                await ctx.send("Couldn't find your pool. Try again!")
+                        except asyncio.TimeoutError:
+                            await ctx.send("Sorry, try again from `sb.delete (poolname)`.")
+
+                    elif len(arg) > 5:
+                        arg = arg[5:].title()
+                        if arg in sql_db.get_all_pools():
+                            if arg in ["Strength", "Agility", "Intelligence"]:
+                                await ctx.send("Can't edit the defaults, sorry fam.")
+                            else:
+                                await edit_pool(arg)
+                        else:
+                            await ctx.send("Couldn't find your pool. Try again!")
+
+                else:
+                    await ctx.send(f"`sb.dota pool list`, `sb.dota pool (poolname)`, `sb.dota pool edit (poolname)`, `sb.dota pool new`.")
+            else: 
+                await ctx.send("Specify what you'd like to add / add to! Try `sb.dota pool new` to make a new one.")
 
         #SCORE RELATED FUNCTIONS
         elif arg.startswith('LOVE') or arg.startswith('HATE'):
@@ -429,8 +417,8 @@ class DOTA:
             else:
                 await ctx.send(f"Try again and let me know who gets the {plus_or_minus.lower()}. `sb.dota love hoodwink`")
 
-        elif arg.startswith('WIN') or arg.startswith('LOS'):
-            plus_or_minus = 'ADD' if arg[:3] == 'WIN' else 'SUB'
+        elif arg.startswith('WIN') or arg.startswith('WON') or arg.startswith('LOS'):
+            plus_or_minus = 'ADD' if (arg[:3] == 'WIN' or arg[:3] == 'WON') else 'SUB'
             if len(arg.strip()) > 4:
                 hero_to_score = arg[4:].split(',')
                 hero_id_list = [sql_db.get_hero_id(hero = heroes[hero.strip()]) for hero in hero_to_score]
@@ -544,7 +532,6 @@ class DOTA:
                 await ctx.send("Need permission to reset scores in the database.")
 
             
-
         elif arg in heroes:
             hero = heroes[arg]
             await ctx.send(f"Looking up {hero}...")
