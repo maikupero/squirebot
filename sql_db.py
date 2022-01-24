@@ -227,14 +227,14 @@ subtract_hero_score_query = """
         hero_id=%s
 """
 get_top_scores_query = """
-    SELECT TOP %s
+    SELECT TOP (%s)
         hero_name
     FROM
         dota_heroes
     ORDER BY
         score ASC"""
 get_bottom_scores_query = """
-    SELECT TOP %s
+    SELECT TOP (%s)
         hero_name
     FROM
         dota_heroes
