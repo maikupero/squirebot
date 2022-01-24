@@ -465,10 +465,10 @@ class DOTA:
             if arg.strip() == 'SCORES' or 'ALL' in arg[6:11]:
                 top = sql_db.get_scores('5', 'TOP')
                 bottom = sql_db.get_scores('5','BOTTOM')
-                response = "Top 5:\n"
+                response = "     Top 5:\n"
                 for heroscore in top:
                     response += f"{heroscore[0]}: {heroscore[1]}\n"
-                response += "Bottom 5:\n"
+                response += "     Bottom 5:\n"
                 for heroscore in bottom:
                     response += f"{heroscore[0]}: {heroscore[1]}\n"
                 await ctx.send(response)
