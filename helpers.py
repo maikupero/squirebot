@@ -425,7 +425,7 @@ class DOTA:
             plus_or_minus = 'ADD' if arg[:3] == 'WIN' else 'SUB'
             if len(arg.strip()) > 4:
                 hero_to_score = arg[4:].split(',')
-                hero_id_list = [sql_db.get_hero_id(heroes[hero.strip.upper()]) for hero in hero_to_score]
+                hero_id_list = [sql_db.get_hero_id(hero = heroes[hero.strip()]) for hero in hero_to_score]
                 print(f"Got hero_id_list: {hero_id_list}")
                 for id in hero_id_list:
                     try:
@@ -450,11 +450,11 @@ class DOTA:
                 print(f"Got hero_id_list: {hero_id_list}")
                 for id in hero_id_list:
                     try:
-                        hero = sql_db.get_hero_name(id)
+                        hero = sql_db.get_hero_name(id)[0]
                         score = sql_db.get_hero_score(hero)
                         await ctx.send(f"{hero}: {score}.")
                     except:
-                        await ctx.send(f"Had trouble finding {sql_db.get_hero_name(id)}'s score.")
+                        await ctx.send(f"Had trouble finding {sql_db.get_hero_name(id)[0]}'s score.")
             elif arg == 'SCORE':
                 await ctx.send("Whose score are we checking? Try `sb.dota score (heroname)` or `sb.dota (heroname)`.")
                 
