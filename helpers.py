@@ -405,8 +405,80 @@ class DOTA:
             else: 
                 await ctx.send("Specify what you'd like to add / add to! Try `sb.dota new pool` to make a new one.")
 
+
+        #SCORE RELATED FUNCTIONS
+        elif arg.startswith('LOVE') or arg.startswith('HATE'):
+            plus_or_minus = 'ADD' if arg[:4] == 'LOVE' else 'SUB'
+            if len(arg) > 5:
+                hero_to_score = arg[5:].strip().upper()
+                try:
+                    hero_id = sql_db.get_hero_id(heroes[hero_to_score])
+                    print(f"Got hero_id {hero_id}")
+                    sql_db.change_hero_score(hero_id, plus_or_minus)
+                    ctx.send(f"Our {plus_or_minus.lower()} for {str([heroes[hero] for hero in hero_to_score])[1:-1]} has been recorded.")
+                except:
+                    ctx.send("Had some issue finding that hero in the db.")
+            else:
+                ctx.send(f"Try again and let me know who gets the {plus_or_minus.lower()}. `sb.dota love hoodwink`")
+
+        elif arg.startswith('WIN') or arg.startswith('LOS'):
+            plus_or_minus = 'ADD' if arg[:3] == 'WIN' else 'SUB'
+            if len(arg.strip()) > 4:
+                hero_to_score = arg[4:].split(',')
+                hero_id_list = [sql_db.get_hero_id(heroes[hero.strip.upper()]) for hero in hero_to_score]
+                print(f"Got hero_id_list: {hero_id_list}")
+                for id in hero_id_list:
+                    try:
+                        if plus_or_minus == 'ADD':
+                            ctx.send(f"+1 for {sql_db.get_hero_name(id)} has been recorded.")
+                            sql_db.change_hero_score(id, plus_or_minus)
+                        else:
+                            ctx.send(f"-1 for {sql_db.get_hero_name(id)} has been recorded.")
+                            sql_db.change_hero_score(id, plus_or_minus)
+                    except:
+                        ctx.send("Had some issue finding that hero in the db.")
+            else:
+                ctx.send(f"Try again and let me know who you guys won/lost with. comma separated please. `sb.dota win ns, np, hoodwink`")
+
+        elif arg.startswith('SCORE'):
+            if arg.strip() == 'SCORES' or 'ALL' in arg[6:11]:
+                await ctx.send(f"Top 10: {sql_db.get_scores('10', 'TOP')}")
+                await ctx.send(f"Bottom 10: {sql_db.get_scores('10','BOTTOM')}")
+            elif len(arg.split(' ')) > 1:
+                heroes_to_check = arg[5:].strip().split(',')
+                hero_id_list = [sql_db.get_hero_id(hero.strip()) for hero in heroes_to_check]
+                print(f"Got hero_id_list: {hero_id_list}")
+                for id in hero_id_list:
+                    try:
+                        hero = sql_db.get_hero_name(id)
+                        score = sql_db.get_hero_score(hero)
+                        ctx.send(f"{hero}: {score}.")
+                    except:
+                        ctx.send(f"Had trouble finding {sql_db.get_hero_name(id)}'s score.")
+            elif arg == 'SCORE':
+                ctx.send("Whose score are we checking? Try `sb.dota score (heroname)` or `sb.dota (heroname)`.")
+                
+        elif arg.startswith('TOP') or arg.startswith('BOTTOM'):
+            if len(arg.split(' ')) > 1:
+                try: 
+                    arg = arg.split(' ')
+                    top_or_bottom = arg[0].strip()
+                    count = arg[1].strip() if int(arg[1].strip()) <= 20 else '20'
+                    await ctx.send(sql_db.get_scores(count, top_or_bottom))
+                except: 
+                    ctx.send(f"Some issue getting the {top_or_bottom.lower()} scores you requested.")
+            else:
+                if arg.startswith('TOP'):
+                    await ctx.send(f"Top 5: {sql_db.get_scores('5', 'TOP')}")
+                elif arg.startswith('BOTTOM'):
+                    await ctx.send(f"Bottom 5: {sql_db.get_scores('5', 'BOTTOM')}")
+                else:
+                    await ctx.send("Some issue with the top/bottom request.")
+
         elif arg in heroes:
-            await ctx.send(f"Looking up {heroes[arg]}...")
+            hero = heroes[arg]
+            await ctx.send(f"Looking up {hero}...")
+            await ctx.send(f"In {ctx.message.guild.name}, {hero} is {sql_db.fetch_query(sql_db.get_hero_score_query, (sql_db.get_hero_id()))}.")
         
         else:
             await ctx.send("Sorry, try again with some new dota request.")
