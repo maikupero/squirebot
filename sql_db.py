@@ -199,16 +199,33 @@ def get_hero_score(hero):
     return fetch_query(get_hero_score_query, (hero_id,))
 
 def change_hero_score(hero_id, plus_or_minus):
+    print(f"Attempting to lookup {hero_id} and {plus_or_minus}")
     if plus_or_minus == "ADD":
         return execute_query(add_hero_score_query, (hero_id,))
     elif plus_or_minus == "SUB":
-        return execute_query(subtract_hero_score_query, (hero_id),)
+        return execute_query(subtract_hero_score_query, (hero_id,))
 
 def get_scores(count, top_or_bottom):
     if top_or_bottom == 'TOP':
         return fetch_query(get_top_scores_query, (count,))
     else:
         return fetch_query(get_bottom_scores_query, (count,))
+add_hero_score_query = """
+    UPDATE
+        dota_heroes
+    SET
+        score = score + 1
+    WHERE
+        hero_id=%s
+"""
+subtract_hero_score_query = """
+    UPDATE
+        dota_heroes
+    SET
+        score = score - 1
+    WHERE
+        hero_id=%s
+"""
 get_top_scores_query = """
     SELECT TOP %s
         hero_name
@@ -452,19 +469,3 @@ get_hero_score_query = """
         dota_heroes
     WHERE
         hero_id=%s"""
-add_hero_score_query = """
-    UPDATE
-        dota_heroes
-    SET
-        score = score + 1
-    WHERE
-        hero_id=%s
-"""
-subtract_hero_score_query = """
-    UPDATE
-        dota_heroes
-    SET
-        score = score - 1
-    WHERE
-        hero_id=%s
-"""
