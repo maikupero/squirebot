@@ -412,9 +412,12 @@ class DOTA:
                     
 
                 else:
-                    await ctx.send(f"`sb.dota pool list`, `sb.dota pool (poolname)`, `sb.dota pool edit (poolname)`, `sb.dota pool new`.")
+                    if arg.title() in sql_db.get_all_pools():
+                        await ctx.send(f"All heroes from {arg.title()}: {sql_db.select_heroes_from_pool(arg.title())}")
+                    else:
+                        await ctx.send(f"`sb.dota pool list`, `sb.dota pool (poolname)`, `sb.dota pool edit (poolname)`, `sb.dota pool new`.")
             else: 
-                await ctx.send("Specify what you'd like to add / add to! Try `sb.dota pool new` to make a new one.")
+                await ctx.send("What do you want to do with the pools? sb.dota pool...  list / new / edit / delete / (poolname)")
 
         #SCORE RELATED FUNCTIONS
         elif arg.startswith('LOVE') or arg.startswith('HATE'):
