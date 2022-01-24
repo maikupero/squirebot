@@ -95,13 +95,10 @@ def delete_greeting(greeting, user_id, master_id):
 ### DOTA TABLE FUNCTIONS ###
 ############################
 
-
-
 # INITIAL TABLE CREATION AND INSERTION OF DEFAULT VALUES
-
 def create_dota_tables():
 
-    # Drop all tables for a fresh start. and also reset the auto increment IDs.
+    # For a fresh start, drops all tables and also resets the auto increment IDs.
     # print("Wiping all dota tables.")
     # execute_query(delete_pools_table_query)
     # execute_query(delete_user_table_query)
@@ -201,9 +198,31 @@ def get_hero_score(hero):
     hero_id = get_hero_id(hero)
     return fetch_query(get_hero_score_query, (hero_id,))
 
+def change_hero_score(hero_id, plus_or_minus):
+    if plus_or_minus == "ADD":
+        return execute_query(add_hero_score_query, (hero_id,))
+    elif plus_or_minus == "SUB":
+        return execute_query(subtract_hero_score_query, (hero_id),)
 
-
-
+def get_scores(count, top_or_bottom):
+    if top_or_bottom == 'TOP':
+        return fetch_query(get_top_scores_query, (count,))
+    else:
+        return fetch_query(get_bottom_scores_query, (count,))
+get_top_scores_query = """
+    SELECT TOP %s
+        hero_name
+    FROM
+        dota_heroes
+    ORDER BY
+        score ASC"""
+get_bottom_scores_query = """
+    SELECT TOP %s
+        hero_name
+    FROM
+        dota_heroes
+    ORDER BY
+        score DESC"""
 
 
 ### COMMAND TABLE QUERIES ###
@@ -370,6 +389,7 @@ delete_hero_from_pool_query = """
         pool_id=%(pool_id)s AND hero_id=%(hero_id)s"""
 
 
+
 # VARIED SELECT QUERIES
 get_pool_id_query = """
     SELECT
@@ -378,25 +398,12 @@ get_pool_id_query = """
         user_pools
     WHERE
         pool_name=%s"""
-get_hero_id_query = """
-    SELECT 
-        hero_id
-    FROM
-        dota_heroes
-    WHERE
-        hero_name=%s"""
-get_hero_score_query = """
-    SELECT
-        score
-    FROM
-        dota_heroes
-    WHERE
-        hero_id=%s"""
 get_pools_query = """
     SELECT DISTINCT
         pool_name
     FROM
         user_pools"""
+
 get_users_query = """
     SELECT DISTINCT
         user_id
@@ -409,20 +416,6 @@ get_user_pools_query = """
         user_pools
     WHERE
         user_id=%s"""
-select_heroes_from_pool_query = """
-    SELECT
-        hero_id
-    FROM
-        hero_pools
-    WHERE
-        pool_id=%s"""
-get_hero_name_query = """
-    SELECT
-        hero_name
-    FROM
-        dota_heroes
-    WHERE
-        hero_id=%s"""
 get_user_id = """
     SELECT 
         user_id
@@ -430,3 +423,48 @@ get_user_id = """
         user_pools
     WHERE
         pool_id=%s"""
+
+get_hero_name_query = """
+    SELECT
+        hero_name
+    FROM
+        dota_heroes
+    WHERE
+        hero_id=%s"""
+get_hero_id_query = """
+    SELECT 
+        hero_id
+    FROM
+        dota_heroes
+    WHERE
+        hero_name=%s"""
+select_heroes_from_pool_query = """
+    SELECT
+        hero_id
+    FROM
+        hero_pools
+    WHERE
+        pool_id=%s"""
+get_hero_score_query = """
+    SELECT
+        score
+    FROM
+        dota_heroes
+    WHERE
+        hero_id=%s"""
+add_hero_score_query = """
+    UPDATE
+        dota_heroes
+    SET
+        score = score + 1
+    WHERE
+        hero_id=%s
+"""
+subtract_hero_score_query = """
+    UPDATE
+        dota_heroes
+    SET
+        score = score - 1
+    WHERE
+        hero_id=%s
+"""
