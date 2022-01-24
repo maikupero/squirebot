@@ -418,7 +418,7 @@ class DOTA:
                     except:
                         await ctx.send(f"Had some issue finding that {sql_db.get_hero_name(id)} in the db.")
                 hero_list = [sql_db.get_hero_name(id)[0] for id in hero_id_list]
-                await ctx.send(f"Our feelings towards {hero_list[0]} have been recorded.")
+                await ctx.send(f"Our feelings towards {hero_list} have been recorded.")
             else:
                 await ctx.send(f"Try again and let me know who gets the {plus_or_minus.lower()}. `sb.dota love hoodwink`")
 
@@ -464,15 +464,21 @@ class DOTA:
                 try: 
                     arg = arg.split(' ')
                     top_or_bottom = arg[0].strip()
-                    count = arg[1].strip() if int(arg[1].strip()) <= 20 else '20'
-                    await ctx.send(sql_db.get_scores(count, top_or_bottom))
+                    count = arg[1].strip() if int(arg[1].strip()) <= 10 else '10'
+                    scores = sql_db.get_scores(count, top_or_bottom)
+                    for score in scores:
+                        await ctx.send(f"{score[0]}: {score[1]}")
                 except: 
                     await ctx.send(f"Some issue getting the {top_or_bottom.lower()} scores you requested.")
             else:
                 if arg.startswith('TOP'):
-                    await ctx.send(f"Top 5: {sql_db.get_scores('5', 'TOP')}")
+                    scores = sql_db.get_scores('5', 'TOP')
+                    for score in scores:
+                        await ctx.send(f"{score[0]}: {score[1]}")
                 elif arg.startswith('BOTTOM'):
-                    await ctx.send(f"Bottom 5: {sql_db.get_scores('5', 'BOTTOM')}")
+                    scores = sql_db.get_scores('5', 'BOTTOM')
+                    for score in scores:
+                        await ctx.send(f"{score[0]}: {score[1]}")
                 else:
                     await ctx.send("Some issue with the top/bottom request.")
 
