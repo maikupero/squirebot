@@ -478,7 +478,7 @@ class DOTA:
         elif arg in heroes:
             hero = heroes[arg]
             await ctx.send(f"Looking up {hero}...")
-            await ctx.send(f"In {ctx.message.guild.name}, {hero} is {sql_db.fetch_query(sql_db.get_hero_score_query, (sql_db.get_hero_id()))}.")
+            await ctx.send(f"In {ctx.message.guild.name}, {hero} is {sql_db.fetch_query(sql_db.get_hero_score_query, (sql_db.get_hero_id(hero)))}.")
         
         else:
             await ctx.send("Sorry, try again with some new dota request.")
