@@ -495,6 +495,47 @@ class DOTA:
                     response += "Some issue with the top/bottom request."
                 await ctx.send(response)
 
+        elif arg.startswith('RESET'):
+            def check(msg):
+                return CHECKS.check_same_user(ctx, msg)
+            if ctx.author.id == ctx.guild.owner_id:
+                if len(arg.strip() > 5):
+                    try: 
+                        hero_to_reset = heroes[arg[5:].strip()]
+                        await ctx.send(f"Are you sure you want to reset the score for {hero_to_reset}? Y/N.")
+                        try:
+                            msg = await bot.wait_for("message", check=check, timeout=30)
+                            if msg.content.upper() in ["YES", "Y"]:
+                                try:
+                                    sql_db.reset_score(hero_to_reset)
+                                except:
+                                    await ctx.send(f"Failed to reset the score.")
+                            else:
+                                await ctx.send("Okay no problem bud.")
+                                return
+                        except asyncio.TimeoutError:
+                            await ctx.send("Sorry took too long, I'm gonna hold off on the full reset.")
+                    except:
+                        await ctx.send("Couldn't find that hero in the database)")
+                elif arg == "RESET" or arg == "RESET ALL":
+                    await ctx.send(f"Are you sure you want to reset all scores stored on the database? Y/N.")
+                    try:
+                        msg = await bot.wait_for("message", check=check, timeout=30)
+                        if msg.content.upper() in ["YES", "Y"]:
+                            try:
+                                sql_db.reset_all_scores()
+                            except:
+                                await ctx.send(f"Failed to reset all scores.")
+                        else:
+                            await ctx.send("Okay no problem bud.")
+                            return
+                    except asyncio.TimeoutError:
+                        await ctx.send("Sorry took too long, I'm gonna hold off on the full reset.")
+            else:
+                await ctx.send("Need permission to reset scores in the database.")
+
+            
+
         elif arg in heroes:
             hero = heroes[arg]
             await ctx.send(f"Looking up {hero}...")

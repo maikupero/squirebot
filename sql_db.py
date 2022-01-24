@@ -203,9 +203,15 @@ def add_hero_to_pool(hero_name, pool_name):
     pool_id = get_pool_id(pool_name)
     execute_query(append_hero_pools_query, {'pool_id':pool_id, 'hero_id':hero_id})
 
+# HERO SCORE FUNCTIONS
 def get_hero_score(hero):
     hero_id = get_hero_id(hero)
     return fetch_query(get_hero_score_query, (int(hero_id),))
+def get_scores(count, top_or_bottom):
+    if top_or_bottom == 'TOP':
+        return fetch_two_query(get_top_scores_query, (int(count),))
+    else:
+        return fetch_two_query(get_bottom_scores_query, (int(count),))
 
 def change_hero_score(hero_id, plus_or_minus):
     print(f"Attempting to lookup {hero_id} and {plus_or_minus}")
@@ -214,51 +220,13 @@ def change_hero_score(hero_id, plus_or_minus):
     elif plus_or_minus == "SUB":
         execute_query(subtract_hero_score_query, (hero_id,))
 
-def get_scores(count, top_or_bottom):
-    if top_or_bottom == 'TOP':
-        return fetch_two_query(get_top_scores_query, (int(count),))
-    else:
-        return fetch_two_query(get_bottom_scores_query, (int(count),))
+def reset_score(hero_to_reset):
+    execute_query(reset_score_query, (get_hero_id(hero_to_reset),))
+def reset_all_scores():
+    execute_query(reset_all_scores_query)
 
-get_hero_score_query = """
-    SELECT
-        score
-    FROM
-        dota_heroes
-    WHERE
-        hero_id=%s"""
-add_hero_score_query = """
-    UPDATE
-        dota_heroes
-    SET
-        score = score + 1
-    WHERE
-        hero_id=%s
-"""
-subtract_hero_score_query = """
-    UPDATE
-        dota_heroes
-    SET
-        score = score - 1
-    WHERE
-        hero_id=%s
-"""
-get_top_scores_query = """
-    SELECT
-        hero_name, score
-    FROM
-        dota_heroes
-    ORDER BY
-        score DESC
-    FETCH FIRST %s ROWS ONLY"""
-get_bottom_scores_query = """
-    SELECT
-        hero_name, score
-    FROM
-        dota_heroes
-    ORDER BY
-        score ASC
-    FETCH FIRST %s ROWS ONLY"""
+
+
 
 
 ### COMMAND TABLE QUERIES ###
@@ -481,3 +449,58 @@ select_heroes_from_pool_query = """
         hero_pools
     WHERE
         pool_id=%s"""
+
+# HERO SCORE QUERIES
+get_hero_score_query = """
+    SELECT
+        score
+    FROM
+        dota_heroes
+    WHERE
+        hero_id=%s"""
+add_hero_score_query = """
+    UPDATE
+        dota_heroes
+    SET
+        score = score + 1
+    WHERE
+        hero_id=%s
+"""
+subtract_hero_score_query = """
+    UPDATE
+        dota_heroes
+    SET
+        score = score - 1
+    WHERE
+        hero_id=%s
+"""
+get_top_scores_query = """
+    SELECT
+        hero_name, score
+    FROM
+        dota_heroes
+    ORDER BY
+        score DESC
+    FETCH FIRST %s ROWS ONLY"""
+get_bottom_scores_query = """
+    SELECT
+        hero_name, score
+    FROM
+        dota_heroes
+    ORDER BY
+        score ASC
+    FETCH FIRST %s ROWS ONLY"""
+reset_score_query = """
+    UPDATE
+        dota_heroes
+    SET
+        score = score + 1
+    WHERE
+        hero_id=%s
+"""
+reset_all_scores_query = """
+    UPDATE
+        dota_heroes
+    SET
+        score = 0
+"""
