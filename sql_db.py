@@ -40,7 +40,16 @@ def fetch_query(query, args=()):
         return [i[0] for i in results]
     except Exception as e:
         print(f'***Error: {e} handling query: {query}')
-
+def fetch_two_query(query, args=()):
+    try:
+        conn = connect(DB)
+        cur = conn.cursor()
+        cur.execute(query, args)
+        results = [list(i) for i in cur.fetchall()]
+        close(conn, cur)
+        return [(i[0],i[1]) for i in results]
+    except Exception as e:
+        print(f'***Error: {e} handling query: {query}')
 
 
 
@@ -207,9 +216,9 @@ def change_hero_score(hero_id, plus_or_minus):
 
 def get_scores(count, top_or_bottom):
     if top_or_bottom == 'TOP':
-        return fetch_query(get_top_scores_query, (int(count),))
+        return fetch_two_query(get_top_scores_query, (int(count),))
     else:
-        return fetch_query(get_bottom_scores_query, (int(count),))
+        return fetch_two_query(get_bottom_scores_query, (int(count),))
 get_hero_score_query = """
     SELECT
         score
