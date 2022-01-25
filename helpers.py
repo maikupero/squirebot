@@ -170,10 +170,10 @@ class DOTA:
         top = "Dota sucks. Use `sb.dota (command)`."
         random = "> `sb.dota random core` \|\| `sb.dota random 3` \|\| `sb.dota random team`"
         hero = "RANDOM: Random team, hero from specified pool, or hero if unspecified.\n\n> `sb.dota earthshaker`"
-        pool = "HERO: Gives all stored info on provided hero.\n\n> `sb.dota pool green \|\| sb.dota pool list`"
-        edit = "POOL: Branches into list (all pools), new (make a new pool), -poolname- (see heroes in pool), edit, delete.\n\n> `sb.dota pool (pool)`"
-        delete = "EDIT: Add/remove heroes to a pool, or delete a pool if its yours to delete.\n\n> `sb.dota delete pool` - Lists all pools and then prompts you to delete, barring permissions."
-        return (f"{top}\n{random}\n{hero}\n{pool}\n{edit}\n{delete}")
+        pool = "HERO: Gives all stored info on provided hero.\n\n> `sb.dota pool green` \|\| `sb.dota pool list`"
+        score = "POOL: Branches into list (all pools), new (make a new pool), -poolname- (see heroes in pool), edit, delete.\n\n> `sb.dota love/hate (hero)` \|\| `sb.dota win/lose (heroes)` \|\| `sb.dota score (hero)`"
+        delete = "SCORE: Keeps track of a totally subjective, meaningless score on all the heroes. Can also do `sb.dota top x` or bottom x to see rankings."
+        return (f"{top}\n{random}\n{hero}\n{pool}\n{score}\n{delete}")
 
 
     def randomdop(ctx, pool):
