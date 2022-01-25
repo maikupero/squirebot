@@ -2,15 +2,17 @@
 ################# **squirebot** ################<br>
 #########################################<br>
 *Discord Bot for TheBoys.*
+    *-Though made portable so you can have it too.*
 
 Born on Dec. 16, 2021, launched and living on the internet one week later,<br>
 and (mostly) complete exactly one month after that.<br>
+
 Squirebot is here to attend to your every need before you go into battle.
 
 <hr><h1>USAGE</h1>
 
 Start any command message with sb.<br>
-Bail out of anything with the usual forms of refusal (no, nope).
+Bail out of anything with the usual forms of refusal (no, nope, etc.).
 
         sb.
             help : Essentially returns this list of commands to you on discord.
