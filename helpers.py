@@ -248,7 +248,7 @@ class DOTA:
             return CHECKS.check_same_user(ctx,msg)
 
         async def add_delete_heroes(pool_id, poolname, edit_type):
-            await ctx.send(f"Give me a hero to {edit_type.lower()}, or a comma separated list of heroes (abbreviations like kotl are ok).")
+            await ctx.send(f"Give me a hero to {edit_type.lower()}, or a comma separated list of heroes < 50 please (abbreviations like kotl are ok).")
             repeat = True
             while repeat:
                 response = ''
@@ -259,7 +259,10 @@ class DOTA:
                         repeat = False
                         return
                     provided_heroes = msg.content.upper().split(',')
+                    print(f"provided_heroes to add pre list: {provided_heroes}")
                     provided_heroes = [sql_db.findhero(hero.strip()) for hero in provided_heroes]
+                    await ctx.send("Attempting to add your heroes...")
+                    print(f"provided_heroes to add post list creation: {provided_heroes}")
                     for hero in provided_heroes:
                         if hero == "ERROR":
                             raise Exception
