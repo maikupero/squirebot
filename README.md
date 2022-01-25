@@ -25,7 +25,7 @@ Bail out of anything with the usual forms of refusal (no, nope, etc.).
                 // sb.attend // 
 
             delete (greeting/pool) : Permission restrictive assistance in deleting greetings / dota hero pools stored in the database.
-                // sb.delete pool green
+                // sb.delete pool green //
 
             weather (location) : If unspecified, prompts the user to send a location - city name, zip code, or coordinates.
                 // sb.weather Tokyo // Gives you the current weather in Tokyo complete with emoji.
@@ -43,31 +43,31 @@ Bail out of anything with the usual forms of refusal (no, nope, etc.).
                     list : Lists out all the pools stored in the DB
                     me/username : Lists out pools linked to specified user.
                     poolname : Can be specified to list the heroes within one pool.
-                        // sb.dota pool // Lists all global pools and user-specific pools.
+                        // sb.dota pool agility //
                     new/add : Prompts the user to create a new hero pool.
                     edit () : Prompts the user for a pool if unspecified, begins the edit process.
-                        // sb.dota pool new   ->   green   ->   treant, necro
-                        // sb.dota pool edit green  ->   add   ->   viper
+                        // sb.dota pool new   ->   green   ->   treant, necro //
+                        // sb.dota pool edit green  ->   add   ->   viper //
 
             -   hero hero_name :  
                     Gives all stored info on provided hero
-                        // sb.dota hero earthshaker // Lists all characteristics and stats stored on Earthshaker.
+                        // sb.dota hero earthshaker //
 
             -   scores : Pulls up the top 5 and bottom 5 heroes by score in the database. Totally subjective and for fun.
-                or - top/bottom x : Specify number of heroes to pull from for ranking.
-                        // sb.dota top 10
+                top/bottom x : Specify number of heroes to pull from for ranking.
+                        // sb.dota top 10 //
                 score (hero) : Retrieves the score of specified hero.
                 love/hate (hero) : Send a specific hero +1 or -1 when they're on your mind.
-                        // sb.dota hate techies
+                        // sb.dota hate techies //
                 win/loss (heroes) : Give a list of heroes you just won with or lost with.
-                        // sb.dota win hoodwink, naga siren, undying, lich, sb
+                        // sb.dota win hoodwink, naga siren, undying, lich, sb //
 
             -   random () : If unspecified suggests a random hero to play.
                     attribute/role : Random heroes from defaults like core, support, 2, strength.
                     pool_name : Suggests a random hero from specified pool in the DB.
                         // sb.dota random hero my_pool //
-                    team : Suggests a random team
-                        // sb.dota random team // Suggests a random team, (usually) viable for real Dota 2 victories.
+                    team : Suggests a random team, (usually) viable for real Dota 2 victories.
+                        // sb.dota random team //
     
 <hr><h1>ROADMAP</h1>
 
