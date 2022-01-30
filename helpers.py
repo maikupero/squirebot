@@ -220,10 +220,11 @@ class DOTA:
             remaining_random = 5 - len(core_count) - len(support_count)
 
             new_team.extend(core_count)
-            for i in range(remaining_random):
-                pub = random.choice(heroes)
-                while pub in core_count or pub in support_count: pub = random.choice(full_hero_list)
-                new_team.append(pub)
+            if len(remaining_random) > 0:
+                for i in range(remaining_random):
+                    pub = random.choice(heroes)
+                    while pub in core_count or pub in support_count: pub = random.choice(full_hero_list)
+                    new_team.append(pub)
             new_team.extend(support_count)
         else:
             pub = random.choice(role1)
