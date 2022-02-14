@@ -233,7 +233,7 @@ class DOTA:
 
             new_team.extend(core_count)
             new_team.extend(support_count)
-            while len(remaining_random) > 0:
+            while remaining_random > 0:
                 while True:
                     pub = random.choice(heroes)
                     if pub not in new_team:
