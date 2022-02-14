@@ -238,8 +238,8 @@ class DOTA:
                 if pub in new_team:
                     print(f"{pub} was already in {new_team}.")
                 else:
+                    print(f"{pub} was not in {new_team}, appending.")
                     new_team.append(pub)
-                    print(f"{pub} was not in {new_team}, appended.")
                     remaining_random -= 1
             
 
@@ -280,7 +280,7 @@ class DOTA:
                     provided_heroes = msg.content.upper().split(',')
                     print(f"provided heroes list: {provided_heroes}")
                     found_heroes = [sql_db.findhero(hero.strip()) for hero in provided_heroes]
-                    print(f"provided_heroes to add post list creation: {found_heroes}")
+                    print(f"found_heroes list: {found_heroes}")
 
                     await ctx.send("Attempting to add your heroes...")
                     for index, hero in enumerate(found_heroes):
@@ -290,24 +290,17 @@ class DOTA:
                         elif edit_type == "ADD":
                             if hero in sql_db.select_heroes_from_pool(poolname):
                                 response += f"{hero} is already in there.\n"
-                                raise Exception
                             else:
-                                try:
-                                    response += f"Adding {hero} to {poolname}.\n"
-                                    sql_db.execute_query(sql_db.append_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
-                                except:
-                                    raise Exception
+                                response += f"Adding {hero} to {poolname}.\n"
+                                sql_db.execute_query(sql_db.append_hero_pools_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
 
                         elif edit_type == "DELETE":
                             if hero not in sql_db.select_heroes_from_pool(poolname):
                                 response += f"{hero} isn't in there to delete.\n"
-                                raise Exception
                             else:
-                                try:
-                                    response += f"Removing {hero} from {poolname}.\n"
-                                    sql_db.execute_query(sql_db.delete_hero_from_pool_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
-                                except:
-                                    raise Exception
+                                response += f"Removing {hero} from {poolname}.\n"
+                                sql_db.execute_query(sql_db.delete_hero_from_pool_query, {'pool_id':pool_id, 'hero_id':sql_db.get_hero_id(hero)})
+                    
                     await ctx.send(response)
                     await ctx.send(f"Any more to {edit_type.lower()}?")
                 except:
