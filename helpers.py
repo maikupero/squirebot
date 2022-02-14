@@ -215,8 +215,15 @@ class DOTA:
         new_team = []
         seed = random.randint(1,2)
         if seed == 1:
+            
             core_count = random.sample(cores, k=random.randint(1,2))
-            support_count = random.sample(supps, k=random.randint(1,3))
+            
+            supports_no_dupes = supps.copy()
+            for core in core_count:
+                if core in supports_no_dupes:
+                    supports_no_dupes.remove(core)
+            support_count = random.sample(supports_no_dupes, k=random.randint(1,3))
+
             remaining_random = 5 - len(core_count) - len(support_count)
 
             new_team.extend(core_count)
@@ -226,6 +233,7 @@ class DOTA:
                     while pub in core_count or pub in support_count: pub = random.choice(full_hero_list)
                     new_team.append(pub)
             new_team.extend(support_count)
+
         else:
             pub = random.choice(role1)
             while pub in new_team: pub = random.choice(role1)
@@ -259,14 +267,16 @@ class DOTA:
                         await ctx.send("Gotcha. All done!")
                         repeat = False
                         return
+
                     provided_heroes = msg.content.upper().split(',')
-                    print(f"provided_heroes to add pre list: {provided_heroes}")
-                    provided_heroes = [sql_db.findhero(hero.strip()) for hero in provided_heroes]
+                    print(f"provided heroes list: {provided_heroes}")
+                    found_heroes = [sql_db.findhero(hero.strip()) for hero in provided_heroes]
+                    print(f"provided_heroes to add post list creation: {found_heroes}")
+
                     await ctx.send("Attempting to add your heroes...")
-                    print(f"provided_heroes to add post list creation: {provided_heroes}")
-                    for hero in provided_heroes:
+                    for index, hero in enumerate(found_heroes):
                         if hero == "ERROR":
-                            raise Exception
+                            response += f"Couldn't find {provided_heroes[index]}.\n"
                         
                         elif edit_type == "ADD":
                             if hero in sql_db.select_heroes_from_pool(poolname):
