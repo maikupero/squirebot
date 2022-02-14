@@ -214,25 +214,35 @@ class DOTA:
     def generate_team():
         new_team = []
         seed = random.randint(1,2)
+        print(f"Seed: {seed}")
         if seed == 1:
-            
+
             core_count = random.sample(cores, k=random.randint(1,2))
-            
+            print(f"Got cores: {core_count}.")
             supports_no_dupes = supps.copy()
+            print(f"Got supports list: {supports_no_dupes}.")
             for core in core_count:
                 if core in supports_no_dupes:
                     supports_no_dupes.remove(core)
+                    print(f"Removed {core} from the supports list.")
+            print(f"Got no dupes supports list: {supports_no_dupes}.")
             support_count = random.sample(supports_no_dupes, k=random.randint(1,3))
+            print(f"Got supports: {support_count}")
 
             remaining_random = 5 - len(core_count) - len(support_count)
 
             new_team.extend(core_count)
-            if remaining_random > 0:
-                for i in range(remaining_random):
-                    pub = random.choice(heroes)
-                    while pub in core_count or pub in support_count: pub = random.choice(full_hero_list)
-                    new_team.append(pub)
             new_team.extend(support_count)
+            while len(remaining_random) > 0:
+                while True:
+                    pub = random.choice(heroes)
+                    if pub not in new_team:
+                        print(f"{pub} was not in {new_team}, appending.")
+                        break
+                    print(f"{pub} was already in {new_team}.")
+                new_team.append(pub)
+                remaining_random -= 1
+            
 
         else:
             pub = random.choice(role1)
