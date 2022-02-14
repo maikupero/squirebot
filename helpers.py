@@ -322,7 +322,10 @@ class DOTA:
                         if edit_type == "ADD":
                             await add_delete_heroes(sql_db.get_pool_id(poolname), poolname, "ADD")  
                         else:
-                            await add_delete_heroes(sql_db.get_pool_id(poolname), poolname, "DELETE")                
+                            await add_delete_heroes(sql_db.get_pool_id(poolname), poolname, "DELETE")   
+                else:
+                    await ctx.send("What?")
+                    raise Exception
             except:
                 await ctx.send("Try again, probably some issue with your typing you noob. Sorry for the sass, sir.")
                     
