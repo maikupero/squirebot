@@ -234,14 +234,13 @@ class DOTA:
             new_team.extend(core_count)
             new_team.extend(support_count)
             while remaining_random > 0:
-                while True:
-                    pub = random.choice(heroes)
-                    if pub not in new_team:
-                        print(f"{pub} was not in {new_team}, appending.")
-                        break
+                pub = random.choice(heroes)
+                if pub in new_team:
                     print(f"{pub} was already in {new_team}.")
-                new_team.append(pub)
-                remaining_random -= 1
+                else:
+                    new_team.append(pub)
+                    print(f"{pub} was not in {new_team}, appended.")
+                    remaining_random -= 1
             
 
         else:
