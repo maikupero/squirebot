@@ -234,7 +234,7 @@ class DOTA:
             new_team.extend(core_count)
             new_team.extend(support_count)
             while remaining_random > 0:
-                pub = random.choice(heroes)
+                pub = random.choice(full_hero_list)
                 if pub in new_team:
                     print(f"{pub} was already in {new_team}.")
                 else:
